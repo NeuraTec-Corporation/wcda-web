@@ -1,0 +1,124 @@
+:root {
+  /* Color — semantic */
+  --color-background: #f6f1e8;
+  --color-foreground: #1a1714;
+  --color-surface: #fffdf9;
+  --color-surface-muted: #ebe4d8;
+  --color-primary: #2a3544;
+  --color-primary-hover: #1f2834;
+  --color-primary-foreground: #f7f3ec;
+  --color-secondary: #5e5348;
+  --color-secondary-hover: #4c433a;
+  --color-secondary-foreground: #f7f3ec;
+  --color-accent: #9c6b3c;
+  --color-accent-foreground: #fffdf9;
+  --color-border: #d8d0c4;
+  --color-muted: #5f574e;
+  --color-success: #246b4a;
+  --color-success-foreground: #f3faf6;
+  --color-warning: #8a5a12;
+  --color-warning-foreground: #fff8ec;
+  --color-error: #9b2c2c;
+  --color-error-foreground: #fff6f5;
+  --color-focus: #215e8a;
+
+  /* Container widths */
+  --container-narrow: 42rem;
+  --container-content: 72rem;
+  --container-wide: 80rem;
+
+  /* Border radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-full: 9999px;
+
+  /* Spacing rhythm */
+  --spacing-gutter: 1.25rem;
+  --spacing-gutter-lg: 2rem;
+  --spacing-stack: 1.5rem;
+  --spacing-stack-lg: 2.5rem;
+  --spacing-section: 4rem;
+  --spacing-section-lg: 6rem;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px color-mix(in srgb, var(--color-foreground) 6%, transparent);
+  --shadow-sm: 0 1px 3px color-mix(in srgb, var(--color-foreground) 8%, transparent),
+    0 1px 2px color-mix(in srgb, var(--color-foreground) 5%, transparent);
+  --shadow-md: 0 8px 24px color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  --shadow-lg: 0 16px 40px color-mix(in srgb, var(--color-foreground) 12%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #12110f;
+    --color-foreground: #f3ede4;
+    --color-surface: #1c1a17;
+    --color-surface-muted: #26221c;
+    --color-primary: #c9bba8;
+    --color-primary-hover: #d8ccbc;
+    --color-primary-foreground: #1a1714;
+    --color-secondary: #b3a89c;
+    --color-secondary-hover: #c4bbb1;
+    --color-secondary-foreground: #1a1714;
+    --color-accent: #c49a6c;
+    --color-accent-foreground: #1a1714;
+    --color-border: #3a342c;
+    --color-muted: #c2b8ac;
+    --color-success: #7dcea0;
+    --color-success-foreground: #102117;
+    --color-warning: #e0b066;
+    --color-warning-foreground: #2a1a08;
+    --color-error: #e08b8b;
+    --color-error-foreground: #2a1010;
+    --color-focus: #7eb6dd;
+  }
+}
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-foreground: var(--color-primary-foreground);
+  --color-secondary: var(--color-secondary);
+  --color-secondary-hover: var(--color-secondary-hover);
+  --color-secondary-foreground: var(--color-secondary-foreground);
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-border: var(--color-border);
+  --color-muted: var(--color-muted);
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
+  --color-warning: var(--color-warning);
+  --color-warning-foreground: var(--color-warning-foreground);
+  --color-error: var(--color-error);
+  --color-error-foreground: var(--color-error-foreground);
+  --color-focus: var(--color-focus);
+
+  --container-narrow: var(--container-narrow);
+  --container-content: var(--container-content);
+  --container-wide: var(--container-wide);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-full: var(--radius-full);
+
+  --spacing-gutter: var(--spacing-gutter);
+  --spacing-gutter-lg: var(--spacing-gutter-lg);
+  --spacing-stack: var(--spacing-stack);
+  --spacing-stack-lg: var(--spacing-stack-lg);
+  --spacing-section: var(--spacing-section);
+  --spacing-section-lg: var(--spacing-section-lg);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
