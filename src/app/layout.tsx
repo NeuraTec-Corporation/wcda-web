@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import {
   SiteFooter,
   SiteHeader,
+  SiteUtilityBar,
   SkipToContent,
 } from "@/components/layout";
 import { siteConfig } from "@/config/site";
@@ -21,7 +22,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${siteConfig.shortName} design-system foundation`,
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
   description: siteConfig.description,
 };
 
@@ -31,10 +35,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">
+      <body className="flex min-h-full flex-col overflow-x-clip font-sans">
         <SkipToContent />
+        <SiteUtilityBar />
         <SiteHeader />
-        <main id="main-content" className="flex-1">
+        <main id="main-content" className="min-w-0 flex-1">
           {children}
         </main>
         <SiteFooter />
