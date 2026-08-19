@@ -28,9 +28,9 @@ export function FoundationPreview() {
           <SectionHeading
             as="h1"
             id="foundation-heading"
-            eyebrow="Design system"
-            title="WCDA foundation"
-            description="This is a temporary verification page for tokens, layout primitives, and interaction states. It is not the public homepage."
+            eyebrow="Internal"
+            title="Design-system foundation"
+            description="Internal verification for tokens, layout primitives, and interaction states. This route is not the public homepage."
           />
           <div className="mt-stack-lg flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button href="#components">View components</Button>
@@ -38,6 +38,10 @@ export function FoundationPreview() {
               View tokens
             </Button>
           </div>
+          <p className="mt-stack text-sm leading-relaxed text-muted">
+            Route: /foundation. Use this page to verify the design system. It is
+            not linked from public navigation.
+          </p>
         </Container>
       </Section>
 

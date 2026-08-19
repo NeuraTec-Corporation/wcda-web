@@ -1,5 +1,5 @@
-import { FoundationPreview } from "@/components/sections";
+import { HomePage } from "@/components/sections";
 
 export default function Home() {
-  return <FoundationPreview />;
+  return <HomePage />;
 }
