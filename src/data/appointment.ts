@@ -13,7 +13,7 @@ export const appointmentPage: PageContent = {
 };
 
 export const appointmentParagraphs = [
-  "Use this page to start a visit request. Let us know whether you are a new or returning patient and which days or times are easier for you.",
+  "Online appointment requests are not sent from this website yet. Call the office or use the contact details on this page to plan a visit.",
   "Please do not include health history, medications, insurance identification numbers, or other personal health information through this website. We collect that information through an appropriate process at or before your visit.",
 ] as const;
 

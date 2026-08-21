@@ -8,7 +8,7 @@ import {
   getPublicSiteCredits,
   getPublicSocialLinks,
 } from "@/data/contact";
-import { footerNav, headerCta } from "@/data/navigation";
+import { footerLegalNav, footerNav, headerCta } from "@/data/navigation";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { HoursList } from "@/components/ui/HoursList";
@@ -111,29 +111,42 @@ export function SiteFooter() {
           <p>
             © {year} {siteConfig.name}
           </p>
-          {credits ? (
-            <p>
-              {credits.developerName && credits.developerUrl ? (
-                <TextLink href={credits.developerUrl} className="min-h-0">
-                  {credits.developerName}
-                </TextLink>
-              ) : credits.developerName ? (
-                credits.developerName
-              ) : null}
-              {credits.partnerName ? (
-                <>
-                  {credits.developerName ? " · " : null}
-                  {credits.partnerUrl ? (
-                    <TextLink href={credits.partnerUrl} className="min-h-0">
-                      {credits.partnerName}
+          <div className="flex min-w-0 flex-col gap-2 sm:items-end">
+            <nav aria-label="Legal">
+              <ul className="flex flex-wrap gap-x-5 gap-y-1">
+                {footerLegalNav.map((item) => (
+                  <li key={item.href}>
+                    <TextLink href={item.href} className="min-h-0">
+                      {item.label}
                     </TextLink>
-                  ) : (
-                    credits.partnerName
-                  )}
-                </>
-              ) : null}
-            </p>
-          ) : null}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            {credits ? (
+              <p>
+                {credits.developerName && credits.developerUrl ? (
+                  <TextLink href={credits.developerUrl} className="min-h-0">
+                    {credits.developerName}
+                  </TextLink>
+                ) : credits.developerName ? (
+                  credits.developerName
+                ) : null}
+                {credits.partnerName ? (
+                  <>
+                    {credits.developerName ? " · " : null}
+                    {credits.partnerUrl ? (
+                      <TextLink href={credits.partnerUrl} className="min-h-0">
+                        {credits.partnerName}
+                      </TextLink>
+                    ) : (
+                      credits.partnerName
+                    )}
+                  </>
+                ) : null}
+              </p>
+            ) : null}
+          </div>
         </div>
       </Container>
     </footer>

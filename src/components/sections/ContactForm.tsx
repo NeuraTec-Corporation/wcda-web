@@ -34,23 +34,33 @@ export function ContactForm() {
         noValidate={!submissionEnabled}
         aria-describedby={statusId}
       >
-        <Field id="contact-name" label="Name" required>
+        <Field
+          id="contact-name"
+          label="Name"
+          required={submissionEnabled}
+        >
           <TextControl
             id="contact-name"
             name="name"
             autoComplete="name"
-            required
+            required={submissionEnabled}
             describedBy={statusId}
+            disabled={!submissionEnabled}
           />
         </Field>
-        <Field id="contact-email" label="Email" required>
+        <Field
+          id="contact-email"
+          label="Email"
+          required={submissionEnabled}
+        >
           <TextControl
             id="contact-email"
             name="email"
             type="email"
             autoComplete="email"
-            required
+            required={submissionEnabled}
             describedBy={statusId}
+            disabled={!submissionEnabled}
           />
         </Field>
         <Field id="contact-phone" label="Phone">
@@ -60,14 +70,20 @@ export function ContactForm() {
             type="tel"
             autoComplete="tel"
             describedBy={statusId}
+            disabled={!submissionEnabled}
           />
         </Field>
-        <Field id="contact-reason" label="Reason for Contact" required>
+        <Field
+          id="contact-reason"
+          label="Reason for Contact"
+          required={submissionEnabled}
+        >
           <SelectControl
             id="contact-reason"
             name="reason"
-            required
+            required={submissionEnabled}
             describedBy={statusId}
+            disabled={!submissionEnabled}
           >
             <option value="" disabled>
               Select a reason
@@ -83,13 +99,14 @@ export function ContactForm() {
           id="contact-message"
           label="Message"
           hint={contactFormConfig.privacyNotice}
-          required
+          required={submissionEnabled}
         >
           <TextAreaControl
             id="contact-message"
             name="message"
-            required
+            required={submissionEnabled}
             describedBy={`${privacyId} ${statusId}`}
+            disabled={!submissionEnabled}
           />
         </Field>
         <Button type="submit" disabled={!submissionEnabled}>

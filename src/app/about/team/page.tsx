@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import { TeamSection } from "@/components/sections";
 import { doctorProfile } from "@/data/doctor";
 import { teamPage } from "@/data/pages";
 import { getConfirmedTeamMembers } from "@/data/team";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "The practice team",
   description: teamPage.description,
-};
+  path: "/about/team",
+});
 
 export default function Page() {
   return (

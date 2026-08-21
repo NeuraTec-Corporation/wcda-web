@@ -5,12 +5,14 @@ import {
   appointmentParagraphs,
 } from "@/data/appointment";
 import { homeContact } from "@/data/home";
+import { getCallOfficeCta } from "@/data/contact";
 import { ContactPreview } from "@/components/sections/ContactPreview";
 import { ContentBlockSection } from "@/components/sections/ContentBlockSection";
 import { PageIntro } from "@/components/sections/PageIntro";
 
 export function AppointmentShell() {
   const showOnlineForm = appointmentIntake.acceptsOnlineSubmission;
+  const callOffice = getCallOfficeCta();
 
   return (
     <>
@@ -28,10 +30,10 @@ export function AppointmentShell() {
         headingId="appointment-contact-heading"
         eyebrow={homeContact.eyebrow}
         title={homeContact.title}
-        description={homeContact.description}
+        description="Use the confirmed office details below to reach West Caldwell Dental Arts. Online appointment requests are not sent from this website yet."
         details={homeContact.details}
-        primaryAction={homeContact.primaryAction}
-        secondaryAction={homeContact.secondaryAction}
+        primaryAction={callOffice}
+        secondaryAction={{ href: "/contact", label: "Contact the office" }}
         tone="surface"
       />
     </>

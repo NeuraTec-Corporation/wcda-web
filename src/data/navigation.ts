@@ -21,6 +21,11 @@ export const footerNav: readonly NavItem[] = [
   { href: "/contact", label: "Contact" },
 ];
 
+export const footerLegalNav: readonly NavItem[] = [
+  { href: "/privacy", label: "Privacy" },
+  { href: "/accessibility", label: "Accessibility" },
+];
+
 export const headerCta: NavItem = {
   href: siteConfig.appointmentHref,
   label: "Request Appointment",
