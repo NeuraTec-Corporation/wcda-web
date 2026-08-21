@@ -30,10 +30,16 @@ export type EmailChannel = {
   href?: string;
 };
 
+export type OfficeHoursEntry = {
+  label: string;
+  value: string;
+};
+
 export type OfficeHours = {
   status: ContactStatus;
   summary?: string;
   lines?: readonly string[];
+  entries?: readonly OfficeHoursEntry[];
 };
 
 export type SiteCredits = {
@@ -64,6 +70,7 @@ export type PublicEmail = {
 export type PublicHours = {
   summary?: string;
   lines?: readonly string[];
+  entries?: readonly OfficeHoursEntry[];
 };
 
 export type PublicGoogleMaps = {

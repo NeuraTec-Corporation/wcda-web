@@ -90,12 +90,17 @@ export function getPublicHours(): PublicHours | undefined {
 
   const summary = siteConfig.hours.summary;
   const lines = siteConfig.hours.lines;
+  const entries = siteConfig.hours.entries;
 
-  if (!summary && (!lines || lines.length === 0)) {
+  if (
+    !summary &&
+    (!lines || lines.length === 0) &&
+    (!entries || entries.length === 0)
+  ) {
     return undefined;
   }
 
-  return { summary, lines };
+  return { summary, lines, entries };
 }
 
 export function getPublicGoogleMaps(): PublicGoogleMaps | undefined {
@@ -152,7 +157,9 @@ export function getGoogleReviewsCta(): NavItem | undefined {
 
 export function getMapsDirectionsCta(): NavItem | undefined {
   const maps = getPublicGoogleMaps();
-  const href = maps?.directionsUrl ?? maps?.businessProfileUrl;
+  const address = getPublicAddress();
+  const href =
+    maps?.directionsUrl ?? maps?.businessProfileUrl ?? address?.mapsHref;
 
   if (!href) {
     return undefined;
@@ -208,7 +215,13 @@ export function getPublicContactDetails(): ContactDetail[] {
   if (hours) {
     details.push({
       label: "Office hours",
-      value: hours.summary ?? hours.lines?.join(" · ") ?? "",
+      value:
+        hours.summary ??
+        hours.entries
+          ?.map((entry) => `${entry.label}: ${entry.value}`)
+          .join(" · ") ??
+        hours.lines?.join(" · ") ??
+        "",
     });
   }
 

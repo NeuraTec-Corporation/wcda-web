@@ -10,7 +10,7 @@ type ActionRowProps = {
 export function ActionRow({
   primary,
   secondary,
-  className = "mt-stack-lg flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap",
+  className = "mt-stack flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap",
 }: ActionRowProps) {
   if (!primary && !secondary) {
     return null;

@@ -12,6 +12,7 @@ type CardGridSectionProps = CardSectionContent & {
   headingId: string;
   tone?: SectionTone;
   cardClassName?: string;
+  columns?: 2 | 3;
 };
 
 export function CardGridSection({
@@ -23,6 +24,7 @@ export function CardGridSection({
   headingId,
   tone = "default",
   cardClassName,
+  columns = 3,
 }: CardGridSectionProps) {
   return (
     <Section tone={tone} aria-labelledby={headingId}>
@@ -34,10 +36,20 @@ export function CardGridSection({
           title={title}
           description={description}
         />
-        <ul className="mt-stack-lg grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul
+          className={cn(
+            "mt-stack-lg grid min-w-0 gap-4 sm:grid-cols-2",
+            columns === 3 && "lg:grid-cols-3",
+          )}
+        >
           {items.map((item) => {
             const card = (
-              <Card className={cn("h-full", cardClassName)}>
+              <Card
+                className={cn(
+                  "h-full transition-shadow group-hover:shadow-md",
+                  cardClassName,
+                )}
+              >
                 <h3 className="text-lg font-semibold tracking-tight text-foreground">
                   {item.title}
                 </h3>
@@ -52,7 +64,7 @@ export function CardGridSection({
                 {item.href ? (
                   <Link
                     href={item.href}
-                    className="block h-full rounded-lg text-foreground no-underline"
+                    className="group block h-full rounded-lg text-foreground no-underline"
                   >
                     {card}
                   </Link>

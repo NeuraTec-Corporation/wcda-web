@@ -21,6 +21,7 @@ export const homeHero: HeroContent = {
     "An independent dental practice in West Caldwell, New Jersey, owned by Dr. Jonnathan Matute, DMD. We provide thoughtful, patient-centered care for your oral health.",
   primaryAction: headerCta,
   secondaryAction: { href: "/services", label: "View services" },
+  mediaKey: "90",
 };
 
 export const homeTrust: CallToActionContent = {
@@ -74,6 +75,7 @@ export const homePractice: ProfileIntroductionContent = {
   title: doctorProfile.displayName,
   paragraphs: doctorProfile.homeParagraphs,
   cta: { href: doctorProfile.href, label: "About Dr. Matute" },
+  mediaKey: doctorProfile.mediaKey,
 };
 
 export const homePatientCta: CallToActionContent = {

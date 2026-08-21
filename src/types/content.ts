@@ -21,6 +21,7 @@ export type LabeledValue = {
 export type HeroContent = ContentBlock & {
   primaryAction: NavItem;
   secondaryAction?: NavItem;
+  mediaKey?: string;
 };
 
 export type CardSectionContent = ContentBlock & {
@@ -38,6 +39,7 @@ export type ProfileIntroductionContent = Omit<ContentBlock, "description"> & {
   paragraphs?: readonly string[];
   facts?: readonly LabeledValue[];
   cta?: NavItem;
+  mediaKey?: string;
 };
 
 export type EducationItem = {

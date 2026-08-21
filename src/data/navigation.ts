@@ -28,16 +28,15 @@ export const headerCta: NavItem = {
 
 export function getUtilityLinks(): NavItem[] {
   const phone = getPublicPhone();
-  const links: NavItem[] = [];
 
-  if (phone) {
-    links.push({
-      href: phone.href,
-      label: phone.display,
-    });
+  if (!phone) {
+    return [];
   }
 
-  links.push(headerCta);
-
-  return links;
+  return [
+    {
+      href: phone.href,
+      label: phone.display,
+    },
+  ];
 }

@@ -22,7 +22,7 @@ export function ContactForm() {
 
   return (
     <Card className="bg-surface">
-      <h2 className="text-xl font-semibold tracking-tight text-foreground">
+      <h2 className="text-lg font-semibold tracking-tight text-foreground">
         Send a message
       </h2>
       <p id={statusId} className="mt-2 text-sm leading-relaxed text-muted">

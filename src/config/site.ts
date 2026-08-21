@@ -24,7 +24,7 @@ export const siteConfig = {
     label: "West Caldwell, New Jersey",
   },
   location: {
-    status: "pendingVerification" as ContactStatus,
+    status: "confirmed" as ContactStatus,
     streetAddress: "555 Passaic Ave",
     suite: "Suite 203",
     locality: "West Caldwell",
@@ -38,7 +38,7 @@ export const siteConfig = {
       "https://maps.google.com/?q=555+Passaic+Ave+Suite+203+West+Caldwell+NJ+07006",
   },
   phone: {
-    status: "pendingVerification" as ContactStatus,
+    status: "confirmed" as ContactStatus,
     display: "(973) 575-1507",
     href: "tel:+19735751507",
   },
@@ -48,17 +48,38 @@ export const siteConfig = {
     publicDisplay: false,
   },
   email: {
-    status: "disabled",
+    status: "confirmed",
+    display: "frontdesk@wcaldwelldentalarts.com",
+    href: "mailto:frontdesk@wcaldwelldentalarts.com",
   } as EmailChannel,
   hours: {
-    status: "pendingVerification",
+    status: "confirmed",
+    summary:
+      "Tue 8:00 AM–5:00 PM; Thu 9:00 AM–6:00 PM; first Saturday 8:00 AM–1:00 PM. Selected Wednesdays and Fridays — contact the office for current availability.",
+    entries: [
+      { label: "Tuesday", value: "8:00 AM – 5:00 PM" },
+      { label: "Thursday", value: "9:00 AM – 6:00 PM" },
+      {
+        label: "First Saturday of each month",
+        value: "8:00 AM – 1:00 PM",
+      },
+      {
+        label: "Selected Wednesdays and Fridays",
+        value: "Contact the office for current availability",
+      },
+    ],
   } as OfficeHours,
   googleMaps: {
     status: "pendingVerification",
     title: "West Caldwell Dental Arts",
   } as GoogleMapsConfig,
   socialLinks: [
-    { platform: "instagram", label: "Instagram", status: "disabled" },
+    {
+      platform: "instagram",
+      label: "Instagram",
+      url: "https://www.instagram.com/westcaldwelldentalarts?igsi=MWJrNzFveHlkempoZw%3D%3D&utm_source=qr",
+      status: "confirmed",
+    },
     { platform: "facebook", label: "Facebook", status: "disabled" },
     { platform: "youtube", label: "YouTube", status: "disabled" },
     { platform: "linkedin", label: "LinkedIn", status: "disabled" },

@@ -19,7 +19,11 @@ export function PageIntro({
   tone = "default",
 }: PageIntroProps) {
   return (
-    <Section tone={tone} aria-labelledby={headingId}>
+    <Section
+      tone={tone}
+      className="py-10 md:py-14"
+      aria-labelledby={headingId}
+    >
       <Container>
         <SectionHeading
           as="h1"

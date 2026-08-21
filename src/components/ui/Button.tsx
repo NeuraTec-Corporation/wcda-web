@@ -21,7 +21,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-md font-medium transition-colors motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center rounded-md font-medium tracking-tight transition-colors motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50";
 
 type ButtonSharedProps = {
   variant?: ButtonVariant;

@@ -20,7 +20,7 @@ export function PatientCta({
   return (
     <Section aria-labelledby={headingId}>
       <Container>
-        <Card className="bg-surface-muted p-6 sm:p-8">
+        <Card className="bg-surface-muted p-card-lg sm:p-8">
           <SectionHeading
             as="h2"
             id={headingId}

@@ -3,9 +3,9 @@ import { cn } from "@/lib/cn";
 import type { HeadingAlign, HeadingLevel } from "@/types/ui";
 
 const headingClasses: Record<HeadingLevel, string> = {
-  h1: "text-3xl font-semibold tracking-tight text-foreground sm:text-4xl",
-  h2: "text-2xl font-semibold tracking-tight text-foreground sm:text-3xl",
-  h3: "text-xl font-semibold tracking-tight text-foreground sm:text-2xl",
+  h1: "max-w-[22ch] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl",
+  h2: "max-w-[28ch] text-2xl font-semibold tracking-tight text-foreground sm:text-[1.75rem]",
+  h3: "text-xl font-semibold tracking-tight text-foreground",
 };
 
 type SectionHeadingProps = {
@@ -30,13 +30,13 @@ export function SectionHeading({
   return (
     <header
       className={cn(
-        "flex max-w-narrow flex-col gap-3",
+        "flex max-w-narrow flex-col gap-2.5",
         align === "center" && "mx-auto text-center",
         className,
       )}
     >
       {eyebrow ? (
-        <p className="text-sm font-medium uppercase tracking-wider text-accent">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-accent">
           {eyebrow}
         </p>
       ) : null}
@@ -44,7 +44,12 @@ export function SectionHeading({
         {title}
       </Heading>
       {description ? (
-        <p className="text-base leading-relaxed text-muted sm:text-lg">
+        <p
+          className={cn(
+            "max-w-prose leading-relaxed text-muted",
+            Heading === "h1" ? "text-base sm:text-lg" : "text-base",
+          )}
+        >
           {description}
         </p>
       ) : null}
