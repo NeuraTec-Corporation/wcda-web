@@ -1,105 +1,96 @@
 import { siteConfig } from "@/config/site";
-import { contactDetails } from "@/data/contact";
+import {
+  getCallOfficeCta,
+  getPublicContactDetails,
+} from "@/data/contact";
+import { doctorProfile } from "@/data/doctor";
+import { headerCta } from "@/data/navigation";
 import type {
   CallToActionContent,
   CardSectionContent,
   ContactPreviewContent,
   HeroContent,
-  PracticeIntroductionContent,
+  ProfileIntroductionContent,
 } from "@/types/content";
+import type { NavItem } from "@/types/navigation";
 
 export const homeHero: HeroContent = {
-  eyebrow: siteConfig.location.label,
+  eyebrow: siteConfig.identity.label,
   title: siteConfig.name,
   description:
-    "A dental practice in West Caldwell, New Jersey. This website publishes practice information, services, and contact details as those details are confirmed.",
-  primaryAction: { href: "/contact", label: "View contact information" },
-  secondaryAction: { href: "/about", label: "About the practice" },
+    "An independent dental practice in West Caldwell, New Jersey, owned by Dr. Jonnathan Matute, DMD. We provide thoughtful, patient-centered care for your oral health.",
+  primaryAction: headerCta,
+  secondaryAction: { href: "/services", label: "View services" },
 };
 
 export const homeTrust: CallToActionContent = {
-  eyebrow: "Introduction",
-  title: "A local dental practice",
+  eyebrow: "Our approach",
+  title: "Care that starts with listening",
   description:
-    "West Caldwell Dental Arts provides dental care in West Caldwell, New Jersey. Team biographies, visit guidance, and a confirmed service list will appear on this site after they are verified. This page does not make clinical outcome claims.",
-  primaryAction: { href: "/about", label: "Open the About page" },
+    "We take time to understand your health history, answer questions, and explain options in plain language. Comfort, clarity, and a pace that feels manageable are part of how we plan visits.",
+  primaryAction: { href: "/about", label: "About the practice" },
+  secondaryAction: headerCta,
 };
 
-export const homeServices: CardSectionContent = {
+export const homeCareAreas: {
+  headingId: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  cta: NavItem;
+} = {
+  headingId: "home-care-areas-heading",
   eyebrow: "Services",
-  title: "Treatments and services",
+  title: "Areas of dental care",
   description:
-    "Named treatments will be listed only after they are confirmed. The groups below are structural placeholders, not a catalog of offered procedures.",
-  items: [
-    {
-      title: "General dentistry",
-      description:
-        "A summary of general dental services will be published after confirmation. This placeholder does not list specific procedures.",
-    },
-    {
-      title: "Preventive visits",
-      description:
-        "Details about routine and preventive visits will be added when confirmed by the practice.",
-    },
-    {
-      title: "Further treatments",
-      description:
-        "Additional treatments, if offered, will be described on the Services page once confirmed.",
-    },
-  ],
-  cta: { href: "/services", label: "Go to the Services page" },
+    "These are common areas of dentistry patients ask about. After an exam, we discuss what is appropriate for your oral health and goals.",
+  cta: { href: "/services", label: "View all services" },
 };
 
 export const homeWhyChoose: CardSectionContent = {
-  eyebrow: "Overview",
-  title: "Why West Caldwell Dental Arts",
+  eyebrow: "Why West Caldwell Dental Arts",
+  title: "A local, independent practice",
   description:
-    "These notes describe the practice at a public-information level. They are not comparisons, guarantees, or clinical claims.",
+    "West Caldwell Dental Arts is independently owned and focused on clear, patient-centered dental care.",
   items: [
     {
-      title: "A West Caldwell practice",
-      description:
-        "The practice is identified with West Caldwell, New Jersey.",
+      title: "Independent ownership",
+      description: `The practice is owned by ${doctorProfile.displayName}.`,
     },
     {
-      title: "Confirmed information only",
-      description:
-        "Services, team details, hours, and visit information will be added after they are verified.",
+      title: "West Caldwell community",
+      description: `West Caldwell Dental Arts serves patients in ${siteConfig.identity.label}.`,
     },
     {
-      title: "A clear contact path",
+      title: "Clear next steps",
       description:
-        "Location and communication details will live on the Contact page as they are published.",
+        "Exam findings and fees are discussed so you can decide how you would like to proceed.",
     },
   ],
 };
 
-export const homePractice: PracticeIntroductionContent = {
-  eyebrow: "The practice",
-  title: "Practice introduction",
-  description:
-    "Clinician names, credentials, and practice history are not published here yet. This section reserves space for verified biographies.",
-  placeholderTitle: "Clinician biography",
-  placeholderBody:
-    "A verified introduction will appear in this space. No credentials, years of experience, or clinical claims are stated in this release.",
-  portraitLabel: "Portrait placeholder",
-  cta: { href: "/about", label: "Open the About page" },
+export const homePractice: ProfileIntroductionContent = {
+  eyebrow: "Practice owner",
+  title: doctorProfile.displayName,
+  paragraphs: doctorProfile.homeParagraphs,
+  cta: { href: doctorProfile.href, label: "About Dr. Matute" },
 };
 
 export const homePatientCta: CallToActionContent = {
   eyebrow: "Patients",
-  title: "Information for patients",
+  title: "Prepare for your visit",
   description:
-    "The Patients page will hold visit-related information as it is confirmed. Online booking and forms are not part of this release.",
-  primaryAction: { href: "/patients", label: "Open the Patients page" },
-  secondaryAction: { href: "/contact", label: "Open the Contact page" },
+    "See what a first visit includes, how we discuss fees and dental benefits, and how to request an appointment.",
+  primaryAction: { href: "/patients", label: "Patient information" },
+  secondaryAction: headerCta,
 };
 
 export const homeContact: ContactPreviewContent = {
   eyebrow: "Location",
-  title: "Contact and location",
+  title: "Visit West Caldwell Dental Arts",
   description:
-    "Street address, phone number, and office hours will be listed on the Contact page once confirmed.",
-  details: contactDetails,
-  cta: { href: "/contact", label: "View the Contact page" },
+    "West Caldwell Dental Arts is an independent practice in West Caldwell, New Jersey. Request an appointment to begin planning a visit.",
+  details: getPublicContactDetails(),
+  primaryAction: headerCta,
+  secondaryAction: getCallOfficeCta(),
 };

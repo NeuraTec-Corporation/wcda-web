@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
@@ -34,8 +35,8 @@ export function CardGridSection({
           description={description}
         />
         <ul className="mt-stack-lg grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <li key={item.title} className="min-w-0">
+          {items.map((item) => {
+            const card = (
               <Card className={cn("h-full", cardClassName)}>
                 <h3 className="text-lg font-semibold tracking-tight text-foreground">
                   {item.title}
@@ -44,8 +45,23 @@ export function CardGridSection({
                   {item.description}
                 </p>
               </Card>
-            </li>
-          ))}
+            );
+
+            return (
+              <li key={item.href ?? item.title} className="min-w-0">
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    className="block h-full rounded-lg text-foreground no-underline"
+                  >
+                    {card}
+                  </Link>
+                ) : (
+                  card
+                )}
+              </li>
+            );
+          })}
         </ul>
         {cta ? (
           <div className="mt-stack-lg">

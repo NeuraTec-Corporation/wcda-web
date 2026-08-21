@@ -1,3 +1,4 @@
+import { ActionRow } from "@/components/ui/ActionRow";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -13,6 +14,8 @@ export function PageIntro({
   eyebrow,
   title,
   description,
+  primaryAction,
+  secondaryAction,
   tone = "default",
 }: PageIntroProps) {
   return (
@@ -25,6 +28,7 @@ export function PageIntro({
           title={title}
           description={description}
         />
+        <ActionRow primary={primaryAction} secondary={secondaryAction} />
       </Container>
     </Section>
   );

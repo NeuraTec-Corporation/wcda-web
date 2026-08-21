@@ -1,5 +1,10 @@
+export { ActionRow } from "./ActionRow";
 export { Button } from "./Button";
 export { Card } from "./Card";
 export { Container } from "./Container";
+export { MediaFrame } from "./MediaFrame";
+export { MediaPlaceholder } from "./MediaPlaceholder";
+export { Prose } from "./Prose";
 export { Section } from "./Section";
 export { SectionHeading } from "./SectionHeading";
+export { TextLink } from "./TextLink";

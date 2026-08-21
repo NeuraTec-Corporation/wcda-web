@@ -1,33 +1,43 @@
+import { doctorProfile } from "@/data/doctor";
+import { getCallOfficeCta } from "@/data/contact";
+import { headerCta } from "@/data/navigation";
 import type { PageContent } from "@/types/content";
-
-export const aboutPage: PageContent = {
-  headingId: "about-heading",
-  eyebrow: "About",
-  title: "About the practice",
-  description:
-    "Background about West Caldwell Dental Arts will be published here once verified. Clinician credentials and practice history are not listed on this page yet.",
-};
 
 export const servicesPage: PageContent = {
   headingId: "services-heading",
   eyebrow: "Services",
-  title: "Services and treatments",
+  title: "Dental services",
   description:
-    "This page will list treatments and services after they are confirmed. No service catalog is published in this release.",
-};
-
-export const patientsPage: PageContent = {
-  headingId: "patients-heading",
-  eyebrow: "Patients",
-  title: "Patient information",
-  description:
-    "This page will hold information for current and prospective patients. Forms and online booking are not included in this release.",
+    "Explore areas of care and the treatments and services discussed after an exam.",
+  primaryAction: headerCta,
+  secondaryAction: { href: "/contact", label: "Ask about a visit" },
 };
 
 export const contactPage: PageContent = {
   headingId: "contact-heading",
   eyebrow: "Contact",
-  title: "Contact and location",
+  title: "Contact West Caldwell Dental Arts",
   description:
-    "Use this page for practice location and contact details as they are published. Street address, phone number, and hours are not listed yet.",
+    "West Caldwell Dental Arts is an independent dental practice in West Caldwell, New Jersey. Request an appointment to begin planning a visit.",
+  primaryAction: headerCta,
+  secondaryAction: getCallOfficeCta(),
+};
+
+export const teamPage: PageContent = {
+  headingId: "team-heading",
+  eyebrow: "About",
+  title: "The practice team",
+  description:
+    "Care at West Caldwell Dental Arts is provided under the ownership of Dr. Jonnathan Matute, DMD. The people who support your visits are an important part of the practice.",
+  primaryAction: { href: doctorProfile.href, label: "Meet Dr. Matute" },
+  secondaryAction: headerCta,
+};
+
+export const doctorPage: PageContent = {
+  headingId: "doctor-heading",
+  eyebrow: "Practice owner",
+  title: doctorProfile.displayName,
+  description: doctorProfile.summary,
+  primaryAction: headerCta,
+  secondaryAction: { href: "/about", label: "About the practice" },
 };

@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/Button";
+import { ActionRow } from "@/components/ui/ActionRow";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
+import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import type { PracticeIntroductionContent } from "@/types/content";
+import type { ProfileIntroductionContent } from "@/types/content";
 
-type PracticeIntroductionProps = PracticeIntroductionContent & {
+type PracticeIntroductionProps = ProfileIntroductionContent & {
   headingId?: string;
 };
 
@@ -13,9 +14,8 @@ export function PracticeIntroduction({
   eyebrow,
   title,
   description,
-  placeholderTitle,
-  placeholderBody,
-  portraitLabel,
+  paragraphs,
+  facts,
   cta,
   headingId = "practice-heading",
 }: PracticeIntroductionProps) {
@@ -29,29 +29,37 @@ export function PracticeIntroduction({
           title={title}
           description={description}
         />
-        <div className="mt-stack-lg grid min-w-0 gap-stack md:grid-cols-[minmax(0,16rem)_1fr] md:items-start">
-          <div
-            aria-hidden="true"
-            className="flex aspect-[4/5] max-w-64 items-center justify-center rounded-lg border border-dashed border-border bg-surface text-sm text-muted"
-          >
-            {portraitLabel}
-          </div>
-          <Card className="bg-background">
-            <h3 className="text-lg font-semibold tracking-tight text-foreground">
-              {placeholderTitle}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              {placeholderBody}
-            </p>
+        {paragraphs && paragraphs.length > 0 ? (
+          <Prose className="mt-stack">
+            {paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </Prose>
+        ) : null}
+        {facts && facts.length > 0 ? (
+          <Card className="mt-stack-lg bg-background">
+            <dl className="grid min-w-0 gap-4 sm:grid-cols-2">
+              {facts.map((fact) => (
+                <div key={fact.label} className="min-w-0">
+                  <dt className="text-sm font-medium text-foreground">
+                    {fact.label}
+                  </dt>
+                  <dd className="mt-1 text-sm leading-relaxed text-muted">
+                    {fact.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
             {cta ? (
-              <div className="mt-stack">
-                <Button href={cta.href} variant="outline">
-                  {cta.label}
-                </Button>
-              </div>
+              <ActionRow
+                primary={cta}
+                className="mt-stack flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap"
+              />
             ) : null}
           </Card>
-        </div>
+        ) : cta ? (
+          <ActionRow primary={cta} />
+        ) : null}
       </Container>
     </Section>
   );
