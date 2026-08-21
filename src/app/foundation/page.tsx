@@ -1,15 +1,13 @@
-import type { Metadata } from "next";
 import { FoundationPreview } from "@/components/sections";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Design-system foundation",
   description:
     "Internal design-system verification for West Caldwell Dental Arts. This page is not part of the public site.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+  path: "/foundation",
+  index: false,
+});
 
 export default function FoundationPage() {
   return <FoundationPreview />;

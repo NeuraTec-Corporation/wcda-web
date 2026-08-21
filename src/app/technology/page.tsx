@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { TechnologyPage } from "@/components/sections";
 import { technologyPage } from "@/data/technology";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Technology",
   description: technologyPage.description,
-};
+  path: "/technology",
+});
 
 export default function Page() {
   return <TechnologyPage />;

@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import { DoctorProfileSection } from "@/components/sections";
 import { doctorProfile } from "@/data/doctor";
 import { doctorPage } from "@/data/pages";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Dr. Jonnathan Matute",
   description: doctorProfile.summary,
-};
+  path: "/about/dr-jonnathan-matute",
+});
 
 export default function Page() {
   return (

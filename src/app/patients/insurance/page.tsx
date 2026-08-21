@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { ProsePage } from "@/components/sections";
 import { insurancePage } from "@/data/patients";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Insurance",
   description: insurancePage.description,
-};
+  path: "/patients/insurance",
+});
 
 export default function Page() {
   return (

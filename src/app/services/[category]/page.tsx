@@ -6,6 +6,7 @@ import {
   getConfirmedCategoryBySlug,
   getConfirmedServicesByCategory,
 } from "@/data/services";
+import { createPageMetadata } from "@/lib/metadata";
 
 type CategoryPageProps = {
   params: Promise<{ category: string }>;
@@ -31,10 +32,11 @@ export async function generateMetadata({
     };
   }
 
-  return {
+  return createPageMetadata({
     title: category.title,
     description: category.summary,
-  };
+    path: `/services/${category.slug}`,
+  });
 }
 
 export default async function Page({ params }: CategoryPageProps) {

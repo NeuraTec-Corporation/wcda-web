@@ -10,7 +10,7 @@ type FieldProps = {
 };
 
 const controlClassName =
-  "mt-1 w-full min-h-11 rounded-md border border-border bg-background px-3 text-sm text-foreground";
+  "mt-1 w-full min-h-11 rounded-md border border-border bg-background px-3 text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-60";
 
 export function Field({ id, label, hint, required, children }: FieldProps) {
   const hintId = hint ? `${id}-hint` : undefined;
@@ -40,6 +40,7 @@ type TextControlProps = {
   autoComplete?: string;
   required?: boolean;
   describedBy?: string;
+  disabled?: boolean;
 };
 
 export function TextControl({
@@ -49,6 +50,7 @@ export function TextControl({
   autoComplete,
   required,
   describedBy,
+  disabled,
 }: TextControlProps) {
   return (
     <input
@@ -59,6 +61,7 @@ export function TextControl({
       required={required}
       aria-required={required}
       aria-describedby={describedBy}
+      disabled={disabled}
       className={controlClassName}
     />
   );
@@ -69,6 +72,7 @@ type SelectControlProps = {
   name: string;
   required?: boolean;
   describedBy?: string;
+  disabled?: boolean;
   children: ReactNode;
 };
 
@@ -77,6 +81,7 @@ export function SelectControl({
   name,
   required,
   describedBy,
+  disabled,
   children,
 }: SelectControlProps) {
   return (
@@ -86,6 +91,7 @@ export function SelectControl({
       required={required}
       aria-required={required}
       aria-describedby={describedBy}
+      disabled={disabled}
       className={cn(controlClassName, "py-2")}
       defaultValue=""
     >
@@ -100,6 +106,7 @@ type TextAreaControlProps = {
   required?: boolean;
   describedBy?: string;
   rows?: number;
+  disabled?: boolean;
 };
 
 export function TextAreaControl({
@@ -108,6 +115,7 @@ export function TextAreaControl({
   required,
   describedBy,
   rows = 5,
+  disabled,
 }: TextAreaControlProps) {
   return (
     <textarea
@@ -117,7 +125,8 @@ export function TextAreaControl({
       required={required}
       aria-required={required}
       aria-describedby={describedBy}
-      className="mt-1 w-full min-h-28 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+      disabled={disabled}
+      className="mt-1 w-full min-h-28 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-60"
     />
   );
 }

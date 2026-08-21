@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { ContactPage, MapSection } from "@/components/sections";
 import { contactIntro, getCallOfficeCta } from "@/data/contact";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Contact",
   description: contactIntro.description,
-};
+  path: "/contact",
+});
 
 export default function Page() {
   return (

@@ -11,7 +11,7 @@ export const siteConfig = {
   name: "West Caldwell Dental Arts",
   shortName: "WCDA",
   description:
-    "West Caldwell Dental Arts is an independent dental practice in West Caldwell, New Jersey, owned by Dr. Jonnathan Matute, DMD.",
+    "West Caldwell Dental Arts is an independent dental practice in West Caldwell, New Jersey, owned by Dr. Jonnathan Matute, DMD. We provide general, family, restorative, and cosmetic dental care.",
   owner: {
     name: "Jonnathan Matute",
     honorific: "Dr. Jonnathan Matute",
@@ -93,6 +93,8 @@ export const siteConfig = {
     "An independent dental practice in West Caldwell, New Jersey, owned by Dr. Jonnathan Matute, DMD.",
   footerAppointmentNote:
     "Request an appointment to begin planning a visit with our team.",
+  url: "https://wcaldwelldentalarts.com",
+  title: "West Caldwell Dental Arts | Dentist in West Caldwell, NJ",
 } as const;
 
 export type SiteConfig = typeof siteConfig;
