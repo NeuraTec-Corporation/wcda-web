@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+import { ActionRow } from "@/components/ui/ActionRow";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -28,14 +28,7 @@ export function PatientCta({
             title={title}
             description={description}
           />
-          <div className="mt-stack-lg flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button href={primaryAction.href}>{primaryAction.label}</Button>
-            {secondaryAction ? (
-              <Button href={secondaryAction.href} variant="outline">
-                {secondaryAction.label}
-              </Button>
-            ) : null}
-          </div>
+          <ActionRow primary={primaryAction} secondary={secondaryAction} />
         </Card>
       </Container>
     </Section>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
+import { isNativeHref } from "@/lib/href";
 import type { ButtonSize, ButtonVariant } from "@/types/ui";
 
 const variantClasses: Record<ButtonVariant, string> = {
@@ -54,6 +55,14 @@ export function Button({
   );
 
   if ("href" in props && props.href !== undefined) {
+    if (typeof props.href === "string" && isNativeHref(props.href)) {
+      return (
+        <a href={props.href} className={classes}>
+          {props.children}
+        </a>
+      );
+    }
+
     return <Link className={classes} {...props} />;
   }
 

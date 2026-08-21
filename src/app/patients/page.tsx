@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { PageIntro } from "@/components/sections";
-import { patientsPage } from "@/data/pages";
+import { PatientsHub } from "@/components/sections";
+import { patientsPage } from "@/data/patients";
 
 export const metadata: Metadata = {
   title: "Patients",
   description: patientsPage.description,
 };
 
-export default function PatientsPage() {
-  return <PageIntro {...patientsPage} />;
+export default function Page() {
+  return <PatientsHub />;
 }
