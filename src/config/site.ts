@@ -1,4 +1,11 @@
 import type { ContactStatus } from "@/types/navigation";
+import type {
+  EmailChannel,
+  GoogleMapsConfig,
+  OfficeHours,
+  SiteCredits,
+  SocialLink,
+} from "@/types/contact";
 
 export const siteConfig = {
   name: "West Caldwell Dental Arts",
@@ -40,9 +47,31 @@ export const siteConfig = {
     display: "(973) 575-1077",
     publicDisplay: false,
   },
+  email: {
+    status: "disabled",
+  } as EmailChannel,
+  hours: {
+    status: "pendingVerification",
+  } as OfficeHours,
+  googleMaps: {
+    status: "pendingVerification",
+    title: "West Caldwell Dental Arts",
+  } as GoogleMapsConfig,
+  socialLinks: [
+    { platform: "instagram", label: "Instagram", status: "disabled" },
+    { platform: "facebook", label: "Facebook", status: "disabled" },
+    { platform: "youtube", label: "YouTube", status: "disabled" },
+    { platform: "linkedin", label: "LinkedIn", status: "disabled" },
+    { platform: "tiktok", label: "TikTok", status: "disabled" },
+  ] as readonly SocialLink[],
+  siteCredits: {
+    status: "disabled",
+  } as SiteCredits,
   appointmentHref: "/request-appointment",
   footerNote:
     "An independent dental practice in West Caldwell, New Jersey, owned by Dr. Jonnathan Matute, DMD.",
+  footerAppointmentNote:
+    "Request an appointment to begin planning a visit with our team.",
 } as const;
 
 export type SiteConfig = typeof siteConfig;
