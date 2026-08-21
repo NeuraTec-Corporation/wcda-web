@@ -15,10 +15,10 @@ export const servicesPage: PageContent = {
 
 export const contactPage: PageContent = {
   headingId: "contact-heading",
-  eyebrow: "Contact",
+  eyebrow: "Get in Touch",
   title: "Contact West Caldwell Dental Arts",
   description:
-    "West Caldwell Dental Arts is an independent dental practice in West Caldwell, New Jersey. Request an appointment to begin planning a visit.",
+    "Questions about scheduling, your visit, or general office information can be directed to our team. Use the options below or request an appointment.",
   primaryAction: headerCta,
   secondaryAction: getCallOfficeCta(),
 };

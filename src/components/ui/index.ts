@@ -2,6 +2,7 @@ export { ActionRow } from "./ActionRow";
 export { Button } from "./Button";
 export { Card } from "./Card";
 export { Container } from "./Container";
+export { Field, SelectControl, TextAreaControl, TextControl } from "./Field";
 export { MediaFrame } from "./MediaFrame";
 export { MediaPlaceholder } from "./MediaPlaceholder";
 export { Prose } from "./Prose";
