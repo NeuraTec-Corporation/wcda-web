@@ -110,6 +110,22 @@ export const mediaAssets: MediaRegistry = {
     title: "Dr. Jonnathan Matute",
     aspectRatio: "3 / 4",
   },
+  "80": {
+    id: "80",
+    kind: "image",
+    status: "pending",
+    alt: "Dental technology at West Caldwell Dental Arts",
+    title: "Practice technology",
+    aspectRatio: "16 / 9",
+  },
+  "90": {
+    id: "90",
+    kind: "image",
+    status: "pending",
+    alt: "West Caldwell Dental Arts practice",
+    title: "Practice",
+    aspectRatio: "4 / 3",
+  },
 };
 
 export function getMediaAsset(

@@ -12,6 +12,7 @@ import { PageIntro } from "@/components/sections/PageIntro";
 import { PatientCta } from "@/components/sections/PatientCta";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TextLink } from "@/components/ui/TextLink";
 import { headerCta } from "@/data/navigation";
 
@@ -42,17 +43,12 @@ export function AboutPage() {
         tone="default"
         cardClassName="bg-background"
       />
-      <Section aria-labelledby="about-links-heading">
+      <Section className="py-10 md:py-12" aria-labelledby="about-links-heading">
         <Container>
-          <h2
-            id="about-links-heading"
-            className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
-          >
-            Learn more
-          </h2>
-          <ul className="mt-stack flex min-w-0 flex-col gap-1">
+          <SectionHeading as="h2" id="about-links-heading" title="Learn more" />
+          <ul className="mt-stack flex min-w-0 flex-col">
             {aboutRelatedLinks.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} className="border-t border-border">
                 <TextLink href={item.href}>{item.label}</TextLink>
               </li>
             ))}

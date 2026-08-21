@@ -13,6 +13,7 @@ export function PatientsHub() {
         title="Patient resources"
         description="Start with the topic that matches your question. Each page uses clear, practical language."
         items={patientResourceCards}
+        columns={2}
         tone="muted"
         cardClassName="bg-background"
       />

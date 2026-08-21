@@ -40,7 +40,7 @@ export function TreatmentList({
             <li
               key={treatment.slug}
               id={treatment.slug}
-              className="min-w-0 scroll-mt-24 border-t border-border"
+              className="min-w-0 scroll-mt-28 border-t border-border"
             >
               <TreatmentItem
                 title={treatment.title}

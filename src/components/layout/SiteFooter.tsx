@@ -11,6 +11,7 @@ import {
 import { footerNav, headerCta } from "@/data/navigation";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { HoursList } from "@/components/ui/HoursList";
 import { TextLink } from "@/components/ui/TextLink";
 
 export function SiteFooter() {
@@ -28,7 +29,7 @@ export function SiteFooter() {
       <Container
         className={
           showOffice
-            ? "grid min-w-0 gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4"
+            ? "grid min-w-0 gap-8 py-10 sm:grid-cols-2 xl:grid-cols-4"
             : "grid min-w-0 gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3"
         }
       >
@@ -42,7 +43,6 @@ export function SiteFooter() {
           <p className="mt-3 text-sm leading-relaxed text-muted">
             {siteConfig.footerNote}
           </p>
-          <p className="mt-3 text-sm text-muted">{siteConfig.identity.label}</p>
           {socialLinks.length > 0 ? (
             <ul className="mt-4 flex min-w-0 flex-col">
               {socialLinks.map((link) => (
@@ -79,13 +79,18 @@ export function SiteFooter() {
                   <TextLink href={phone.href}>{phone.display}</TextLink>
                 </li>
               ) : null}
-              {hours?.summary ? <li>{hours.summary}</li> : null}
-              {!hours?.summary
-                ? hours?.lines?.map((line) => <li key={line}>{line}</li>)
-                : null}
               {email ? (
-                <li>
+                <li className="break-words">
                   <TextLink href={email.href}>{email.display}</TextLink>
+                </li>
+              ) : null}
+              {hours ? (
+                <li>
+                  <HoursList
+                    entries={hours.entries}
+                    lines={hours.lines}
+                    className="grid min-w-0 gap-2 text-sm leading-relaxed text-muted"
+                  />
                 </li>
               ) : null}
             </ul>

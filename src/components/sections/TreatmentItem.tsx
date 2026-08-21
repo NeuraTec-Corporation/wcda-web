@@ -29,8 +29,8 @@ export function TreatmentItem({ title, mediaKey, href }: TreatmentItemProps) {
   );
 
   const className = cn(
-    "flex min-w-0 items-center gap-2 rounded-sm py-1.5 text-foreground no-underline",
-    href ? "hover:text-primary" : undefined,
+    "flex min-w-0 items-center gap-2 rounded-sm px-1 py-1.5 text-foreground no-underline",
+    href ? "hover:bg-surface-muted hover:text-primary" : undefined,
   );
 
   if (href) {

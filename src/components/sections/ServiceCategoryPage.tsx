@@ -19,13 +19,13 @@ export function ServiceCategoryPage({
 }: ServiceCategoryPageProps) {
   return (
     <>
-      <Section aria-labelledby="category-heading">
+      <Section className="py-10 md:py-14" aria-labelledby="category-heading">
         <Container>
-          <div className="grid min-w-0 gap-stack lg:grid-cols-[minmax(0,18rem)_1fr] lg:items-start">
+          <div className="grid min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-12">
             <MediaFrame
               mediaKey={category.mediaKey}
-              className="max-w-md rounded-lg"
-              sizes="(min-width: 64rem) 18rem, 100vw"
+              className="max-w-md rounded-lg border border-border"
+              sizes="(min-width: 64rem) 20rem, 100vw"
             />
             <div className="min-w-0">
               <SectionHeading

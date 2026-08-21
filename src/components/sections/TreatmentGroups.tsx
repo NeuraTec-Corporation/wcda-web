@@ -43,7 +43,7 @@ export function TreatmentGroups({
           title={title}
           description={description}
         />
-        <div className="mt-stack-lg grid min-w-0 grid-cols-1 items-start gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-stack-lg grid min-w-0 grid-cols-1 items-start gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
           {groups.map((group) => (
             <section
               key={group.category.slug}
@@ -52,7 +52,7 @@ export function TreatmentGroups({
             >
               <h3
                 id={`${group.category.slug}-treatments-heading`}
-                className="text-base font-semibold tracking-tight text-foreground"
+                className="border-b border-border pb-2 text-base font-semibold tracking-tight text-foreground"
               >
                 <Link
                   href={`/services/${group.category.slug}`}

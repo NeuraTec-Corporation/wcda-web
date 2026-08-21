@@ -117,7 +117,7 @@ export function TextAreaControl({
       required={required}
       aria-required={required}
       aria-describedby={describedBy}
-      className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+      className="mt-1 w-full min-h-28 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
     />
   );
 }
