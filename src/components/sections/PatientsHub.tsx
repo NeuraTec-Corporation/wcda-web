@@ -15,7 +15,7 @@ export function PatientsHub() {
         items={patientResourceCards}
         columns={2}
         tone="muted"
-        cardClassName="bg-background"
+        cardClassName="!bg-placeholder"
       />
       <PatientCta
         headingId="patients-appointment-heading"

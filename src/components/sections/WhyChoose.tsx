@@ -13,7 +13,7 @@ export function WhyChoose({
     <CardGridSection
       headingId={headingId}
       tone="surface"
-      cardClassName="bg-background"
+      variant="ruled"
       {...content}
     />
   );

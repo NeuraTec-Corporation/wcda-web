@@ -13,6 +13,7 @@ type CardGridSectionProps = CardSectionContent & {
   tone?: SectionTone;
   cardClassName?: string;
   columns?: 2 | 3;
+  variant?: "cards" | "ruled";
 };
 
 export function CardGridSection({
@@ -25,6 +26,7 @@ export function CardGridSection({
   tone = "default",
   cardClassName,
   columns = 3,
+  variant = "cards",
 }: CardGridSectionProps) {
   return (
     <Section tone={tone} aria-labelledby={headingId}>
@@ -38,11 +40,47 @@ export function CardGridSection({
         />
         <ul
           className={cn(
-            "mt-stack-lg grid min-w-0 gap-4 sm:grid-cols-2",
-            columns === 3 && "lg:grid-cols-3",
+            "mt-stack-lg grid min-w-0",
+            variant === "ruled"
+              ? "gap-8 sm:grid-cols-2 lg:grid-cols-3"
+              : cn(
+                  "gap-4 sm:grid-cols-2",
+                  columns === 3 && "lg:grid-cols-3",
+                ),
           )}
         >
           {items.map((item) => {
+            if (variant === "ruled") {
+              const body = (
+                <>
+                  <h3 className="text-base font-semibold tracking-tight text-foreground">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    {item.description}
+                  </p>
+                </>
+              );
+
+              return (
+                <li
+                  key={item.href ?? item.title}
+                  className="min-w-0 border-t border-border pt-4"
+                >
+                  {item.href ? (
+                    <Link
+                      href={item.href}
+                      className="block text-foreground no-underline hover:text-primary"
+                    >
+                      {body}
+                    </Link>
+                  ) : (
+                    body
+                  )}
+                </li>
+              );
+            }
+
             const card = (
               <Card
                 className={cn(

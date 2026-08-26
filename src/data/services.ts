@@ -457,6 +457,29 @@ export function getFeaturedCareAreas(): ServiceCategory[] {
   });
 }
 
+export function getMarqueeServices(): Array<{ slug: string; title: string }> {
+  const marqueeSlugs = [
+    "pediatric-x-rays",
+    "tooth-colored-fillings",
+    "teeth-whitening",
+    "porcelain-crowns",
+    "root-canals",
+    "periodontal-therapy",
+    "implants",
+  ] as const;
+
+  return marqueeSlugs.flatMap((slug) => {
+    const service = serviceRecords.find(
+      (item) => item.slug === slug && item.status === "confirmed",
+    );
+    return service ? [{ slug: service.slug, title: service.title }] : [];
+  });
+}
+
+export function getMarqueeServiceNames(): string[] {
+  return getMarqueeServices().map((item) => item.title);
+}
+
 export function toTreatmentContent(service: ServiceRecord): TreatmentContent {
   return {
     slug: service.slug,

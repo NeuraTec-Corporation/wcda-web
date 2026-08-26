@@ -1,5 +1,4 @@
 import { ActionRow } from "@/components/ui/ActionRow";
-import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { HoursList } from "@/components/ui/HoursList";
 import { Section } from "@/components/ui/Section";
@@ -32,53 +31,59 @@ export function ContactPreview({
   return (
     <Section tone={tone} aria-labelledby={headingId}>
       <Container>
-        <SectionHeading
-          as="h2"
-          id={headingId}
-          eyebrow={eyebrow}
-          title={title}
-          description={description}
-        />
-        {previewDetails.length > 0 || hours ? (
-          <Card className="mt-stack-lg bg-background">
-            <dl className="grid min-w-0 gap-5 sm:grid-cols-2">
-              {previewDetails.map((detail) => (
-                <div key={detail.label} className="min-w-0">
-                  <dt className="text-sm font-medium text-foreground">
-                    {detail.label}
-                  </dt>
-                  <dd className="mt-1 break-words text-sm leading-relaxed text-muted">
-                    {detail.href ? (
-                      <TextLink
-                        href={detail.href}
-                        className="min-h-0 text-sm font-normal text-muted hover:text-primary"
-                      >
-                        {detail.value}
-                      </TextLink>
-                    ) : (
-                      detail.value
-                    )}
-                  </dd>
-                </div>
-              ))}
-              {hours ? (
-                <div className="min-w-0 sm:col-span-2">
-                  <dt className="text-sm font-medium text-foreground">
-                    Office hours
-                  </dt>
-                  <dd>
-                    <HoursList
-                      entries={hours.entries}
-                      lines={hours.lines}
-                      summary={hours.summary}
-                    />
-                  </dd>
-                </div>
-              ) : null}
-            </dl>
-          </Card>
-        ) : null}
-        <ActionRow primary={primaryAction} secondary={secondaryAction} />
+        <div className="grid min-w-0 items-start gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
+          <SectionHeading
+            as="h2"
+            id={headingId}
+            eyebrow={eyebrow}
+            title={title}
+            description={description}
+          />
+          <div className="min-w-0">
+            {previewDetails.length > 0 || hours ? (
+              <dl className="divide-y divide-border border-y border-border">
+                {previewDetails.map((detail) => (
+                  <div
+                    key={detail.label}
+                    className="grid min-w-0 gap-1 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6"
+                  >
+                    <dt className="text-sm font-medium text-foreground">
+                      {detail.label}
+                    </dt>
+                    <dd className="break-words text-sm leading-relaxed text-muted">
+                      {detail.href ? (
+                        <TextLink
+                          href={detail.href}
+                          className="min-h-0 text-sm font-normal text-muted hover:text-primary"
+                        >
+                          {detail.value}
+                        </TextLink>
+                      ) : (
+                        detail.value
+                      )}
+                    </dd>
+                  </div>
+                ))}
+                {hours ? (
+                  <div className="grid min-w-0 gap-1 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
+                    <dt className="text-sm font-medium text-foreground">
+                      Office hours
+                    </dt>
+                    <dd>
+                      <HoursList
+                        entries={hours.entries}
+                        lines={hours.lines}
+                        summary={hours.summary}
+                        className="grid min-w-0 gap-2 text-sm leading-relaxed text-muted"
+                      />
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            ) : null}
+            <ActionRow primary={primaryAction} secondary={secondaryAction} />
+          </div>
+        </div>
       </Container>
     </Section>
   );

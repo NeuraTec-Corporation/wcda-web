@@ -26,6 +26,7 @@ export function AboutPage() {
         title={aboutPhilosophy.title}
         paragraphs={aboutPhilosophy.paragraphs}
         tone="muted"
+        visualTarget="about-content"
       />
       <ContentBlockSection
         headingId={aboutIndependence.headingId}
@@ -41,12 +42,12 @@ export function AboutPage() {
         description={aboutWhyChoose.description}
         items={[...aboutWhyItems]}
         tone="default"
-        cardClassName="bg-background"
+        variant="ruled"
       />
       <Section className="py-10 md:py-12" aria-labelledby="about-links-heading">
         <Container>
           <SectionHeading as="h2" id="about-links-heading" title="Learn more" />
-          <ul className="mt-stack flex min-w-0 flex-col">
+          <ul className="mt-stack flex min-w-0 flex-col border-b border-border">
             {aboutRelatedLinks.map((item) => (
               <li key={item.href} className="border-t border-border">
                 <TextLink href={item.href}>{item.label}</TextLink>

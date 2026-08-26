@@ -8,6 +8,7 @@ import {
   getPublicAddress,
   getPublicGoogleMaps,
 } from "@/data/contact";
+import { ContactMediaStage } from "@/components/experience/ContactMediaStage";
 
 export function MapSection() {
   const maps = getPublicGoogleMaps();
@@ -24,22 +25,28 @@ export function MapSection() {
       aria-labelledby={headingId}
     >
       <Container>
-        <SectionHeading
-          as="h2"
-          id={headingId}
-          eyebrow="Location"
-          title={title}
-          description={
-            address
-              ? `${address.line1}, ${address.line2}`
-              : siteConfig.identity.label
-          }
-        />
-        {directions || reviews ? (
-          <ActionRow primary={directions} secondary={reviews} />
-        ) : null}
+        <div className="grid min-w-0 items-end gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
+          <SectionHeading
+            as="h2"
+            id={headingId}
+            eyebrow="Location"
+            title={title}
+            description={
+              address
+                ? `${address.line1}, ${address.line2}`
+                : siteConfig.identity.label
+            }
+          />
+          {directions || reviews ? (
+            <ActionRow
+              primary={directions}
+              secondary={reviews}
+              className="mt-0 flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap"
+            />
+          ) : null}
+        </div>
       </Container>
-      <div className="relative mt-stack h-64 w-full overflow-hidden md:h-80 lg:h-[26rem]">
+      <ContactMediaStage className="relative mt-stack h-72 w-full overflow-hidden md:h-96 lg:h-[28rem]">
         {embedUrl ? (
           <iframe
             title={`Map of ${title}`}
@@ -49,9 +56,12 @@ export function MapSection() {
             referrerPolicy="no-referrer-when-downgrade"
           />
         ) : (
-          <div className="flex h-full min-h-0 items-center justify-center border-t border-border bg-placeholder px-gutter">
-            <div className="max-w-sm text-center">
-              <p className="text-sm font-medium text-foreground sm:text-base">
+          <div className="media-placeholder-panel flex h-full min-h-0 items-center justify-center border-t border-border px-gutter">
+            <div className="max-w-sm border border-border/70 px-6 py-5 text-center">
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-placeholder-ink">
+                {siteConfig.shortName}
+              </p>
+              <p className="mt-3 text-sm font-medium text-foreground sm:text-base">
                 {address ? address.line1 : siteConfig.identity.label}
               </p>
               {address ? (
@@ -60,7 +70,7 @@ export function MapSection() {
             </div>
           </div>
         )}
-      </div>
+      </ContactMediaStage>
     </section>
   );
 }

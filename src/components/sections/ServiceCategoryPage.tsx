@@ -1,6 +1,7 @@
 import { ActionRow } from "@/components/ui/ActionRow";
 import { Container } from "@/components/ui/Container";
 import { MediaFrame } from "@/components/ui/MediaFrame";
+import { CompositionOffset } from "@/components/experience/CompositionOffset";
 import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -19,14 +20,17 @@ export function ServiceCategoryPage({
 }: ServiceCategoryPageProps) {
   return (
     <>
-      <Section className="py-10 md:py-14" aria-labelledby="category-heading">
+      <Section className="py-10 md:py-16" aria-labelledby="category-heading">
         <Container>
-          <div className="grid min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-12">
-            <MediaFrame
-              mediaKey={category.mediaKey}
-              className="max-w-md rounded-lg border border-border"
-              sizes="(min-width: 64rem) 20rem, 100vw"
-            />
+          <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
+            <div className="exp-shell relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
+              <CompositionOffset side="left" />
+              <MediaFrame
+                mediaKey={category.mediaKey}
+                className="relative rounded-lg border border-border"
+                sizes="(min-width: 64rem) 22rem, 100vw"
+              />
+            </div>
             <div className="min-w-0">
               <SectionHeading
                 as="h1"

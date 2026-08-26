@@ -1,0 +1,1690 @@
+"use client";
+
+import {
+  containerPresetsForTarget,
+  containerToMediaStyle,
+  getComponentConfig,
+  headerLogoContainerStyles,
+  HEADER_LOGO_STYLE_IDS,
+  INSET_BADGE_SIZE_MAX,
+  INSET_BADGE_SIZE_MIN,
+  insetBadgeSizePx,
+  isActionCompatibleTarget,
+  isCarouselChromeTarget,
+  isMediaComposerTarget,
+  isVideoChromeTarget,
+  labVisibleContainerPreset,
+  mediaStylesForTarget,
+  mediaStyleToContainer,
+  updateComponentConfig,
+  type AspectRatioPreset,
+  type BadgeDiameter,
+  type BadgeIconId,
+  type BadgePosition,
+  type BadgeRotationSpeed,
+  type BadgeTextColor,
+  type BadgeType,
+  type CarouselAutoplay,
+  type CarouselCardsPerView,
+  type CarouselNavigation,
+  type ComponentSlotConfig,
+  type ContainerPresetId,
+  type CornerActionGlyph,
+  type CornerActionMorph,
+  type CornerActionPosition,
+  type CursorCompanionMode,
+  type ExperienceValues,
+  type MarqueeDirection,
+  type MarqueeHeight,
+  type MarqueeLayout,
+  type MarqueeSpacing,
+  type MarqueeSpeed,
+  type MarqueeSurface,
+  type MediaContainerStyleId,
+  type MediaFit,
+  type MediaSourceMode,
+  type MotionDelay,
+  type MotionDuration,
+  type MotionEntrance,
+  type MotionIntensity,
+  type OverlayPreset,
+  type PlayButtonStyle,
+  type VideoCornerAction,
+  type VideoMode,
+  type VisualTargetId,
+} from "@/config/experience";
+import { labControlScope } from "@/config/lab-ui";
+import {
+  labControls,
+  labText,
+  labWords,
+  unavailableNotes,
+  containerGuides,
+  type LabControlId,
+} from "@/config/lab-guide";
+import {
+  LabControlHelp,
+  LabUnavailableNote,
+  useLabLanguage,
+} from "@/components/theme/LabControlHelp";
+import {
+  getAssetsByCategory,
+  getContrastWarning,
+  logoWidthPresets,
+  mediaAssetCategories,
+  mediaPaddingPresets,
+  previewBackgrounds,
+  scaleRangeForTarget,
+  sizePresetsForTarget,
+  type MediaAlignment,
+  type MediaPaddingPreset,
+  type MediaSizePreset,
+  type PreviewBackgroundId,
+} from "@/config/media-assets";
+
+type LabTab = "theme" | "media" | "containers" | "motion" | "effects";
+
+type ThemeLabExperienceProps = {
+  experience: ExperienceValues;
+  selectedTarget: VisualTargetId;
+  onChange: (experience: ExperienceValues) => void;
+};
+
+const selectClass =
+  "mt-1.5 min-h-11 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 text-sm text-zinc-100";
+
+function useWord() {
+  const language = useLabLanguage();
+  return (key: string) => labWords[language][key] ?? key;
+}
+
+function wordOrLabel(w: (key: string) => string, id: string, fallback: string) {
+  const translated = w(id);
+  return translated === id ? fallback : translated;
+}
+
+function FieldLabel({
+  htmlFor,
+  children,
+  helpId,
+}: {
+  htmlFor: string;
+  children: string;
+  helpId?: LabControlId;
+}) {
+  return (
+    <div className="min-w-0">
+      <label htmlFor={htmlFor} className="block text-sm text-zinc-200">
+        {children}
+      </label>
+      {helpId ? <LabControlHelp id={helpId} /> : null}
+    </div>
+  );
+}
+
+function controlLabel(id: LabControlId, language: ReturnType<typeof useLabLanguage>) {
+  return labText(labControls[id].help.label, language);
+}
+
+function GlobalMediaScopeNote() {
+  const language = useLabLanguage();
+  return (
+    <p className="rounded-md border border-amber-500/30 bg-amber-400/10 px-3 py-2 text-[0.7rem] leading-relaxed text-amber-100/90">
+      {language === "es"
+        ? "CONFIGURACIÓN GLOBAL DE IMÁGENES. Este control afecta todos los elementos de imagen compatibles, no solamente el elemento seleccionado actualmente."
+        : "GLOBAL MEDIA SETTING. This control affects all compatible media elements, not only the currently selected element."}
+    </p>
+  );
+}
+
+export function ThemeLabMediaPanel({
+  experience,
+  selectedTarget,
+  onChange,
+}: ThemeLabExperienceProps) {
+  const w = useWord();
+  const language = useLabLanguage();
+  const media = experience.media;
+  const slot = getComponentConfig(experience, selectedTarget);
+  const isLogo = selectedTarget === "header-logo";
+  const composerEnabled = isMediaComposerTarget(selectedTarget);
+  const scaleRange = scaleRangeForTarget(selectedTarget);
+  const sizeOptions = sizePresetsForTarget(selectedTarget);
+  const widthOptions = logoWidthPresets();
+  const contrastWarning = getContrastWarning({
+    assetId: slot.assetId,
+    previewBackground: slot.previewBackground,
+    target: selectedTarget,
+  });
+  const scalePercent = Math.round(slot.scale * 100);
+
+  function updateMedia<K extends keyof ExperienceValues["media"]>(
+    key: K,
+    value: ExperienceValues["media"][K],
+  ) {
+    onChange({ ...experience, media: { ...media, [key]: value } });
+  }
+
+  function patchSlot(patch: Partial<ComponentSlotConfig>) {
+    onChange(updateComponentConfig(experience, selectedTarget, patch));
+  }
+
+  const sizeValue = sizeOptions.some((item) => item.id === slot.sizePreset)
+    ? slot.sizePreset
+    : sizeOptions[0]?.id ?? "standard";
+  const availableMediaStyles = mediaStylesForTarget(selectedTarget);
+  const mediaStyleValue =
+    isLogo && !HEADER_LOGO_STYLE_IDS.includes(slot.mediaStyle)
+      ? "transparent-strip"
+      : availableMediaStyles.some((item) => item.id === slot.mediaStyle)
+        ? slot.mediaStyle
+        : (availableMediaStyles[0]?.id ?? slot.mediaStyle);
+  const widthSelectOptions = widthOptions.some(
+    (item) => item.id === slot.sizePreset,
+  )
+    ? widthOptions
+    : [
+        {
+          id: slot.sizePreset,
+          label: slot.sizePreset === "large" ? "Large" : slot.sizePreset,
+        },
+        ...widthOptions,
+      ];
+
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-xs leading-relaxed text-zinc-500">
+        {w("mediaIntro")}
+      </p>
+      {composerEnabled ? (
+        <>
+          <FieldLabel htmlFor="exp-asset" helpId="media-asset">
+            {isLogo
+              ? language === "es"
+                ? "Recurso de logo"
+                : "Logo asset"
+              : language === "es"
+                ? "Recurso de imagen"
+                : "Image asset"}
+          </FieldLabel>
+          <select
+            id="exp-asset"
+            className={selectClass}
+            value={slot.assetId}
+            onChange={(event) => patchSlot({ assetId: event.target.value })}
+          >
+            <option value="default">{w("defaultAsset")}</option>
+            <option value="placeholder">{w("placeholder")}</option>
+            {mediaAssetCategories.map((category) => {
+              const assets = getAssetsByCategory(category.id);
+              return (
+                <optgroup key={category.id} label={wordOrLabel(w, category.id, category.label)}>
+                  {assets.length > 0 ? (
+                    assets.map((asset) => (
+                      <option key={asset.id} value={asset.id}>
+                        {asset.label}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled value={`${category.id}-empty`}>
+                      {w("noAssets")}
+                    </option>
+                  )}
+                </optgroup>
+              );
+            })}
+          </select>
+          {contrastWarning ? (
+            <p
+              role="status"
+              className="rounded-md border border-amber-500/40 bg-amber-400/10 px-3 py-2 text-xs text-amber-200"
+            >
+              ⚠ {w("lowContrast")}
+            </p>
+          ) : null}
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="exp-scale"
+          >
+            <span>{labText(labControls["media-scale"].help.label, language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {scalePercent}%
+            </span>
+          </label>
+          <input
+            id="exp-scale"
+            type="range"
+            min={scaleRange.min}
+            max={scaleRange.max}
+            step={scaleRange.step}
+            value={slot.scale}
+            onChange={(event) =>
+              patchSlot({ scale: Number(event.target.value) })
+            }
+          />
+          <LabControlHelp id="media-scale" />
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="exp-x"
+          >
+            <span>{labText(labControls["media-x"].help.label, language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {slot.positionX}
+            </span>
+          </label>
+          <input
+            id="exp-x"
+            type="range"
+            min={0}
+            max={100}
+            value={slot.positionX}
+            onChange={(event) =>
+              patchSlot({ positionX: Number(event.target.value) })
+            }
+          />
+          <LabControlHelp id="media-x" />
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="exp-y"
+          >
+            <span>{labText(labControls["media-y"].help.label, language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {slot.positionY}
+            </span>
+          </label>
+          <input
+            id="exp-y"
+            type="range"
+            min={0}
+            max={100}
+            value={slot.positionY}
+            onChange={(event) =>
+              patchSlot({ positionY: Number(event.target.value) })
+            }
+          />
+          <LabControlHelp id="media-y" />
+          <FieldLabel htmlFor="exp-fit" helpId="media-fit">
+            {labText(labControls["media-fit"].help.label, language)}
+          </FieldLabel>
+          <select
+            id="exp-fit"
+            className={selectClass}
+            value={slot.fit}
+            onChange={(event) =>
+              patchSlot({ fit: event.target.value as MediaFit })
+            }
+          >
+            <option value="contain">{w("contain")}</option>
+            <option value="cover">{w("cover")}</option>
+          </select>
+          {isLogo ? (
+            <>
+              <FieldLabel htmlFor="exp-logo-width" helpId="media-logo-width">
+                {labText(labControls["media-logo-width"].help.label, language)}
+              </FieldLabel>
+              <select
+                id="exp-logo-width"
+                className={selectClass}
+                value={
+                  widthSelectOptions.some((item) => item.id === slot.sizePreset)
+                    ? slot.sizePreset
+                    : "wide"
+                }
+                onChange={(event) =>
+                  patchSlot({
+                    sizePreset: event.target.value as MediaSizePreset,
+                  })
+                }
+              >
+                {widthSelectOptions.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {wordOrLabel(w, item.id, item.label)}
+                  </option>
+                ))}
+              </select>
+            </>
+          ) : (
+            <>
+              <FieldLabel htmlFor="exp-size" helpId="media-size">
+                {labText(labControls["media-size"].help.label, language)}
+              </FieldLabel>
+              <select
+                id="exp-size"
+                className={selectClass}
+                value={sizeValue}
+                onChange={(event) =>
+                  patchSlot({ sizePreset: event.target.value as MediaSizePreset })
+                }
+              >
+                {sizeOptions.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {wordOrLabel(w, item.id, item.label)}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+          <FieldLabel htmlFor="exp-padding" helpId="media-padding">
+            {isLogo
+              ? language === "es"
+                ? "Relleno de logo"
+                : "Logo padding"
+              : labText(labControls["media-padding"].help.label, language)}
+          </FieldLabel>
+          <select
+            id="exp-padding"
+            className={selectClass}
+            value={slot.padding}
+            onChange={(event) =>
+              patchSlot({ padding: event.target.value as MediaPaddingPreset })
+            }
+          >
+            {mediaPaddingPresets.map((item) => (
+              <option key={item.id} value={item.id}>
+                {wordOrLabel(w, item.id, item.label)}
+              </option>
+            ))}
+          </select>
+          {isLogo ? (
+            <>
+              <FieldLabel htmlFor="exp-align" helpId="media-align">
+                {labText(labControls["media-align"].help.label, language)}
+              </FieldLabel>
+              <select
+                id="exp-align"
+                className={selectClass}
+                value={slot.alignment}
+                onChange={(event) =>
+                  patchSlot({
+                    alignment: event.target.value as MediaAlignment,
+                    positionX: event.target.value === "center" ? 50 : 0,
+                  })
+                }
+              >
+                <option value="left">{w("left")}</option>
+                <option value="center">{w("center")}</option>
+              </select>
+            </>
+          ) : null}
+          <FieldLabel htmlFor="exp-preview-bg" helpId="media-preview-bg">
+            {labText(labControls["media-preview-bg"].help.label, language)}
+          </FieldLabel>
+          <select
+            id="exp-preview-bg"
+            className={selectClass}
+            value={slot.previewBackground}
+            onChange={(event) =>
+              patchSlot({
+                previewBackground: event.target.value as PreviewBackgroundId,
+              })
+            }
+          >
+            {previewBackgrounds.map((item) => (
+              <option key={item.id} value={item.id}>
+                {wordOrLabel(w, item.id, item.label)}
+              </option>
+            ))}
+          </select>
+        </>
+      ) : (
+        <p className="text-xs leading-relaxed text-zinc-500">
+          {w("noComposer")}
+        </p>
+      )}
+      {mediaStylesForTarget(selectedTarget).length > 0 ? (
+        <>
+          <FieldLabel htmlFor="exp-media-style" helpId="media-style">
+            {isLogo
+              ? language === "es"
+                ? "Estilo de contenedor"
+                : "Container style"
+              : labText(labControls["media-style"].help.label, language)}
+          </FieldLabel>
+          <select
+            id="exp-media-style"
+            className={selectClass}
+            value={mediaStyleValue}
+            onChange={(event) => {
+              const mediaStyle = event.target.value as MediaContainerStyleId;
+              onChange(
+                updateComponentConfig(experience, selectedTarget, {
+                  mediaStyle,
+                  containerPreset: mediaStyleToContainer[mediaStyle],
+                }),
+              );
+            }}
+          >
+            {mediaStylesForTarget(selectedTarget).map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </>
+      ) : null}
+      {composerEnabled && !isLogo ? (
+        <>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200/90">
+            {language === "es"
+              ? "Configuración global de imágenes"
+              : "Global media setting"}
+          </p>
+          <GlobalMediaScopeNote />
+          <p className="text-[0.7rem] leading-relaxed text-zinc-500">
+            {language === "es"
+              ? "Alcance: Global. Compatible: héroe, doctor, about, tarjetas, tratamientos, tecnología y contacto. Incompatible: logo, marquee y CTA. Resultado visual: cambia todas las fotos compatibles. Persistencia: Aplicar Custom como versión actual."
+              : "Scope: Global. Compatible: hero, doctor, about, cards, treatments, technology, contact. Incompatible: logo, marquee, CTA. Visual result: changes all compatible photos. Persistence: Apply Custom as Current."}
+          </p>
+          <FieldLabel htmlFor="exp-aspect" helpId="media-aspect">
+            {labText(labControls["media-aspect"].help.label, language)}
+          </FieldLabel>
+          <select
+            id="exp-aspect"
+            className={selectClass}
+            value={media.aspectRatio}
+            onChange={(event) =>
+              updateMedia("aspectRatio", event.target.value as AspectRatioPreset)
+            }
+          >
+            <option value="auto">{w("auto")}</option>
+            <option value="1 / 1">1:1</option>
+            <option value="4 / 3">4:3</option>
+            <option value="3 / 4">3:4</option>
+            <option value="16 / 9">16:9</option>
+          </select>
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="exp-radius"
+          >
+            <span>{labText(labControls["media-radius"].help.label, language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {media.radius}
+            </span>
+          </label>
+          <input
+            id="exp-radius"
+            type="range"
+            min={0}
+            max={24}
+            value={media.radius}
+            onChange={(event) =>
+              updateMedia("radius", Number(event.target.value))
+            }
+          />
+          <LabControlHelp id="media-radius" />
+          <FieldLabel htmlFor="exp-overlay" helpId="media-overlay">
+            {labText(labControls["media-overlay"].help.label, language)}
+          </FieldLabel>
+          <select
+            id="exp-overlay"
+            className={selectClass}
+            value={media.overlay}
+            onChange={(event) =>
+              updateMedia("overlay", event.target.value as OverlayPreset)
+            }
+          >
+            <option value="none">{w("none")}</option>
+            <option value="light">{w("light")}</option>
+            <option value="dark">{w("dark")}</option>
+            <option value="brand">{w("brandTint")}</option>
+          </select>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+export function ThemeLabContainersPanel({
+  experience,
+  selectedTarget,
+  onChange,
+}: ThemeLabExperienceProps) {
+  const w = useWord();
+  const language = useLabLanguage();
+  const slot = getComponentConfig(experience, selectedTarget);
+  const isLogo = selectedTarget === "header-logo";
+  const availablePresets = containerPresetsForTarget(selectedTarget);
+  const current = isLogo
+    ? slot.mediaStyle
+    : labVisibleContainerPreset(slot.containerPreset, selectedTarget);
+  const logoStyle = HEADER_LOGO_STYLE_IDS.includes(slot.mediaStyle)
+    ? slot.mediaStyle
+    : "transparent-strip";
+  const currentListed = availablePresets.some((preset) => preset.id === current);
+  const showActionNote =
+    !isLogo &&
+    availablePresets.length > 0 &&
+    !isActionCompatibleTarget(selectedTarget);
+  const showCarouselNote =
+    !isLogo &&
+    availablePresets.length > 0 &&
+    !isCarouselChromeTarget(selectedTarget);
+  const showVideoNote =
+    !isLogo &&
+    availablePresets.length > 0 &&
+    !isVideoChromeTarget(selectedTarget);
+  return (
+    <fieldset className="min-w-0">
+      <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+        {isLogo
+          ? language === "es"
+            ? "Franja de marca del encabezado"
+            : "Header brand strip"
+          : labText(labControls["container-preset"].help.label, language)}
+      </legend>
+      <LabControlHelp id="container-preset" />
+      <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+        {isLogo
+          ? w("headerStrip")
+          : availablePresets.length === 0
+            ? w("noContainer")
+            : language === "es"
+              ? "Aplica solo al componente seleccionado. Los colores de tema siguen siendo globales. Cambiar preajustes no guarda hasta Aplicar."
+              : "Applies to the selected media or card only. Theme colors stay global. Cycling presets is unsaved until Apply."}
+      </p>
+      {availablePresets.some(
+        (preset) =>
+          preset.id === "carousel-card" ||
+          preset.id === "video-card" ||
+          preset.id === "media-overlay",
+      ) ? (
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+          {w("chromeOnly")}
+        </p>
+      ) : null}
+      {current === "inset-badge-cutout" ? (
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+          {w("cutoutNote")}
+        </p>
+      ) : null}
+      {showActionNote ? (
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+          {w("unavailableActions")}
+        </p>
+      ) : null}
+      {showCarouselNote ? (
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+          {w("unavailableCarousel")}
+        </p>
+      ) : null}
+      {showVideoNote ? (
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+          {w("unavailableVideo")}
+        </p>
+      ) : null}
+      {!isLogo && !currentListed && availablePresets.length > 0 ? (
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+          {language === "es"
+            ? "El preajuste guardado no se ofrece para este destino. Elija un contenedor de la lista. Acción, carrusel y video solo aparecen donde tienen sentido."
+            : "The saved preset is not offered for this target. Choose a listed container. Action, carousel, and video chrome appear only where they are meaningful."}
+        </p>
+      ) : null}
+      <div className="mt-3 grid grid-cols-1 gap-2">
+        {isLogo
+          ? headerLogoContainerStyles.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() =>
+                  onChange(
+                    updateComponentConfig(experience, selectedTarget, {
+                      mediaStyle: preset.id,
+                      containerPreset: "clean",
+                    }),
+                  )
+                }
+                className={`min-h-11 rounded-md border px-3 text-left text-sm ${
+                  logoStyle === preset.id
+                    ? "border-cyan-400 bg-cyan-400/10 text-white"
+                    : "border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-500"
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))
+          : availablePresets.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() =>
+                  onChange(
+                    updateComponentConfig(experience, selectedTarget, {
+                      containerPreset: preset.id,
+                      mediaStyle: containerToMediaStyle[preset.id],
+                    }),
+                  )
+                }
+                className={`min-h-11 rounded-md border px-3 text-left text-sm ${
+                  current === preset.id
+                    ? "border-cyan-400 bg-cyan-400/10 text-white"
+                    : "border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-500"
+                }`}
+              >
+                {preset.number}{" "}
+                {language === "es" && preset.labelEs
+                  ? preset.labelEs
+                  : preset.label}
+              </button>
+            ))}
+      </div>
+      {current === "inset-badge-cutout" ? (
+        <div className="mt-3">
+          <div className="flex items-center justify-between gap-3">
+            <label
+              htmlFor="exp-c05-circle-size"
+              className="text-sm text-zinc-200"
+            >
+              {controlLabel("container-circle-size", language)}
+            </label>
+            <span className="flex items-center gap-1">
+              <input
+                id="exp-c05-circle-size-number"
+                type="number"
+                min={INSET_BADGE_SIZE_MIN}
+                max={INSET_BADGE_SIZE_MAX}
+                step={1}
+                value={insetBadgeSizePx(slot)}
+                onChange={(event) =>
+                  onChange(
+                    updateComponentConfig(experience, selectedTarget, {
+                      insetBadgeSize: insetBadgeSizePx({
+                        ...slot,
+                        insetBadgeSize: Number(event.target.value),
+                      }),
+                    }),
+                  )
+                }
+                className="h-9 w-16 rounded-md border border-zinc-700 bg-zinc-900 px-2 text-right font-mono text-sm text-zinc-100"
+              />
+              <span className="text-xs text-zinc-400">px</span>
+            </span>
+          </div>
+          <input
+            id="exp-c05-circle-size"
+            type="range"
+            min={INSET_BADGE_SIZE_MIN}
+            max={INSET_BADGE_SIZE_MAX}
+            step={1}
+            value={insetBadgeSizePx(slot)}
+            onChange={(event) =>
+              onChange(
+                updateComponentConfig(experience, selectedTarget, {
+                  insetBadgeSize: Number(event.target.value),
+                }),
+              )
+            }
+            className="mt-2 w-full"
+          />
+          <LabControlHelp id="container-circle-size" />
+        </div>
+      ) : null}
+      {(() => {
+        const guide = currentListed
+          ? containerGuides.find((item) => item.id === current)
+          : undefined;
+        if (!guide || isLogo) return null;
+        return (
+          <div className="mt-3 space-y-1 rounded-md border border-zinc-800 px-3 py-2 text-[0.7rem] leading-relaxed text-zinc-500">
+            <p>{labText(guide.purpose, language)}</p>
+            <p>{labText(guide.shape, language)}</p>
+            <p>{labText(guide.compatible, language)}</p>
+            <p>{labText(guide.incompatible, language)}</p>
+            <p>{labText(guide.badge, language)}</p>
+            <p>{labText(guide.clip, language)}</p>
+            <p>{labText(guide.radius, language)}</p>
+            <p>{labText(guide.globalRadius, language)}</p>
+            <p>{labText(guide.overlay, language)}</p>
+            <p>{labText(guide.externalSpace, language)}</p>
+            <p>{labText(guide.motion, language)}</p>
+            <p>{labText(guide.effects, language)}</p>
+          </div>
+        );
+      })()}
+    </fieldset>
+  );
+}
+
+export function ThemeLabMotionPanel({
+  experience,
+  onChange,
+}: Omit<ThemeLabExperienceProps, "selectedTarget">) {
+  const w = useWord();
+  const language = useLabLanguage();
+  const motion = experience.motion;
+
+  function update<K extends keyof ExperienceValues["motion"]>(
+    key: K,
+    value: ExperienceValues["motion"][K],
+  ) {
+    onChange({ ...experience, motion: { ...motion, [key]: value } });
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <FieldLabel htmlFor="exp-entrance" helpId="motion-entrance">
+        {controlLabel("motion-entrance", language)}
+      </FieldLabel>
+      <select
+        id="exp-entrance"
+        className={selectClass}
+        value={motion.entrance}
+        onChange={(event) =>
+          update("entrance", event.target.value as MotionEntrance)
+        }
+      >
+        <option value="none">{w("none")}</option>
+        <option value="fade">{w("fade")}</option>
+        <option value="fade-up">{w("fadeUp")}</option>
+        <option value="fade-down">{w("fadeDown")}</option>
+        <option value="slide-left">{w("slideLeft")}</option>
+        <option value="slide-right">{w("slideRight")}</option>
+        <option value="scale-in">{w("scaleIn")}</option>
+        <option value="reveal">{w("reveal")}</option>
+      </select>
+      <FieldLabel htmlFor="exp-duration" helpId="motion-duration">
+        {controlLabel("motion-duration", language)}
+      </FieldLabel>
+      <select
+        id="exp-duration"
+        className={selectClass}
+        value={motion.duration}
+        onChange={(event) =>
+          update("duration", event.target.value as MotionDuration)
+        }
+      >
+        <option value="fast">{w("fast")}</option>
+        <option value="medium">{w("medium")}</option>
+        <option value="slow">{w("slow")}</option>
+      </select>
+      <FieldLabel htmlFor="exp-intensity" helpId="motion-intensity">
+        {controlLabel("motion-intensity", language)}
+      </FieldLabel>
+      <select
+        id="exp-intensity"
+        className={selectClass}
+        value={motion.intensity}
+        onChange={(event) =>
+          update("intensity", event.target.value as MotionIntensity)
+        }
+      >
+        <option value="subtle">{w("subtle")}</option>
+        <option value="normal">{w("normal")}</option>
+      </select>
+      <FieldLabel htmlFor="exp-delay" helpId="motion-delay">
+        {controlLabel("motion-delay", language)}
+      </FieldLabel>
+      <select
+        id="exp-delay"
+        className={selectClass}
+        value={motion.delay}
+        onChange={(event) => update("delay", event.target.value as MotionDelay)}
+      >
+        <option value="0">{w("delay0")}</option>
+        <option value="short">{w("short")}</option>
+        <option value="medium">{w("medium")}</option>
+      </select>
+    </div>
+  );
+}
+
+export function ThemeLabEffectsPanel({
+  experience,
+  selectedTarget,
+  onChange,
+  emptyLabel,
+}: ThemeLabExperienceProps & { emptyLabel?: string }) {
+  const w = useWord();
+  const language = useLabLanguage();
+  const scope = labControlScope(selectedTarget);
+  return (
+    <div className="flex flex-col gap-5">
+      {!(
+        scope.marquee ||
+        scope.video ||
+        scope.carousel ||
+        scope.badges ||
+        scope.cornerAction ||
+        scope.cursor
+      ) ? (
+        <p className="text-sm text-zinc-500">
+          {emptyLabel ?? "No special effects apply to this element."}
+        </p>
+      ) : null}
+      {scope.marquee ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Marquee de servicios" : "Service marquee"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <label className="flex min-h-11 items-center gap-2 text-sm text-zinc-200">
+            <input
+              type="checkbox"
+              checked={experience.marquee.enabled}
+              onChange={(event) =>
+                onChange({
+                  ...experience,
+                  marquee: { ...experience.marquee, enabled: event.target.checked },
+                })
+              }
+            />
+            {w("enabled")}
+          </label>
+          <LabControlHelp id="marquee-enabled" />
+          {!experience.marquee.enabled ? (
+            <LabUnavailableNote message={unavailableNotes.marqueeDisabled} />
+          ) : null}
+          <div
+            className={
+              experience.marquee.enabled ? undefined : "pointer-events-none opacity-50"
+            }
+          >
+          <FieldLabel htmlFor="exp-marquee-layout" helpId="marquee-layout">
+            {controlLabel("marquee-layout", language)}
+          </FieldLabel>
+          <select
+            id="exp-marquee-layout"
+            className={selectClass}
+            value={experience.marquee.layout}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                marquee: {
+                  ...experience.marquee,
+                  layout: event.target.value as MarqueeLayout,
+                },
+              })
+            }
+          >
+            <option value="text">{w("textOnly")}</option>
+            <option value="icon-text">{w("iconText")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-marquee-spacing" helpId="marquee-spacing">
+            {controlLabel("marquee-spacing", language)}
+          </FieldLabel>
+          <select
+            id="exp-marquee-spacing"
+            className={selectClass}
+            value={experience.marquee.spacing}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                marquee: {
+                  ...experience.marquee,
+                  spacing: event.target.value as MarqueeSpacing,
+                },
+              })
+            }
+          >
+            <option value="compact">{w("compact")}</option>
+            <option value="comfortable">{w("comfortable")}</option>
+            <option value="wide">{w("wide")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-marquee-height" helpId="marquee-height">
+            {controlLabel("marquee-height", language)}
+          </FieldLabel>
+          <select
+            id="exp-marquee-height"
+            className={selectClass}
+            value={experience.marquee.height}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                marquee: {
+                  ...experience.marquee,
+                  height: event.target.value as MarqueeHeight,
+                },
+              })
+            }
+          >
+            <option value="compact">{w("compact")}</option>
+            <option value="standard">{w("standard")}</option>
+            <option value="large">{w("large")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-marquee-speed" helpId="marquee-speed">
+            {controlLabel("marquee-speed", language)}
+          </FieldLabel>
+          <select
+            id="exp-marquee-speed"
+            className={selectClass}
+            value={experience.marquee.speed}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                marquee: {
+                  ...experience.marquee,
+                  speed: event.target.value as MarqueeSpeed,
+                },
+              })
+            }
+          >
+            <option value="slow">{w("slow")}</option>
+            <option value="medium">{w("medium")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-marquee-dir" helpId="marquee-dir">
+            {controlLabel("marquee-dir", language)}
+          </FieldLabel>
+          <select
+            id="exp-marquee-dir"
+            className={selectClass}
+            value={experience.marquee.direction}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                marquee: {
+                  ...experience.marquee,
+                  direction: event.target.value as MarqueeDirection,
+                },
+              })
+            }
+          >
+            <option value="left">{w("left")}</option>
+            <option value="right">{w("right")}</option>
+          </select>
+          <label className="flex min-h-11 items-center gap-2 text-sm text-zinc-200">
+            <input
+              type="checkbox"
+              checked={experience.marquee.pauseOnHover}
+              onChange={(event) =>
+                onChange({
+                  ...experience,
+                  marquee: {
+                    ...experience.marquee,
+                    pauseOnHover: event.target.checked,
+                  },
+                })
+              }
+            />
+            {w("pauseHover")}
+          </label>
+          <LabControlHelp id="marquee-pause" />
+          <FieldLabel htmlFor="exp-marquee-surface" helpId="marquee-surface">
+            {controlLabel("marquee-surface", language)}
+          </FieldLabel>
+          <select
+            id="exp-marquee-surface"
+            className={selectClass}
+            value={experience.marquee.surface}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                marquee: {
+                  ...experience.marquee,
+                  surface: event.target.value as MarqueeSurface,
+                },
+              })
+            }
+          >
+            <option value="primary">{w("primary")}</option>
+            <option value="secondary">{w("secondary")}</option>
+            <option value="accent">{w("accent")}</option>
+            <option value="dark">{w("dark")}</option>
+          </select>
+          </div>
+        </div>
+      </fieldset>
+      ) : null}
+
+      {scope.video ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Vista previa de video" : "Video preview"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <label className="flex min-h-11 items-center gap-2 text-sm text-zinc-200">
+            <input
+              type="checkbox"
+              checked={experience.video.enabled}
+              onChange={(event) =>
+                onChange({
+                  ...experience,
+                  video: { ...experience.video, enabled: event.target.checked },
+                })
+              }
+            />
+            {w("enabled")}
+          </label>
+          <LabControlHelp id="video-enabled" />
+          {!experience.video.enabled ? (
+            <LabUnavailableNote message={unavailableNotes.videoDisabled} />
+          ) : null}
+          <div
+            className={
+              experience.video.enabled ? undefined : "pointer-events-none opacity-50"
+            }
+          >
+          <FieldLabel htmlFor="exp-video-mode" helpId="video-mode">
+            {controlLabel("video-mode", language)}
+          </FieldLabel>
+          <select
+            id="exp-video-mode"
+            className={selectClass}
+            value={experience.video.mode}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                video: { ...experience.video, mode: event.target.value as VideoMode },
+              })
+            }
+          >
+            <option value="modal">{w("modal")}</option>
+            <option value="external">{w("external")}</option>
+            <option value="embed">{w("embed")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-video-poster" helpId="video-poster">
+            {controlLabel("video-poster", language)}
+          </FieldLabel>
+          <select
+            id="exp-video-poster"
+            className={selectClass}
+            value={experience.video.poster}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                video: {
+                  ...experience.video,
+                  poster: event.target.value as MediaSourceMode,
+                },
+              })
+            }
+          >
+            <option value="approved">{w("approved")}</option>
+            <option value="placeholder">{w("placeholder")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-video-play" helpId="video-play">
+            {controlLabel("video-play", language)}
+          </FieldLabel>
+          <select
+            id="exp-video-play"
+            className={selectClass}
+            value={experience.video.playButton}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                video: {
+                  ...experience.video,
+                  playButton: event.target.value as PlayButtonStyle,
+                },
+              })
+            }
+          >
+            <option value="solid">{w("solid")}</option>
+            <option value="outline">{w("outline")}</option>
+            <option value="minimal">{w("minimal")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-video-overlay" helpId="video-overlay">
+            {controlLabel("video-overlay", language)}
+          </FieldLabel>
+          <select
+            id="exp-video-overlay"
+            className={selectClass}
+            value={experience.video.overlay}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                video: {
+                  ...experience.video,
+                  overlay: event.target.value as OverlayPreset,
+                },
+              })
+            }
+          >
+            <option value="none">{w("none")}</option>
+            <option value="light">{w("light")}</option>
+            <option value="dark">{w("dark")}</option>
+            <option value="brand">{w("brandTint")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-video-container" helpId="video-container">
+            {controlLabel("video-container", language)}
+          </FieldLabel>
+          <select
+            id="exp-video-container"
+            className={selectClass}
+            value={experience.video.container}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                video: {
+                  ...experience.video,
+                  container: event.target.value as ContainerPresetId,
+                },
+              })
+            }
+          >
+            <option value="video-card">{w("videoCard")}</option>
+            <option value="media-overlay">{w("mediaOverlay")}</option>
+            <option value="clean">{w("clean")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-video-corner" helpId="video-corner">
+            {controlLabel("video-corner", language)}
+          </FieldLabel>
+          <select
+            id="exp-video-corner"
+            className={selectClass}
+            value={experience.video.cornerAction}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                video: {
+                  ...experience.video,
+                  cornerAction: event.target.value as VideoCornerAction,
+                },
+              })
+            }
+          >
+            <option value="none">{w("none")}</option>
+            <option value="info">{w("info")}</option>
+            <option value="play">{w("play")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-video-aspect" helpId="video-aspect">
+            {controlLabel("video-aspect", language)}
+          </FieldLabel>
+          <select
+            id="exp-video-aspect"
+            className={selectClass}
+            value={experience.video.aspectRatio}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                video: {
+                  ...experience.video,
+                  aspectRatio: event.target.value as AspectRatioPreset,
+                },
+              })
+            }
+          >
+            <option value="16 / 9">16:9</option>
+            <option value="4 / 3">4:3</option>
+            <option value="1 / 1">1:1</option>
+          </select>
+          </div>
+        </div>
+      </fieldset>
+      ) : null}
+
+      {scope.carousel ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Carrusel" : "Carousel"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <label className="flex min-h-11 items-center gap-2 text-sm text-zinc-200">
+            <input
+              type="checkbox"
+              checked={experience.carousel.enabled}
+              onChange={(event) =>
+                onChange({
+                  ...experience,
+                  carousel: {
+                    ...experience.carousel,
+                    enabled: event.target.checked,
+                  },
+                })
+              }
+            />
+            {w("enabled")}
+          </label>
+          <LabControlHelp id="carousel-enabled" />
+          {!experience.carousel.enabled ? (
+            <LabUnavailableNote message={unavailableNotes.carouselDisabled} />
+          ) : null}
+          <div
+            className={
+              experience.carousel.enabled
+                ? undefined
+                : "pointer-events-none opacity-50"
+            }
+          >
+          <FieldLabel htmlFor="exp-carousel-view" helpId="carousel-view">
+            {controlLabel("carousel-view", language)}
+          </FieldLabel>
+          <select
+            id="exp-carousel-view"
+            className={selectClass}
+            value={String(experience.carousel.cardsPerView)}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                carousel: {
+                  ...experience.carousel,
+                  cardsPerView: Number(event.target.value) as CarouselCardsPerView,
+                },
+              })
+            }
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+          <FieldLabel htmlFor="exp-carousel-nav" helpId="carousel-nav">
+            {controlLabel("carousel-nav", language)}
+          </FieldLabel>
+          <select
+            id="exp-carousel-nav"
+            className={selectClass}
+            value={experience.carousel.navigation}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                carousel: {
+                  ...experience.carousel,
+                  navigation: event.target.value as CarouselNavigation,
+                },
+              })
+            }
+          >
+            <option value="dots">{w("dots")}</option>
+            <option value="arrows">{w("arrows")}</option>
+            <option value="both">{w("both")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-carousel-auto" helpId="carousel-auto">
+            {controlLabel("carousel-auto", language)}
+          </FieldLabel>
+          <select
+            id="exp-carousel-auto"
+            className={selectClass}
+            value={experience.carousel.autoplay}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                carousel: {
+                  ...experience.carousel,
+                  autoplay: event.target.value as CarouselAutoplay,
+                },
+              })
+            }
+          >
+            <option value="off">{w("off")}</option>
+            <option value="slow">{w("slow")}</option>
+          </select>
+          </div>
+        </div>
+      </fieldset>
+      ) : null}
+
+      {scope.badges ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Insignia rotatoria" : "Rotating badge"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <FieldLabel htmlFor="exp-rotating-text" helpId="rotating-text">
+            {controlLabel("rotating-text", language)}
+          </FieldLabel>
+          <input
+            id="exp-rotating-text"
+            className={selectClass}
+            value={experience.rotatingBadge.text}
+            maxLength={48}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  text: event.target.value,
+                },
+              })
+            }
+          />
+          <FieldLabel htmlFor="exp-rotating-icon" helpId="rotating-icon">
+            {controlLabel("rotating-icon", language)}
+          </FieldLabel>
+          <select
+            id="exp-rotating-icon"
+            className={selectClass}
+            value={experience.rotatingBadge.icon}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  icon: event.target.value as BadgeIconId,
+                },
+              })
+            }
+          >
+            <option value="tooth">{w("tooth")}</option>
+            <option value="sparkle">{w("sparkle")}</option>
+            <option value="plus">{w("plus")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-rotating-size" helpId="rotating-size">
+            {controlLabel("rotating-size", language)}
+          </FieldLabel>
+          <select
+            id="exp-rotating-size"
+            className={selectClass}
+            value={experience.rotatingBadge.diameter}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  diameter: event.target.value as BadgeDiameter,
+                },
+              })
+            }
+          >
+            <option value="small">{w("small")}</option>
+            <option value="medium">{w("medium")}</option>
+            <option value="large">{w("large")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-rotating-speed" helpId="rotating-speed">
+            {controlLabel("rotating-speed", language)}
+          </FieldLabel>
+          <select
+            id="exp-rotating-speed"
+            className={selectClass}
+            value={experience.rotatingBadge.speed}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  speed: event.target.value as BadgeRotationSpeed,
+                },
+              })
+            }
+          >
+            <option value="slow">{w("slow")}</option>
+            <option value="very-slow">{w("verySlow")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-rotating-dir" helpId="rotating-dir">
+            {controlLabel("rotating-dir", language)}
+          </FieldLabel>
+          <select
+            id="exp-rotating-dir"
+            className={selectClass}
+            value={experience.rotatingBadge.direction}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  direction: event.target.value as MarqueeDirection,
+                },
+              })
+            }
+          >
+            <option value="left">{w("left")}</option>
+            <option value="right">{w("right")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-rotating-surface" helpId="rotating-surface">
+            {controlLabel("rotating-surface", language)}
+          </FieldLabel>
+          <select
+            id="exp-rotating-surface"
+            className={selectClass}
+            value={experience.rotatingBadge.surface}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  surface: event.target.value as MarqueeSurface,
+                },
+              })
+            }
+          >
+            <option value="primary">{w("primary")}</option>
+            <option value="secondary">{w("secondary")}</option>
+            <option value="accent">{w("accent")}</option>
+            <option value="dark">{w("dark")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-rotating-color" helpId="rotating-color">
+            {controlLabel("rotating-color", language)}
+          </FieldLabel>
+          <select
+            id="exp-rotating-color"
+            className={selectClass}
+            value={experience.rotatingBadge.textColor}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  textColor: event.target.value as BadgeTextColor,
+                },
+              })
+            }
+          >
+            <option value="inverse">{w("inverse")}</option>
+            <option value="accent">{w("accent")}</option>
+            <option value="muted">{w("muted")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-rotating-pos" helpId="rotating-pos">
+            {controlLabel("rotating-pos", language)}
+          </FieldLabel>
+          <select
+            id="exp-rotating-pos"
+            className={selectClass}
+            value={experience.rotatingBadge.position}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                rotatingBadge: {
+                  ...experience.rotatingBadge,
+                  position: event.target.value as BadgePosition,
+                },
+              })
+            }
+          >
+            <option value="bottom-left">{w("bottomLeft")}</option>
+            <option value="bottom-right">{w("bottomRight")}</option>
+          </select>
+        </div>
+      </fieldset>
+      ) : null}
+
+      {scope.cornerAction ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Acción de esquina" : "Corner action"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <label className="flex min-h-11 items-center gap-2 text-sm text-zinc-200">
+            <input
+              type="checkbox"
+              checked={experience.cornerAction.enabled}
+              onChange={(event) =>
+                onChange({
+                  ...experience,
+                  cornerAction: {
+                    ...experience.cornerAction,
+                    enabled: event.target.checked,
+                  },
+                })
+              }
+            />
+            {w("enabled")}
+          </label>
+          <LabControlHelp id="corner-enabled" />
+          {!experience.cornerAction.enabled ? (
+            <LabUnavailableNote message={unavailableNotes.cornerDisabled} />
+          ) : null}
+          <div
+            className={
+              experience.cornerAction.enabled
+                ? undefined
+                : "pointer-events-none opacity-50"
+            }
+          >
+          <FieldLabel htmlFor="exp-corner-pos" helpId="corner-pos">
+            {controlLabel("corner-pos", language)}
+          </FieldLabel>
+          <select
+            id="exp-corner-pos"
+            className={selectClass}
+            value={experience.cornerAction.position}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                cornerAction: {
+                  ...experience.cornerAction,
+                  position: event.target.value as CornerActionPosition,
+                },
+              })
+            }
+          >
+            <option value="top-right">{w("topRight")}</option>
+            <option value="bottom-right">{w("bottomRight")}</option>
+            <option value="bottom-left">{w("bottomLeft")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-corner-glyph" helpId="corner-glyph">
+            {controlLabel("corner-glyph", language)}
+          </FieldLabel>
+          <select
+            id="exp-corner-glyph"
+            className={selectClass}
+            value={experience.cornerAction.glyph}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                cornerAction: {
+                  ...experience.cornerAction,
+                  glyph: event.target.value as CornerActionGlyph,
+                },
+              })
+            }
+          >
+            <option value="info">{w("info")}</option>
+            <option value="arrow">{w("arrow")}</option>
+            <option value="play">{w("play")}</option>
+            <option value="plus">{w("plus")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-corner-morph" helpId="corner-morph">
+            {controlLabel("corner-morph", language)}
+          </FieldLabel>
+          <select
+            id="exp-corner-morph"
+            className={selectClass}
+            value={experience.cornerAction.morph}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                cornerAction: {
+                  ...experience.cornerAction,
+                  morph: event.target.value as CornerActionMorph,
+                },
+              })
+            }
+          >
+            <option value="none">{w("none")}</option>
+            <option value="info-arrow">{w("infoArrow")}</option>
+            <option value="emphasize">{w("emphasize")}</option>
+          </select>
+          </div>
+        </div>
+      </fieldset>
+      ) : null}
+
+      {scope.badges ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Insignia flotante" : "Floating badge"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <FieldLabel htmlFor="exp-badge-type" helpId="float-type">
+            {controlLabel("float-type", language)}
+          </FieldLabel>
+          <select
+            id="exp-badge-type"
+            className={selectClass}
+            value={experience.floatingBadge.type}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                floatingBadge: {
+                  ...experience.floatingBadge,
+                  type: event.target.value as BadgeType,
+                },
+              })
+            }
+          >
+            <option value="static">{w("staticBadge")}</option>
+            <option value="rotating">{w("rotatingBadge")}</option>
+            <option value="action">{w("actionBadge")}</option>
+          </select>
+          <FieldLabel htmlFor="exp-badge-pos" helpId="float-pos">
+            {controlLabel("float-pos", language)}
+          </FieldLabel>
+          <select
+            id="exp-badge-pos"
+            className={selectClass}
+            value={experience.floatingBadge.position}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                floatingBadge: {
+                  ...experience.floatingBadge,
+                  position: event.target.value as BadgePosition,
+                },
+              })
+            }
+          >
+            <option value="bottom-left">{w("bottomLeft")}</option>
+            <option value="bottom-right">{w("bottomRight")}</option>
+          </select>
+          <label className="flex items-center justify-between text-sm text-zinc-200" htmlFor="exp-badge-overlap">
+            <span>{controlLabel("float-overlap", language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {experience.floatingBadge.overlap.toFixed(2)}
+            </span>
+          </label>
+          <input
+            id="exp-badge-overlap"
+            type="range"
+            min={0.12}
+            max={0.36}
+            step={0.01}
+            value={experience.floatingBadge.overlap}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                floatingBadge: {
+                  ...experience.floatingBadge,
+                  overlap: Number(event.target.value),
+                },
+              })
+            }
+          />
+          <LabControlHelp id="float-overlap" />
+        </div>
+      </fieldset>
+      ) : null}
+
+      {scope.cursor ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Compañero de cursor" : "Cursor companion"}
+        </legend>
+        <FieldLabel htmlFor="exp-cursor" helpId="cursor">
+            {controlLabel("cursor", language)}
+          </FieldLabel>
+        <select
+          id="exp-cursor"
+          className={selectClass}
+          value={experience.cursorCompanion}
+          onChange={(event) =>
+            onChange({
+              ...experience,
+              cursorCompanion: event.target.value as CursorCompanionMode,
+            })
+          }
+        >
+          <option value="off">{w("off")}</option>
+          <option value="subtle">{w("subtle")}</option>
+        </select>
+      </fieldset>
+      ) : null}
+    </div>
+  );
+}
+
+export const labTabs: Array<{ id: LabTab; label: string }> = [
+  { id: "theme", label: "Theme" },
+  { id: "media", label: "Media" },
+  { id: "containers", label: "Containers" },
+  { id: "motion", label: "Motion" },
+  { id: "effects", label: "Special Effects" },
+];
+
+export type { LabTab };

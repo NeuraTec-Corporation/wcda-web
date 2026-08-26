@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 import { isNativeHref } from "@/lib/href";
 
 const defaultClassName =
-  "inline-flex min-h-11 items-center text-sm font-medium text-foreground underline-offset-4 hover:text-primary hover:underline";
+  "inline-flex min-h-11 items-center text-sm font-medium text-current underline-offset-4 hover:text-primary hover:underline";
 
 type TextLinkProps = {
   href: string;

@@ -3,6 +3,8 @@ import { Container } from "@/components/ui/Container";
 import { MediaFrame } from "@/components/ui/MediaFrame";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ComposerStage } from "@/components/experience/ComposerStage";
+import { siteConfig } from "@/config/site";
 import type { HeroContent } from "@/types/content";
 
 type HeroProps = HeroContent & {
@@ -19,9 +21,9 @@ export function Hero({
   headingId = "home-heading",
 }: HeroProps) {
   return (
-    <Section className="py-10 md:py-14" aria-labelledby={headingId}>
+    <Section className="py-10 md:py-16" aria-labelledby={headingId}>
       <Container>
-        <div className="grid min-w-0 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,28rem)] lg:gap-12">
+        <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,30rem)] lg:gap-16">
           <div className="min-w-0">
             <SectionHeading
               as="h1"
@@ -33,11 +35,20 @@ export function Hero({
             <ActionRow primary={primaryAction} secondary={secondaryAction} />
           </div>
           {mediaKey ? (
-            <MediaFrame
-              mediaKey={mediaKey}
-              className="rounded-lg border border-border shadow-sm"
-              sizes="(min-width: 64rem) 28rem, 100vw"
-            />
+            <ComposerStage
+              visualTarget="home-hero-media"
+              className="relative mx-auto w-full lg:mx-0 lg:max-w-none"
+            >
+              <MediaFrame
+                mediaKey={mediaKey}
+                visualTarget="home-hero-media"
+                className="relative rounded-lg border border-border shadow-sm"
+                sizes="(min-width: 64rem) 30rem, 100vw"
+              />
+              <p className="mt-3 text-xs tracking-[0.04em] text-muted">
+                {siteConfig.identity.label}
+              </p>
+            </ComposerStage>
           ) : null}
         </div>
       </Container>

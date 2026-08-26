@@ -7,6 +7,8 @@ import {
   homeTrust,
   homeWhyChoose,
 } from "@/data/home";
+import { ExperienceSlot } from "@/components/experience/ExperienceSlot";
+import { ServiceMarquee } from "@/components/experience/ServiceMarquee";
 import { CareAreaGrid } from "@/components/sections/CareAreaGrid";
 import { ContactPreview } from "@/components/sections/ContactPreview";
 import { Hero } from "@/components/sections/Hero";
@@ -20,6 +22,9 @@ export function HomePage() {
   return (
     <>
       <Hero {...homeHero} />
+      <ExperienceSlot feature="marquee">
+        <ServiceMarquee />
+      </ExperienceSlot>
       <TrustIntro {...homeTrust} />
       <CareAreaGrid
         headingId={homeCareAreas.headingId}
@@ -28,10 +33,12 @@ export function HomePage() {
         description={homeCareAreas.description}
         categories={getFeaturedCareAreas()}
         cta={homeCareAreas.cta}
+        tone="default"
+        visualTarget="home-care-areas"
       />
       <WhyChoose {...homeWhyChoose} />
       <PracticeIntroduction {...homePractice} />
-      <PatientCta {...homePatientCta} />
+      <PatientCta {...homePatientCta} tone="default" visualTarget="home-cta" />
       <ContactPreview {...homeContact} />
     </>
   );
