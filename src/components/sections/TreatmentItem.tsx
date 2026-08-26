@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MediaFrame } from "@/components/ui/MediaFrame";
 import { cn } from "@/lib/cn";
+import type { VisualTargetId } from "@/config/experience";
 import type { ServiceStatus } from "@/types/navigation";
 
 type TreatmentItemProps = {
@@ -8,14 +9,24 @@ type TreatmentItemProps = {
   mediaKey?: string;
   href?: string;
   status?: ServiceStatus;
+  composerTarget?: VisualTargetId;
+  visualTarget?: VisualTargetId;
 };
 
-export function TreatmentItem({ title, mediaKey, href }: TreatmentItemProps) {
+export function TreatmentItem({
+  title,
+  mediaKey,
+  href,
+  composerTarget,
+  visualTarget,
+}: TreatmentItemProps) {
   const content = (
     <>
-      <div className="size-6 shrink-0 sm:size-7 lg:size-8">
+      <div className="size-6 shrink-0 overflow-visible sm:size-7 lg:size-8">
         <MediaFrame
           mediaKey={mediaKey}
+          composerTarget={composerTarget}
+          visualTarget={visualTarget}
           decorative
           aspectRatio="1 / 1"
           className="rounded-sm"

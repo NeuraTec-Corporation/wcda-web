@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppChrome } from "@/components/layout/AppChrome";
+import { ApprovedExperienceStyle } from "@/components/theme/ApprovedExperienceStyle";
+import { ApprovedThemeStyle } from "@/components/theme/ApprovedThemeStyle";
+import { CursorCompanion } from "@/components/experience/CursorCompanion";
+import { ExperienceMotion } from "@/components/experience/ExperienceMotion";
+import { ThemePreviewBridge } from "@/components/theme/ThemePreviewBridge";
 import {
-  SiteFooter,
-  SiteHeader,
-  SiteUtilityBar,
-  SkipToContent,
-} from "@/components/layout";
+  approvedExperience,
+  approvedExperienceHtmlAttributes,
+} from "@/config/experience";
+import { isThemeLabEnabled } from "@/config/theme";
 import { siteConfig } from "@/config/site";
 import "@/styles/globals.css";
 
@@ -42,15 +47,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      {...approvedExperienceHtmlAttributes(approvedExperience)}
     >
       <body className="flex min-h-full flex-col overflow-x-clip font-sans">
-        <SkipToContent />
-        <SiteUtilityBar />
-        <SiteHeader />
-        <main id="main-content" className="min-w-0 flex-1">
-          {children}
-        </main>
-        <SiteFooter />
+        <ApprovedThemeStyle />
+        <ApprovedExperienceStyle />
+        <ExperienceMotion />
+        {isThemeLabEnabled() || approvedExperience.cursorCompanion !== "off" ? (
+          <CursorCompanion />
+        ) : null}
+        {isThemeLabEnabled() ? <ThemePreviewBridge /> : null}
+        <AppChrome>{children}</AppChrome>
       </body>
     </html>
   );

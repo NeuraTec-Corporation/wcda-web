@@ -22,6 +22,8 @@ export function ServicesHub() {
         title="Areas of Care"
         description="These are the major families of dental care. Choose an area to read a short overview and see related treatments."
         categories={categories}
+        tone="default"
+        visualTarget="services-care-cards"
       />
       <TreatmentGroups
         headingId="treatments-heading"
@@ -30,6 +32,7 @@ export function ServicesHub() {
         description="Browse treatments by area of care. After an exam, we discuss what is appropriate for your oral health and goals."
         groups={treatmentGroups}
         tone="surface"
+        visualTarget="services-treatment-media"
       />
       <PatientCta
         headingId="services-appointment-heading"

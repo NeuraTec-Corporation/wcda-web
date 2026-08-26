@@ -17,17 +17,19 @@ export function TrustIntro({
   headingId = "intro-heading",
 }: TrustIntroProps) {
   return (
-    <Section tone="muted" className="py-10 md:py-14" aria-labelledby={headingId}>
+    <Section tone="muted" className="py-10 md:py-16" aria-labelledby={headingId}>
       <Container>
-        <div className="max-w-narrow">
+        <div className="grid min-w-0 items-end gap-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
           <SectionHeading
             as="h2"
             id={headingId}
             eyebrow={eyebrow}
             title={title}
-            description={description}
           />
-          <ActionRow primary={primaryAction} secondary={secondaryAction} />
+          <div className="min-w-0 max-w-prose">
+            <p className="text-base leading-[1.75] text-muted">{description}</p>
+            <ActionRow primary={primaryAction} secondary={secondaryAction} />
+          </div>
         </div>
       </Container>
     </Section>

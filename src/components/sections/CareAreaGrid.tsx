@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { CareAreaCard } from "@/components/sections/CareAreaCard";
+import { CareAreaCollection } from "@/components/sections/CareAreaCollection";
+import type { VisualTargetId } from "@/config/experience";
 import type { ServiceCategory } from "@/types/content";
 import type { NavItem } from "@/types/navigation";
 import type { SectionTone } from "@/types/ui";
@@ -15,6 +16,7 @@ type CareAreaGridProps = {
   categories: readonly ServiceCategory[];
   cta?: NavItem;
   tone?: SectionTone;
+  visualTarget?: VisualTargetId;
 };
 
 export function CareAreaGrid({
@@ -25,13 +27,17 @@ export function CareAreaGrid({
   categories,
   cta,
   tone = "muted",
+  visualTarget,
 }: CareAreaGridProps) {
   if (categories.length === 0) {
     return null;
   }
 
   return (
-    <Section tone={tone} aria-labelledby={headingId}>
+    <Section
+      tone={tone}
+      aria-labelledby={headingId}
+    >
       <Container>
         <SectionHeading
           as="h2"
@@ -40,13 +46,11 @@ export function CareAreaGrid({
           title={title}
           description={description}
         />
-        <ul className="mt-stack-lg grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <li key={category.slug} className="min-w-0">
-              <CareAreaCard category={category} />
-            </li>
-          ))}
-        </ul>
+        <CareAreaCollection
+          categories={categories}
+          visualTarget={visualTarget}
+          label={title}
+        />
         {cta ? (
           <div className="mt-stack-lg">
             <Button href={cta.href} variant="outline">

@@ -21,7 +21,7 @@ export function PageIntro({
   return (
     <Section
       tone={tone}
-      className="py-10 md:py-14"
+      className="py-10 md:py-16"
       aria-labelledby={headingId}
     >
       <Container>

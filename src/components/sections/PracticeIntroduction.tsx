@@ -1,7 +1,9 @@
 import { ActionRow } from "@/components/ui/ActionRow";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
-import { MediaFrame } from "@/components/ui/MediaFrame";
+import { ExperienceMedia } from "@/components/experience/ExperienceMedia";
+import { ComposerStage } from "@/components/experience/ComposerStage";
+import { CompositionOffset } from "@/components/experience/CompositionOffset";
 import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -24,7 +26,7 @@ export function PracticeIntroduction({
   return (
     <Section tone="muted" aria-labelledby={headingId}>
       <Container>
-        <div className="grid min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,22rem)] lg:gap-12">
+        <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,24rem)] lg:gap-16">
           <div className="min-w-0">
             <SectionHeading
               as="h2"
@@ -59,14 +61,19 @@ export function PracticeIntroduction({
             {cta ? <ActionRow primary={cta} /> : null}
           </div>
           {mediaKey ? (
-            <div className="mx-auto w-full max-w-xs lg:mx-0 lg:max-w-none">
-              <MediaFrame
+            <ComposerStage
+              visualTarget="home-doctor-media"
+              className="relative mx-auto w-full lg:mx-0 lg:max-w-none"
+            >
+              <CompositionOffset side="left" />
+              <ExperienceMedia
                 mediaKey={mediaKey}
+                visualTarget="home-doctor-media"
                 aspectRatio="3 / 4"
-                className="rounded-lg border border-border shadow-sm"
-                sizes="(min-width: 64rem) 22rem, 20rem"
+                className="relative rounded-lg border border-border shadow-sm"
+                sizes="(min-width: 64rem) 24rem, 20rem"
               />
-            </div>
+            </ComposerStage>
           ) : null}
         </div>
       </Container>

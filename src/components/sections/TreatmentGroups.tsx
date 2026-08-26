@@ -4,6 +4,7 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TreatmentItem } from "@/components/sections/TreatmentItem";
 import { getTreatmentHref } from "@/data/services";
+import type { VisualTargetId } from "@/config/experience";
 import type { ServiceCategory, ServiceRecord } from "@/types/content";
 import type { SectionTone } from "@/types/ui";
 
@@ -19,6 +20,7 @@ type TreatmentGroupsProps = {
   description?: string;
   groups: readonly TreatmentGroup[];
   tone?: SectionTone;
+  visualTarget?: VisualTargetId;
 };
 
 export function TreatmentGroups({
@@ -28,13 +30,17 @@ export function TreatmentGroups({
   description,
   groups,
   tone = "default",
+  visualTarget,
 }: TreatmentGroupsProps) {
   if (groups.length === 0) {
     return null;
   }
 
   return (
-    <Section tone={tone} aria-labelledby={headingId}>
+    <Section
+      tone={tone}
+      aria-labelledby={headingId}
+    >
       <Container>
         <SectionHeading
           as="h2"
@@ -65,13 +71,15 @@ export function TreatmentGroups({
                 {group.treatments.map((treatment) => (
                   <li
                     key={treatment.slug}
-                    className="min-w-0 border-t border-border"
+                    className="min-w-0 border-t border-border first:border-t-0"
                   >
                     <TreatmentItem
                       title={treatment.title}
                       mediaKey={treatment.mediaKey}
                       href={getTreatmentHref(treatment)}
                       status={treatment.status}
+                      composerTarget={visualTarget}
+                      visualTarget={visualTarget}
                     />
                   </li>
                 ))}

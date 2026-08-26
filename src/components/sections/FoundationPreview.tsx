@@ -2,12 +2,14 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { isThemeLabEnabled } from "@/config/theme";
 
 const tokenSwatches = [
   { name: "Background", className: "bg-background" },
   { name: "Foreground", className: "bg-foreground" },
   { name: "Surface", className: "bg-surface" },
-  { name: "Surface muted", className: "bg-surface-muted" },
+  { name: "Surface strong", className: "bg-surface-strong" },
+  { name: "On strong", className: "bg-on-strong" },
   { name: "Primary", className: "bg-primary" },
   { name: "Primary hover", className: "bg-primary-hover" },
   { name: "Secondary", className: "bg-secondary" },
@@ -33,7 +35,12 @@ export function FoundationPreview() {
             description="Internal verification for tokens, layout primitives, and interaction states. This route is not the public homepage."
           />
           <div className="mt-stack-lg flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button href="#components">View components</Button>
+            {isThemeLabEnabled() ? (
+              <Button href="/foundation/theme">Open Visual Experience Lab</Button>
+            ) : null}
+            <Button href="#components" variant="outline">
+              View components
+            </Button>
             <Button href="#tokens" variant="outline">
               View tokens
             </Button>

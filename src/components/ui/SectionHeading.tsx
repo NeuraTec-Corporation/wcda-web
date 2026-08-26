@@ -3,9 +3,9 @@ import { cn } from "@/lib/cn";
 import type { HeadingAlign, HeadingLevel } from "@/types/ui";
 
 const headingClasses: Record<HeadingLevel, string> = {
-  h1: "max-w-[22ch] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl",
-  h2: "max-w-[28ch] text-2xl font-semibold tracking-tight text-foreground sm:text-[1.75rem]",
-  h3: "text-xl font-semibold tracking-tight text-foreground",
+  h1: "max-w-[18ch] text-[length:calc(var(--theme-h1)*var(--theme-heading-scale,1))] font-semibold tracking-tight text-foreground sm:text-[length:calc(var(--theme-h1-lg)*var(--theme-heading-scale,1))] sm:leading-tight",
+  h2: "max-w-[24ch] text-[length:calc(var(--theme-h2)*var(--theme-heading-scale,1))] font-semibold tracking-tight text-foreground sm:text-[length:calc(var(--theme-h2-lg)*var(--theme-heading-scale,1))] sm:leading-tight",
+  h3: "text-[length:calc(var(--theme-h3)*var(--theme-heading-scale,1))] font-semibold tracking-tight text-foreground",
 };
 
 type SectionHeadingProps = {
@@ -30,7 +30,7 @@ export function SectionHeading({
   return (
     <header
       className={cn(
-        "flex max-w-narrow flex-col gap-2.5",
+        "flex max-w-narrow flex-col gap-3",
         align === "center" && "mx-auto text-center",
         className,
       )}
@@ -47,7 +47,7 @@ export function SectionHeading({
         <p
           className={cn(
             "max-w-prose leading-relaxed text-muted",
-            Heading === "h1" ? "text-base sm:text-lg" : "text-base",
+            Heading === "h1" ? "text-base sm:text-[1.0625rem]" : "text-base",
           )}
         >
           {description}
