@@ -1,10 +1,9 @@
 import { ActionRow } from "@/components/ui/ActionRow";
 import { Container } from "@/components/ui/Container";
-import { MediaFrame } from "@/components/ui/MediaFrame";
-import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ComposerStage } from "@/components/experience/ComposerStage";
-import { siteConfig } from "@/config/site";
+import { HeroContentStage } from "@/components/experience/HeroContentStage";
+import { HeroMedia } from "@/components/experience/HeroMedia";
 import type { HeroContent } from "@/types/content";
 
 type HeroProps = HeroContent & {
@@ -18,40 +17,62 @@ export function Hero({
   primaryAction,
   secondaryAction,
   mediaKey,
+  pillars,
   headingId = "home-heading",
 }: HeroProps) {
   return (
-    <Section className="py-10 md:py-16" aria-labelledby={headingId}>
-      <Container>
-        <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,30rem)] lg:gap-16">
-          <div className="min-w-0">
+    <section
+      className="wcda-scope-surface home-hero-cinematic relative isolate flex w-full flex-col overflow-hidden border-b border-border"
+      aria-labelledby={headingId}
+    >
+      {mediaKey ? (
+        <ComposerStage
+          visualTarget="home-hero-media"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        >
+          <HeroMedia mediaKey={mediaKey} visualTarget="home-hero-media" />
+        </ComposerStage>
+      ) : null}
+      <div className="home-hero-cinematic__veil" aria-hidden="true" />
+      <Container className="home-hero-cinematic__content relative z-10 flex flex-1 flex-col justify-start">
+        <HeroContentStage className="min-w-0" contentScope="home.hero">
+          <div data-hero-module="content" className="bg-transparent">
             <SectionHeading
               as="h1"
               id={headingId}
               eyebrow={eyebrow}
               title={title}
               description={description}
+              measure="column"
+              className="bg-transparent"
+              titleContentTarget="home.hero.heading"
+              descriptionContentTarget="home.hero.description"
             />
-            <ActionRow primary={primaryAction} secondary={secondaryAction} />
           </div>
-          {mediaKey ? (
-            <ComposerStage
-              visualTarget="home-hero-media"
-              className="relative mx-auto w-full lg:mx-0 lg:max-w-none"
-            >
-              <MediaFrame
-                mediaKey={mediaKey}
-                visualTarget="home-hero-media"
-                className="relative rounded-lg border border-border shadow-sm"
-                sizes="(min-width: 64rem) 30rem, 100vw"
-              />
-              <p className="mt-3 text-xs tracking-[0.04em] text-muted">
-                {siteConfig.identity.label}
-              </p>
-            </ComposerStage>
-          ) : null}
-        </div>
+          <div data-hero-module="cta">
+            <ActionRow
+              primary={primaryAction}
+              secondary={secondaryAction}
+              primaryContentTarget="home.hero.primaryCta"
+              secondaryContentTarget="home.hero.secondaryCta"
+            />
+          </div>
+          <ul
+            data-hero-module="benefits"
+            data-content-target="home.hero.pillars"
+            className="mt-8 flex min-w-0 flex-wrap gap-x-6 gap-y-2 text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-heading sm:text-xs"
+          >
+            {pillars.map((label, index) => (
+              <li
+                key={`${index}-${label}`}
+                data-content-target={`home.hero.pillar${index + 1}`}
+              >
+                {label}
+              </li>
+            ))}
+          </ul>
+        </HeroContentStage>
       </Container>
-    </Section>
+    </section>
   );
 }

@@ -1,0 +1,83 @@
+/* Lab-only preview focus. Selectors require html[data-theme-lab="1"],
+   which ThemePreviewBridge sets only inside the Visual Experience Lab iframe. */
+
+html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-section-id] {
+  position: relative;
+}
+
+html[data-theme-lab="1"][data-lab-mode="editor"]:not([data-lab-isolate="section"])
+  [data-lab-section-id]:not([data-lab-section-active]) {
+  opacity: 0.45;
+}
+
+html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-section-id][data-lab-section-active] {
+  opacity: 1;
+  outline: 2px solid color-mix(in srgb, #002774 42%, transparent);
+  outline-offset: 6px;
+  border-radius: 0.25rem;
+}
+
+html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-section-id][data-lab-section-active]::before {
+  content: attr(data-lab-section-badge);
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 40;
+  max-width: min(16rem, calc(100% - 1rem));
+  pointer-events: none;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, #002774 88%, white);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  padding: 0.2rem 0.45rem;
+  text-transform: uppercase;
+}
+
+html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-element-active] {
+  outline: 2px dashed color-mix(in srgb, #002774 62%, white);
+  outline-offset: 3px;
+}
+
+html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-element-active][data-lab-element-badge] {
+  position: relative;
+}
+
+html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-element-active][data-lab-element-badge]::after {
+  content: attr(data-lab-element-badge);
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  z-index: 41;
+  max-width: min(12rem, calc(100% - 0.8rem));
+  pointer-events: none;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, #002774 72%, white);
+  color: #fff;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  padding: 0.15rem 0.4rem;
+}
+
+html[data-theme-lab="1"][data-lab-isolate="section"] [data-lab-section-id]:not([data-lab-section-active]) {
+  display: none !important;
+}
+
+@media (max-width: 40rem) {
+  html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-section-id][data-lab-section-active]::before,
+  html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-element-active][data-lab-element-badge]::after {
+    max-width: min(9.5rem, calc(100% - 0.8rem));
+    font-size: 0.5rem;
+    padding: 0.12rem 0.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme-lab="1"][data-lab-mode="editor"] [data-lab-section-id]:not([data-lab-section-active]) {
+    transition: none;
+  }
+}

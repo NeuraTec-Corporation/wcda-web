@@ -53,7 +53,11 @@ export function RotatingBadge({
   className,
 }: RotatingBadgeProps) {
   const pathId = useId().replace(/:/g, "");
-  const ring = `${text.trim()} · ${text.trim()} · `;
+  const phrase = text.trim();
+  const ringRadius = 36;
+  const ringLength = 2 * Math.PI * ringRadius;
+  const ringGap = ringLength * 0.14;
+  const textLength = ringLength - ringGap;
 
   return (
     <span
@@ -74,8 +78,15 @@ export function RotatingBadge({
             d="M 50,50 m -36,0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0"
           />
         </defs>
-        <text className={cn("text-[9px] uppercase tracking-[0.18em]", textColorClasses[textColor])}>
-          <textPath href={`#${pathId}`}>{ring}</textPath>
+        <text className={cn("text-[9px] uppercase", textColorClasses[textColor])}>
+          <textPath
+            href={`#${pathId}`}
+            startOffset="0%"
+            textLength={textLength}
+            lengthAdjust="spacing"
+          >
+            {phrase}
+          </textPath>
         </text>
       </svg>
       <span className="relative z-10 grid size-[42%] place-items-center rounded-full bg-background/15">

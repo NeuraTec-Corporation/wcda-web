@@ -12,7 +12,13 @@ export const metadata = createPageMetadata({
 export default function Page() {
   return (
     <>
-      <PageIntro {...privacyPage} />
+      <PageIntro
+        {...privacyPage}
+        breadcrumb={[
+          { href: "/", label: "Home" },
+          { label: "Privacy" },
+        ]}
+      />
       {privacySections.map((section, index) => (
         <ContentBlockSection
           key={section.headingId}

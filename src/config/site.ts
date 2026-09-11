@@ -70,8 +70,12 @@ export const siteConfig = {
     ],
   } as OfficeHours,
   googleMaps: {
-    status: "pendingVerification",
+    status: "confirmed",
     title: "West Caldwell Dental Arts",
+    embedUrl:
+      "https://maps.google.com/maps?q=West+Caldwell+Dental+Arts,+555+Passaic+Ave+Suite+203,+West+Caldwell,+NJ+07006&z=16&output=embed",
+    directionsUrl:
+      "https://www.google.com/maps/dir/?api=1&destination=555+Passaic+Ave+Suite+203,+West+Caldwell,+NJ+07006",
   } as GoogleMapsConfig,
   socialLinks: [
     {

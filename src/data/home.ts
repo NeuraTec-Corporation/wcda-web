@@ -15,13 +15,13 @@ import type {
 import type { NavItem } from "@/types/navigation";
 
 export const homeHero: HeroContent = {
-  eyebrow: siteConfig.identity.label,
-  title: siteConfig.name,
+  title: "Thoughtful dentistry. Personal care.",
   description:
-    "An independent dental practice in West Caldwell, New Jersey, owned by Dr. Jonnathan Matute, DMD. We provide thoughtful, patient-centered care for your oral health.",
+    "An independent dental practice in West Caldwell, New Jersey, led by Dr. Jonnathan Matute, DMD, providing thoughtful, patient-centered care for your oral health.",
   primaryAction: headerCta,
   secondaryAction: { href: "/services", label: "View services" },
   mediaKey: "90",
+  pillars: ["Prevent", "Treat", "Protect"],
 };
 
 export const homeTrust: CallToActionContent = {

@@ -68,6 +68,81 @@ export function ToothGlyph(props: IconProps) {
   );
 }
 
+export function ShieldGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3.5l7 3v5.2c0 4.2-2.8 7.4-7 8.8-4.2-1.4-7-4.6-7-8.8V6.5z" />
+      <path d="M9.2 12.1l1.8 1.8 3.8-3.9" />
+    </Svg>
+  );
+}
+
+export function HeartGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 19s-6.5-4.2-8.2-8.1C2.4 8.2 4 5.5 6.8 5.5c1.7 0 3 1.1 3.7 2.4.7-1.3 2-2.4 3.7-2.4 2.8 0 4.4 2.7 3 5.4C18.5 14.8 12 19 12 19z" />
+    </Svg>
+  );
+}
+
+export function CalendarGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="4" y="6" width="16" height="14" rx="2" />
+      <path d="M8 4v4" />
+      <path d="M16 4v4" />
+      <path d="M4 10h16" />
+    </Svg>
+  );
+}
+
+export function TargetGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+    </Svg>
+  );
+}
+
+export function MagnifierGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M16 16l4 4" />
+    </Svg>
+  );
+}
+
+export function HomeGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 11.5L12 5l8 6.5" />
+      <path d="M6.5 10.5V19h11v-8.5" />
+    </Svg>
+  );
+}
+
+export function QuestionGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.6 9.4a2.4 2.4 0 1 1 3.3 2.2c-.7.3-1.2.8-1.2 1.6V14" />
+      <path d="M12 17h.01" />
+    </Svg>
+  );
+}
+
+export function CheckGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 12.2l2.6 2.6L16.2 9" />
+    </Svg>
+  );
+}
+
 export function SparkleGlyph(props: IconProps) {
   return (
     <Svg {...props}>

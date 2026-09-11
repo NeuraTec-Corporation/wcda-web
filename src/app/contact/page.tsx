@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { contactIntro, getCallOfficeCta } from "@/data/contact";
 import { createPageMetadata } from "@/lib/metadata";
+import { assertPagePublic } from "@/lib/publication-access";
 
 export const metadata = createPageMetadata({
   title: "Contact",
@@ -13,7 +14,12 @@ export const metadata = createPageMetadata({
   path: "/contact",
 });
 
-export default function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  assertPagePublic("contact", await searchParams);
   return (
     <>
       <ContactPage secondaryAction={getCallOfficeCta()} />

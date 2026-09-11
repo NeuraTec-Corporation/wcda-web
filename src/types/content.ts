@@ -1,4 +1,9 @@
-import type { NavItem, RecordStatus, ServiceStatus } from "@/types/navigation";
+import type {
+  NavItem,
+  PublicationStatus,
+  RecordStatus,
+  ServiceStatus,
+} from "@/types/navigation";
 
 export type ContentBlock = {
   eyebrow?: string;
@@ -22,6 +27,7 @@ export type HeroContent = ContentBlock & {
   primaryAction: NavItem;
   secondaryAction?: NavItem;
   mediaKey?: string;
+  pillars: readonly [string, string, string];
 };
 
 export type CardSectionContent = ContentBlock & {
@@ -79,7 +85,10 @@ export type ServiceCategory = {
   title: string;
   summary: string;
   description: string;
-  status: ServiceStatus;
+  metaDescription?: string;
+  enabled: boolean;
+  status: PublicationStatus;
+  ownerConfirmationRequired?: boolean;
   mediaKey?: string;
 };
 
@@ -88,8 +97,51 @@ export type ServiceRecord = {
   title: string;
   categorySlug: string;
   summary: string;
-  status: ServiceStatus;
+  enabled: boolean;
+  status: PublicationStatus;
+  ownerConfirmationRequired?: boolean;
   mediaKey?: string;
+};
+
+export const TREATMENT_SECTION_IDS = [
+  "overview",
+  "whyRecommended",
+  "evaluation",
+  "howItWorks",
+  "whatToExpect",
+  "benefits",
+  "considerations",
+  "recoveryAftercare",
+  "maintenance",
+  "alternatives",
+  "faq",
+  "clinicalNote",
+  "relatedTreatments",
+] as const;
+
+export type TreatmentSectionId = (typeof TREATMENT_SECTION_IDS)[number];
+
+export type TreatmentFaq = {
+  question: string;
+  answer: string;
+};
+
+export type TreatmentSection = {
+  enabled: boolean;
+  heading: string;
+  paragraphs?: readonly string[];
+  items?: readonly string[];
+  faqs?: readonly TreatmentFaq[];
+  relatedSlugs?: readonly string[];
+};
+
+export type TreatmentRecord = ServiceRecord & {
+  metaTitle?: string;
+  metaDescription: string;
+  intro: string;
+  heroMediaKey?: string;
+  supportingMediaKey?: string;
+  sections: Partial<Record<TreatmentSectionId, TreatmentSection>>;
 };
 
 export type TreatmentContent = {

@@ -9,6 +9,7 @@ import {
   getPublicSocialLinks,
 } from "@/data/contact";
 import { footerLegalNav, footerNav, headerCta } from "@/data/navigation";
+import { isPathPublic } from "@/lib/publication-access";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { HoursList } from "@/components/ui/HoursList";
@@ -64,7 +65,7 @@ export function SiteFooter() {
             Explore
           </p>
           <ul className="mt-3 flex flex-col">
-            {footerNav.map((item) => (
+            {footerNav.filter((item) => isPathPublic(item.href)).map((item) => (
               <li key={`${item.href}-${item.label}`}>
                 <TextLink href={item.href}>{item.label}</TextLink>
               </li>

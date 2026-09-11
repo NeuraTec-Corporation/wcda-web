@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServiceCategoryPage } from "@/components/sections";
 import {
+  getCategoryBySlug,
   getConfirmedCategories,
   getConfirmedCategoryBySlug,
   getConfirmedServicesByCategory,
+  getManagedTreatmentsByCategory,
 } from "@/data/services";
 import { createPageMetadata } from "@/lib/metadata";
+import { isLabPreviewSearch } from "@/lib/publication-access";
+import { isThemeLabEnabled } from "@/config/theme";
 
 type CategoryPageProps = {
   params: Promise<{ category: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export function generateStaticParams() {
@@ -18,7 +23,7 @@ export function generateStaticParams() {
   }));
 }
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -34,14 +39,15 @@ export async function generateMetadata({
 
   return createPageMetadata({
     title: category.title,
-    description: category.summary,
+    description: category.metaDescription ?? category.summary,
     path: `/services/${category.slug}`,
   });
 }
 
-export default async function Page({ params }: CategoryPageProps) {
+export default async function Page({ params, searchParams }: CategoryPageProps) {
   const { category: slug } = await params;
-  const category = getConfirmedCategoryBySlug(slug);
+  const lab = isLabPreviewSearch(await searchParams) && isThemeLabEnabled();
+  const category = lab ? getCategoryBySlug(slug) : getConfirmedCategoryBySlug(slug);
 
   if (!category) {
     notFound();
@@ -50,7 +56,11 @@ export default async function Page({ params }: CategoryPageProps) {
   return (
     <ServiceCategoryPage
       category={category}
-      treatments={getConfirmedServicesByCategory(category.slug)}
+      treatments={
+        lab
+          ? getManagedTreatmentsByCategory(category.slug)
+          : getConfirmedServicesByCategory(category.slug)
+      }
     />
   );
 }

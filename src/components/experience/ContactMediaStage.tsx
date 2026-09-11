@@ -51,6 +51,7 @@ export function ContactMediaStage({
             alt=""
             fill
             sizes="100vw"
+            unoptimized={source.src.endsWith(".svg")}
             className="exp-media-img"
             style={{
               objectFit: config.fit,

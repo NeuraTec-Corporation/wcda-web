@@ -3,6 +3,21 @@
   --theme-primary: #243140;
   --theme-primary-hover: #1c1916;
   --theme-primary-foreground: #ffffff;
+  --theme-cta: var(--theme-primary);
+  --theme-cta-hover: var(--theme-primary-hover);
+  --theme-cta-active: var(--theme-primary-hover);
+  --theme-cta-foreground: var(--theme-primary-foreground);
+  --theme-heading-ink: var(--theme-foreground);
+  --theme-nav-hover: var(--theme-primary);
+  --theme-nav-active: var(--theme-foreground);
+  --theme-nav-halo: transparent;
+  --theme-nav-halo-active: transparent;
+  --theme-nav-underline: transparent;
+  --theme-nav-hover-decoration: underline;
+  --theme-section-surface: var(--theme-surface);
+  --theme-outline-fill: var(--theme-surface);
+  --theme-outline-ink: var(--theme-foreground);
+  --theme-outline-hover: var(--theme-surface-muted);
   --theme-secondary: #4e4841;
   --theme-secondary-hover: #3f3a35;
   --theme-secondary-foreground: #ffffff;
@@ -28,6 +43,7 @@
   --theme-placeholder-ink: #4e4841;
   --theme-font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --theme-font-body: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --theme-weight-button: 500;
   --theme-heading-scale: 1;
   --theme-body-scale: 1;
   --theme-radius: 0.5rem;
@@ -41,6 +57,19 @@
   --theme-h2: 1.5rem;
   --theme-h2-lg: 1.75rem;
   --theme-h3: 1.125rem;
+  --theme-h1-leading: 1.5;
+  --theme-h1-leading-lg: 1.25;
+  --theme-h2-leading: 1.5;
+  --theme-h2-leading-lg: 1.25;
+  --theme-h3-leading: 1.65;
+  --theme-h1-tracking: -0.025em;
+  --theme-h2-tracking: -0.025em;
+  --theme-h3-tracking: -0.025em;
+  --theme-body-size: 1rem;
+  --theme-body-leading: 1.65;
+  --theme-eyebrow-size: 0.75rem;
+  --theme-eyebrow-weight: 500;
+  --theme-eyebrow-tracking: 0.14em;
 
   --color-background: var(--theme-background);
   --color-foreground: var(--theme-foreground);
@@ -51,6 +80,20 @@
   --color-primary: var(--theme-primary);
   --color-primary-hover: var(--theme-primary-hover);
   --color-primary-foreground: var(--theme-primary-foreground);
+  --color-cta: var(--theme-cta);
+  --color-cta-hover: var(--theme-cta-hover);
+  --color-cta-active: var(--theme-cta-active);
+  --color-cta-foreground: var(--theme-cta-foreground);
+  --color-heading: var(--theme-heading-ink);
+  --color-nav-hover: var(--theme-nav-hover);
+  --color-nav-active: var(--theme-nav-active);
+  --color-nav-halo: var(--theme-nav-halo);
+  --color-nav-halo-active: var(--theme-nav-halo-active);
+  --color-nav-underline: var(--theme-nav-underline);
+  --color-section-surface: var(--theme-section-surface);
+  --color-outline: var(--theme-outline-fill);
+  --color-outline-foreground: var(--theme-outline-ink);
+  --color-outline-hover: var(--theme-outline-hover);
   --color-secondary: var(--theme-secondary);
   --color-secondary-hover: var(--theme-secondary-hover);
   --color-secondary-foreground: var(--theme-secondary-foreground);
@@ -68,6 +111,25 @@
   --color-focus: var(--theme-focus);
   --color-placeholder: var(--theme-placeholder);
   --color-placeholder-ink: var(--theme-placeholder-ink);
+
+  /* WCDA Brand Canon warm-neutral family. Derived from Primary Background #EBE1D8.
+     Independent of Factory/Current theme snapshots. Do not add extra beiges. */
+  --wcda-bg: #EBE1D8;
+  --wcda-surface-soft: #E8DED5;
+  --wcda-surface: #E4D9D1;
+  --wcda-surface-strong: #DDD1C8;
+  --wcda-border: #D3C5BB;
+  /* 4% Brand Blue #002774 into --wcda-bg. Glyphs stay #002774 / --color-primary. */
+  --wcda-icon-surface: #E2DAD4;
+  --wcda-placeholder: var(--wcda-surface-strong);
+  --wcda-lift: #F2EDE8;
+
+  --editorial-surface: var(--wcda-surface);
+  --editorial-surface-strong: var(--wcda-surface-strong);
+  --color-editorial-surface: var(--editorial-surface);
+  --color-editorial-surface-strong: var(--editorial-surface-strong);
+  --color-icon-surface: var(--wcda-icon-surface);
+  --color-placeholder: var(--wcda-placeholder);
 
   --container-narrow: 40rem;
   --container-content: var(--theme-content-width);
@@ -128,6 +190,20 @@
   --color-primary: var(--color-primary);
   --color-primary-hover: var(--color-primary-hover);
   --color-primary-foreground: var(--color-primary-foreground);
+  --color-cta: var(--color-cta);
+  --color-cta-hover: var(--color-cta-hover);
+  --color-cta-active: var(--color-cta-active);
+  --color-cta-foreground: var(--color-cta-foreground);
+  --color-heading: var(--color-heading);
+  --color-nav-hover: var(--color-nav-hover);
+  --color-nav-active: var(--color-nav-active);
+  --color-nav-halo: var(--color-nav-halo);
+  --color-nav-halo-active: var(--color-nav-halo-active);
+  --color-nav-underline: var(--color-nav-underline);
+  --color-section-surface: var(--color-section-surface);
+  --color-outline: var(--color-outline);
+  --color-outline-foreground: var(--color-outline-foreground);
+  --color-outline-hover: var(--color-outline-hover);
   --color-secondary: var(--color-secondary);
   --color-secondary-hover: var(--color-secondary-hover);
   --color-secondary-foreground: var(--color-secondary-foreground);
@@ -145,6 +221,9 @@
   --color-focus: var(--color-focus);
   --color-placeholder: var(--color-placeholder);
   --color-placeholder-ink: var(--color-placeholder-ink);
+  --color-editorial-surface: var(--color-editorial-surface);
+  --color-editorial-surface-strong: var(--color-editorial-surface-strong);
+  --color-icon-surface: var(--color-icon-surface);
 
   --container-narrow: var(--container-narrow);
   --container-content: var(--container-content);
@@ -171,4 +250,8 @@
 
   --font-sans: var(--theme-font-body);
   --font-mono: var(--font-geist-mono);
+}
+
+.wcda-scope-surface {
+  background-color: var(--wcda-scoped-background, var(--wcda-scope-tone, transparent));
 }

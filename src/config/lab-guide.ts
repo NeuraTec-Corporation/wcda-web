@@ -10,20 +10,26 @@ export function labText(value: Bi, language: LabLanguage) {
   return value[language];
 }
 
-export type LabControlLayer = "theme" | "experience" | "lab";
+export type LabControlLayer = "theme" | "experience" | "lab" | "content";
 export type LabControlCategory =
   | "brand"
   | "colors"
   | "typography"
   | "media"
+  | "position"
   | "containers"
   | "motion"
   | "effects"
+  | "content"
   | "recovery"
+  | "approval"
   | "chrome";
 
 export type LabControlId =
   | "color-primary"
+  | "color-cta"
+  | "color-ctaHover"
+  | "color-navHover"
   | "color-secondary"
   | "color-accent"
   | "color-background"
@@ -33,6 +39,9 @@ export type LabControlId =
   | "color-foreground"
   | "color-muted"
   | "color-border"
+  | "color-pick"
+  | "color-hex"
+  | "color-apply"
   | "font-heading"
   | "font-body"
   | "slider-headingScale"
@@ -43,6 +52,11 @@ export type LabControlId =
   | "slider-sectionSpacing"
   | "slider-contentWidth"
   | "slider-headerDensity"
+  | "slider-navHalo"
+  | "slider-navHaloActive"
+  | "slider-chromeWarmth"
+  | "slider-headerBackground"
+  | "slider-footerBackground"
   | "preset-factory"
   | "preset-current"
   | "preset-designer"
@@ -56,8 +70,17 @@ export type LabControlId =
   | "recovery-load-factory"
   | "recovery-load-inspired"
   | "recovery-apply"
+  | "recovery-reset-all"
   | "recovery-copy-theme"
   | "recovery-copy-experience"
+  | "section-apply"
+  | "section-reset"
+  | "content-page-active"
+  | "content-page-status"
+  | "content-section-active"
+  | "content-category-active"
+  | "content-treatment-active"
+  | "content-treatment-section-active"
   | "media-asset"
   | "media-scale"
   | "media-x"
@@ -74,6 +97,7 @@ export type LabControlId =
   | "media-overlay"
   | "container-preset"
   | "container-circle-size"
+  | "container-surface-intensity"
   | "motion-entrance"
   | "motion-duration"
   | "motion-intensity"
@@ -114,7 +138,19 @@ export type LabControlId =
   | "float-pos"
   | "float-overlap"
   | "beforeafter"
-  | "cursor";
+  | "cursor"
+  | "hero-content-offset-y"
+  | "hero-content-offset-x"
+  | "hero-content-max-width"
+  | "hero-content-reset"
+  | "media-position-x"
+  | "media-position-y"
+  | "media-position-zoom"
+  | "media-position-reset"
+  | "media-pan-x"
+  | "media-pan-y"
+  | "media-pan-reset"
+  | "media-pan-overflow";
 
 type Help = {
   label: Bi;
@@ -179,6 +215,42 @@ const controls: LabControlDef[] = [
     {
       en: "You will see buttons, focus rings, and primary fills change across the site.",
       es: "Verá cambiar botones, anillos de foco y rellenos principales en todo el sitio.",
+    },
+  ),
+  themeColor(
+    "color-cta",
+    { en: "CTA Soft Blue", es: "Azul suave de CTA" },
+    {
+      en: "Sets the resting fill of primary CTA buttons. Uses a solid color, not opacity.",
+      es: "Define el relleno en reposo de los CTA principales. Usa un color sólido, no opacidad.",
+    },
+    {
+      en: "Primary buttons such as Request Appointment change at rest.",
+      es: "Los botones principales como Solicitar cita cambian en reposo.",
+    },
+  ),
+  themeColor(
+    "color-ctaHover",
+    { en: "CTA Hover", es: "Hover de CTA" },
+    {
+      en: "Sets the hover fill of primary CTA buttons. Pressed uses a slightly stronger solid blue.",
+      es: "Define el relleno hover de los CTA principales. El estado pulsado usa un azul sólido un poco más fuerte.",
+    },
+    {
+      en: "Hover the header appointment button to preview. Brand Blue stays reserved for identity.",
+      es: "Pase el cursor por el botón de cita del encabezado para previsualizar. El azul de marca queda reservado para identidad.",
+    },
+  ),
+  themeColor(
+    "color-navHover",
+    { en: "Nav Hover Text", es: "Texto hover de navegación" },
+    {
+      en: "Sets the hover and active text color for primary navigation labels.",
+      es: "Define el color de texto hover y activo de las etiquetas de navegación principal.",
+    },
+    {
+      en: "Header links Home through Contact change on hover and on the current route.",
+      es: "Los enlaces del encabezado de Inicio a Contacto cambian al pasar el cursor y en la ruta actual.",
     },
   ),
   themeColor(
@@ -312,6 +384,91 @@ function persistLabOnly(): Bi {
   };
 }
 
+function persistContent(): Bi {
+  return {
+    en: "Creates an unsaved Content change. Apply Section stores it on Custom. Apply All as Current writes publication flags only. It does not change Theme, Experience, Factory, or literature.",
+    es: "Crea un cambio de Contenido sin guardar. Aplicar sección lo guarda en Custom. Aplicar todo como Current escribe solo los indicadores de publicación. No cambia Tema, Experiencia, Factory ni la literatura.",
+  };
+}
+
+add("color-pick", "colors", "lab", {
+  label: { en: "Pick Color", es: "Elegir color" },
+  what: {
+    en: "Samples one visible pixel with the browser eyedropper when available. The Lab preview updates immediately as Working. Custom and Current are not written.",
+    es: "Muestrea un píxel visible con el cuentagotas del navegador cuando está disponible. La vista previa del Lab se actualiza de inmediato como Working. Custom y Current no se escriben.",
+  },
+  see: {
+    en: "HEX, RGB, and HSL update. The selected surface in the preview changes. Status becomes Unsaved until you Apply.",
+    es: "HEX, RGB y HSL se actualizan. La superficie seleccionada en la vista previa cambia. El estado pasa a Sin guardar hasta Aplicar.",
+  },
+  where: {
+    en: "Any visible pixel in the preview or on screen.",
+    es: "Cualquier píxel visible en la vista previa o en pantalla.",
+  },
+  compatible: {
+    en: "Works with the native color picker and HEX field if EyeDropper is unavailable.",
+    es: "Funciona con el selector nativo y el campo HEX si EyeDropper no está disponible.",
+  },
+  incompatible: {
+    en: "Does not write Custom, Current, or Factory by itself.",
+    es: "Por sí solo no escribe Custom, Current ni Factory.",
+  },
+  persist: persistLabOnly(),
+});
+
+add("color-hex", "colors", "lab", {
+  label: { en: "HEX / RGB / HSL", es: "HEX / RGB / HSL" },
+  what: {
+    en: "Shows the sampled or typed color. Accepts #RGB and #RRGGBB and normalizes to uppercase six-digit HEX. A valid HEX updates Working immediately.",
+    es: "Muestra el color muestreado o escrito. Acepta #RGB y #RRGGBB y normaliza a HEX de seis dígitos en mayúsculas. Un HEX válido actualiza Working de inmediato.",
+  },
+  see: {
+    en: "Preview swatch, Working value, and Lab preview update. Apply is still required to write Custom.",
+    es: "La muestra, el valor Working y la vista previa del Lab se actualizan. Sigue haciendo falta Aplicar para escribir Custom.",
+  },
+  where: {
+    en: "Color Tools Working state until Apply.",
+    es: "Estado Working de Herramientas de color hasta Aplicar.",
+  },
+  compatible: {
+    en: "Copy HEX, RGB, or HSL without changing Custom or Current.",
+    es: "Copiar HEX, RGB o HSL no cambia Custom ni Current.",
+  },
+  incompatible: {
+    en: "Typing a color does not write Custom or Current.",
+    es: "Escribir un color no escribe Custom ni Current.",
+  },
+  persist: persistLabOnly(),
+});
+
+add("color-apply", "colors", "lab", {
+  label: { en: "Apply Color", es: "Aplicar color" },
+  what: {
+    en: "Saves the Working color to Custom at the displayed editing scope only: System global token, page, section, or selected element/container.",
+    es: "Guarda el color Working en Custom solo en el alcance visible: token global de Sistema, página, sección o elemento/contenedor seleccionado.",
+  },
+  see: {
+    en: "Status becomes Ready to publish. Current stays until you Publish. Factory is never written.",
+    es: "El estado pasa a Listo para publicar. Current se mantiene hasta Publicar. Factory nunca se escribe.",
+  },
+  where: {
+    en: "Only the Apply target shown above the button. Explicit local overrides are not overwritten by a global apply.",
+    es: "Solo el destino mostrado encima del botón. Un apply global no sobrescribe excepciones locales explícitas.",
+  },
+  compatible: {
+    en: "Respects the puzzle hierarchy. More specific scoped colors keep winning.",
+    es: "Respeta la jerarquía. Los colores de alcance más específico siguen ganando.",
+  },
+  incompatible: {
+    en: "Does not leak to sibling elements, Header/Footer when applying a page color, or Factory.",
+    es: "No se filtra a elementos hermanos, ni a encabezado/pie al aplicar color de página, ni a Factory.",
+  },
+  persist: {
+    en: "Writes Custom at the active scope. Current is unchanged until you promote. Factory is immutable.",
+    es: "Escribe Custom en el alcance activo. Current no cambia hasta promover. Factory es inmutable.",
+  },
+});
+
 function add(
   id: LabControlId,
   category: LabControlCategory,
@@ -336,12 +493,12 @@ add("font-heading", "typography", "theme", {
     es: "Títulos de todo el sitio.",
   },
   compatible: {
-    en: "Works with heading scale. Geist, Arial, Georgia, and system-ui are available.",
-    es: "Funciona con la escala de títulos. Hay Geist, Arial, Georgia y system-ui.",
+    en: "Works with heading scale. Geist, Montserrat, Arial, Georgia, and system-ui are available.",
+    es: "Funciona con la escala de títulos. Hay Geist, Montserrat, Arial, Georgia y system-ui.",
   },
   incompatible: {
-    en: "Montserrat (Brand Canon) is not applied in this phase. Does not change a single image.",
-    es: "Montserrat (Brand Canon) no se aplica en esta fase. No cambia una imagen individual.",
+    en: "Does not change a single image. Factory and Current keep Geist until you Apply.",
+    es: "No cambia una imagen individual. Factory y Current conservan Geist hasta Aplicar.",
   },
   persist: persistTheme(),
 });
@@ -550,6 +707,128 @@ add("slider-headerDensity", "brand", "theme", {
   persist: persistTheme(),
 });
 
+add("slider-navHalo", "colors", "theme", {
+  label: { en: "Nav hover halo", es: "Halo hover de navegación" },
+  what: {
+    en: "Sets how strong the subtle blue tint behind a hovered navigation label is.",
+    es: "Define la intensidad del tinte azul sutil detrás de una etiqueta de navegación en hover.",
+  },
+  see: {
+    en: "Header links show a quiet rounded halo on hover. Spacing does not change.",
+    es: "Los enlaces del encabezado muestran un halo redondeado discreto al pasar el cursor. El espaciado no cambia.",
+  },
+  where: { en: "Primary header navigation.", es: "Navegación principal del encabezado." },
+  compatible: {
+    en: "Visible in Designer. Factory and Current keep a transparent halo.",
+    es: "Visible en Designer. Factory y Current conservan un halo transparente.",
+  },
+  incompatible: {
+    en: "Does not restyle buttons, headings, or page backgrounds.",
+    es: "No restiliza botones, títulos ni fondos de página.",
+  },
+  persist: persistTheme(),
+});
+
+add("slider-navHaloActive", "colors", "theme", {
+  label: { en: "Nav active halo", es: "Halo activo de navegación" },
+  what: {
+    en: "Sets how strong the subtle blue tint behind the current-route navigation label is.",
+    es: "Define la intensidad del tinte azul sutil detrás de la etiqueta de la ruta actual.",
+  },
+  see: {
+    en: "The current nav item stays slightly stronger than hover, still quiet.",
+    es: "El ítem de navegación actual queda un poco más fuerte que el hover, aún discreto.",
+  },
+  where: { en: "Primary header navigation.", es: "Navegación principal del encabezado." },
+  compatible: {
+    en: "Visible in Designer. Factory and Current keep a transparent halo.",
+    es: "Visible en Designer. Factory y Current conservan un halo transparente.",
+  },
+  incompatible: {
+    en: "Does not add underlines or solid nav buttons.",
+    es: "No añade subrayados ni botones sólidos de navegación.",
+  },
+  persist: persistTheme(),
+});
+
+add("slider-chromeWarmth", "colors", "theme", {
+  label: { en: "Page Background", es: "Fondo general" },
+  termNote: { en: "Warmth", es: "Calidez" },
+  what: {
+    en: "Changes only the main website canvas and large page backgrounds that inherit the global canvas. It does not change the Header, Footer, cards, media, or WCDA blue. -100 is more neutral, 0 is the current canvas reference, and +100 is warmer/creamier.",
+    es: "Cambia únicamente el fondo general del sitio y las grandes superficies que heredan ese fondo. No cambia la cabecera, el pie de página, las tarjetas, los medios ni el azul WCDA. -100 es más neutro, 0 es la referencia actual del lienzo, y +100 es más cálido/cremoso.",
+  },
+  see: {
+    en: "The page canvas shifts. Header, Footer, and cards stay still. The resulting HEX updates live.",
+    es: "Cambia el lienzo de la página. Cabecera, pie y tarjetas no se mueven. El HEX resultante se actualiza en vivo.",
+  },
+  where: {
+    en: "Global page/body canvas. Visible regardless of Preview Page or Selected Element.",
+    es: "Lienzo global de la página. Visible sin importar la página de vista previa ni el elemento seleccionado.",
+  },
+  compatible: {
+    en: "Stays inside the official WCDA beige family on the slider. A manual HEX may go custom.",
+    es: "El control deslizante permanece en la familia beige oficial de WCDA. Un HEX manual puede ser personalizado.",
+  },
+  incompatible: {
+    en: "Does not change the Header, Footer, cards, media, logo, or WCDA Blue #002774.",
+    es: "No cambia la cabecera, el pie de página, las tarjetas, los medios, el logo ni el azul WCDA #002774.",
+  },
+  persist: persistTheme(),
+});
+
+add("slider-headerBackground", "colors", "theme", {
+  label: { en: "Header Background", es: "Fondo de cabecera" },
+  termNote: { en: "Warmth", es: "Calidez" },
+  what: {
+    en: "Changes only the Header background. It does not change the page canvas, Footer, logo, navigation, cards, or WCDA blue. -100 is more neutral, 0 is the current canvas reference, and +100 is warmer/creamier.",
+    es: "Cambia únicamente el fondo de la cabecera. No cambia el fondo general, el pie de página, el logo, la navegación, las tarjetas ni el azul WCDA. -100 es más neutro, 0 es la referencia actual del lienzo, y +100 es más cálido/cremoso.",
+  },
+  see: {
+    en: "Only the Header surface shifts. Page, Footer, and cards stay still.",
+    es: "Solo cambia la superficie de la cabecera. Página, pie y tarjetas no se mueven.",
+  },
+  where: {
+    en: "Site header background only. Global Theme control — not tied to Selected Element.",
+    es: "Solo el fondo de la cabecera. Control global de Tema — no depende del elemento seleccionado.",
+  },
+  compatible: {
+    en: "Independent from Page Background and Footer Background.",
+    es: "Independiente del fondo general y del pie de página.",
+  },
+  incompatible: {
+    en: "Does not change the page canvas, Footer, logo, navigation, cards, or WCDA Blue #002774.",
+    es: "No cambia el fondo general, el pie, el logo, la navegación, las tarjetas ni el azul WCDA #002774.",
+  },
+  persist: persistTheme(),
+});
+
+add("slider-footerBackground", "colors", "theme", {
+  label: { en: "Footer Background", es: "Fondo del pie de página" },
+  termNote: { en: "Warmth", es: "Calidez" },
+  what: {
+    en: "Changes only the Footer background. It does not change the page canvas, Header, footer content, cards, or WCDA blue. -100 is more neutral, 0 is the current canvas reference, and +100 is warmer/creamier.",
+    es: "Cambia únicamente el fondo del pie de página. No cambia el fondo general, la cabecera, el contenido del pie, las tarjetas ni el azul WCDA. -100 es más neutro, 0 es la referencia actual del lienzo, y +100 es más cálido/cremoso.",
+  },
+  see: {
+    en: "Only the Footer surface shifts. Page, Header, and cards stay still.",
+    es: "Solo cambia la superficie del pie. Página, cabecera y tarjetas no se mueven.",
+  },
+  where: {
+    en: "Site footer background only. Global Theme control — not tied to Selected Element.",
+    es: "Solo el fondo del pie. Control global de Tema — no depende del elemento seleccionado.",
+  },
+  compatible: {
+    en: "Independent from Page Background and Header Background.",
+    es: "Independiente del fondo general y de la cabecera.",
+  },
+  incompatible: {
+    en: "Does not change the page canvas, Header, footer content, cards, or WCDA Blue #002774.",
+    es: "No cambia el fondo general, la cabecera, el contenido del pie, las tarjetas ni el azul WCDA #002774.",
+  },
+  persist: persistTheme(),
+});
+
 add("preset-factory", "recovery", "lab", {
   label: { en: "WCDA Factory", es: "WCDA Factory" },
   what: {
@@ -632,21 +911,21 @@ add("preset-designer", "recovery", "lab", {
     es: "Propuesta visual basada en la identidad oficial del diseñador.",
   },
   see: {
-    en: "Name and Brand Canon inputs are recorded. Designer visuals are not applied in this phase.",
-    es: "El nombre y las entradas del Brand Canon están registrados. Los visuales del diseñador no se aplican en esta fase.",
+    en: "Loads Designer Brand Canon colors and Montserrat into Lab preview. Does not write Current or Factory.",
+    es: "Carga los colores del Brand Canon y Montserrat en la vista previa. No escribe Current ni Factory.",
   },
-  where: { en: "Lab label only until Brand Canon is applied.", es: "Solo etiqueta del laboratorio hasta aplicar Brand Canon." },
+  where: { en: "Lab preview only until applied as Current.", es: "Solo vista previa del laboratorio hasta aplicar como Current." },
   compatible: {
-    en: "Recorded inputs: Primary Blue #002774, Primary Background #EBE1D8, Typeface Montserrat, official designer-approved WCDA logo.",
-    es: "Entradas registradas: azul primario #002774, fondo primario #EBE1D8, tipografía Montserrat, logo oficial aprobado por el diseñador.",
+    en: "Recorded inputs: Primary Blue #002774, Primary Background #EBE1D8, typeface Montserrat. Logo is not in this phase.",
+    es: "Entradas registradas: azul primario #002774, fondo primario #EBE1D8, tipografía Montserrat. El logo no entra en esta fase.",
   },
   incompatible: {
-    en: "Does not change Current, Factory, Custom preview, logo, fonts, or public pages.",
-    es: "No cambia Current, Factory, la vista previa Custom, el logo, las fuentes ni las páginas públicas.",
+    en: "Does not change Current, Factory, public pages, or logo.",
+    es: "No cambia Current, Factory, páginas públicas ni el logo.",
   },
   persist: {
-    en: "Record only. Not applied.",
-    es: "Solo registro. No aplicado.",
+    en: "Lab preview only. Not public Current. Factory cannot be overwritten.",
+    es: "Solo vista previa del laboratorio. No es Current público. Factory no se sobrescribe.",
   },
 });
 
@@ -769,8 +1048,8 @@ add("recovery-undo", "recovery", "lab", {
 add("recovery-load-current", "recovery", "lab", {
   label: { en: "Load Current", es: "Cargar versión actual" },
   what: {
-    en: "Replaces Custom with the approved public theme and experience.",
-    es: "Reemplaza Custom con el tema y la experiencia públicos aprobados.",
+    en: "Loads Current into the Lab working preview. Recovery/reference only. Does not publish.",
+    es: "Carga Current en la vista previa de trabajo del Lab. Solo recuperación/referencia. No publica.",
   },
   see: {
     en: "Preview matches the live site configuration.",
@@ -832,11 +1111,11 @@ add("recovery-load-inspired", "recovery", "lab", {
   },
 });
 
-add("recovery-apply", "recovery", "lab", {
-  label: { en: "Apply Custom as Current", es: "Aplicar Custom como versión actual" },
+add("recovery-apply", "approval", "lab", {
+  label: { en: "Promote All Custom to Current", es: "Promover todo Custom a Current" },
   what: {
-    en: "One approval action. Validates Theme and Experience, prepares both writes, then persists both. Success only if both writes succeed.",
-    es: "Una sola acción de aprobación. Valida Tema y Experiencia, prepara ambas escrituras y las persiste. Solo hay éxito si ambas escrituras funcionan.",
+    en: "Promotes every approved Custom change to Current. The only Approval & Publish action that writes all domains together. Factory is never overwritten.",
+    es: "Promueve todos los cambios aprobados en Custom a Current. La única acción de Aprobación y publicación que escribe todos los dominios juntos. Factory no se sobrescribe.",
   },
   see: {
     en: "On success: WCDA Current updated successfully. Theme and Experience are synchronized. On failure: Nothing was applied. WCDA Current remains unchanged.",
@@ -847,17 +1126,74 @@ add("recovery-apply", "recovery", "lab", {
     es: "Archivo de tema aprobado y archivo de experiencia aprobado, escritos juntos por /api/internal/apply.",
   },
   compatible: {
-    en: "The only explicit save/approval action.",
-    es: "La única acción explícita de guardado/aprobación.",
+    en: "The only explicit public save/approval action.",
+    es: "La única acción explícita de guardado/aprobación pública.",
   },
   incompatible: {
-    en: "Cannot overwrite WCDA Factory Theme or Factory Experience. Theme-only and Experience-only save routes are disabled.",
-    es: "No puede sobrescribir WCDA Factory Theme ni Factory Experience. Las rutas de guardado solo-tema o solo-experiencia están desactivadas.",
+    en: "Does not publish unsaved section drafts. Cannot overwrite WCDA Factory. Section Apply never writes Current.",
+    es: "No publica borradores de sección sin aplicar. No puede sobrescribir WCDA Factory. Aplicar sección nunca escribe Current.",
   },
   persist: {
     en: "Atomic write with rollback: if Experience fails after Theme was written, Theme is restored. A fresh public page and a fresh Lab preview then both read the same approved files. Lab localStorage drafts cannot override public Current.",
     es: "Escritura atómica con rollback: si Experiencia falla después de escribir Tema, se restaura Tema. Una página pública nueva y el Lab leen los mismos archivos aprobados. El localStorage del Lab no puede anular Current público.",
   },
+});
+
+add("recovery-reset-all", "recovery", "lab", {
+  label: { en: "Reset All to Current", es: "Restablecer todo a Current" },
+  what: {
+    en: "Discards Custom and every unsaved section draft, then restores the latest WCDA Current.",
+    es: "Descarta Custom y todos los borradores de sección, y restaura la última versión de WCDA Current.",
+  },
+  see: {
+    en: "Preview matches Current. Factory is unchanged. Current files are not written.",
+    es: "La vista previa coincide con Current. Factory no cambia. No se escriben archivos de Current.",
+  },
+  where: { en: "Custom working copy only.", es: "Solo la copia de trabajo Custom." },
+  compatible: { en: "Safe anytime. Does not write Current or Factory.", es: "Seguro en cualquier momento. No escribe Current ni Factory." },
+  incompatible: {
+    en: "Discards staged Custom. Does not publish.",
+    es: "Descarta Custom preparado. No publica.",
+  },
+  persist: persistLabOnly(),
+});
+
+add("section-apply", "recovery", "lab", {
+  label: { en: "Apply Section", es: "Aplicar sección" },
+  what: {
+    en: "Section Apply saves this section to Custom only. It does not change WCDA Current.",
+    es: "Aplicar sección guarda únicamente esta sección en Custom. No cambia WCDA Current.",
+  },
+  see: {
+    en: "Section status becomes Applied to Custom. Other sections stay as they are.",
+    es: "El estado de la sección pasa a Aplicado a Custom. Las demás secciones no cambian.",
+  },
+  where: { en: "Custom staged snapshot. Not public Current.", es: "Instantánea Custom. No es Current público." },
+  compatible: { en: "Brand, Colors, Typography, Media, Containers, Motion, Special Effects.", es: "Marca, Colores, Tipografía, Media, Contenedores, Movimiento, Efectos especiales." },
+  incompatible: {
+    en: "Does not write Factory or Current.",
+    es: "No escribe Factory ni Current.",
+  },
+  persist: persistLabOnly(),
+});
+
+add("section-reset", "recovery", "lab", {
+  label: { en: "Reset Section", es: "Restablecer sección" },
+  what: {
+    en: "Restores only this section to its last Applied-to-Custom snapshot.",
+    es: "Restaura solo esta sección a su última instantánea Aplicado a Custom.",
+  },
+  see: {
+    en: "Unsaved edits in this section disappear. Other sections are untouched.",
+    es: "Desaparecen las ediciones sin guardar de esta sección. Las demás no se tocan.",
+  },
+  where: { en: "Custom staged snapshot. Not Current.", es: "Instantánea Custom. No es Current." },
+  compatible: { en: "Any staged Lab section.", es: "Cualquier sección del laboratorio." },
+  incompatible: {
+    en: "Does not write Factory or Current. Does not reset other sections.",
+    es: "No escribe Factory ni Current. No restablece otras secciones.",
+  },
+  persist: persistLabOnly(),
 });
 
 add("recovery-copy-theme", "recovery", "lab", {
@@ -896,14 +1232,14 @@ add("recovery-copy-experience", "recovery", "lab", {
 });
 
 add("media-asset", "media", "experience", {
-  label: { en: "Image / logo asset", es: "Recurso de imagen / logo" },
+  label: { en: "Change Image", es: "Cambiar imagen" },
   what: {
-    en: "Chooses which approved file the selected media slot displays.",
-    es: "Elige qué archivo aprobado muestra el hueco de media seleccionado.",
+    en: "Opens the visual picker to drop, choose, or select an image for this target.",
+    es: "Elige una imagen para este destino: arrastrar, elegir archivo o seleccionar de la galería.",
   },
   see: {
-    en: "The selected image or logo swaps inside its real container.",
-    es: "La imagen o logo seleccionado cambia dentro de su contenedor real.",
+    en: "The selected image appears immediately in Preview. Apply saves only this image to Custom.",
+    es: "La imagen seleccionada aparece de inmediato en Preview. Aplicar guarda solo esta imagen en Custom.",
   },
   where: {
     en: "Only media-composer targets (not marquee, not Primary CTA).",
@@ -950,7 +1286,7 @@ add("media-scale", "media", "experience", {
 });
 
 add("media-x", "media", "experience", {
-  label: { en: "Position X", es: "Posición X" },
+  label: { en: "Horizontal Position", es: "Posición horizontal" },
   what: {
     en: "Slides the image horizontally inside the frame (object-position).",
     es: "Desliza la imagen en horizontal dentro del marco (object-position).",
@@ -969,7 +1305,7 @@ add("media-x", "media", "experience", {
 });
 
 add("media-y", "media", "experience", {
-  label: { en: "Position Y", es: "Posición Y" },
+  label: { en: "Vertical Position", es: "Posición vertical" },
   what: {
     en: "Slides the image vertically inside the frame.",
     es: "Desliza la imagen en vertical dentro del marco.",
@@ -1283,6 +1619,34 @@ add("container-circle-size", "containers", "experience", {
     es: "Otros preajustes de contenedor. Logo, marquee y destinos que no ofrecen el Contenedor 05.",
   },
   persist: persistExperience(),
+});
+
+add("container-surface-intensity", "containers", "experience", {
+  label: { en: "Surface lightness", es: "Claridad del fondo" },
+  what: {
+    en: "Adjusts only the lightness of the selected card background. 0% is the original color. Positive values lighten. Negative values darken. Text, borders, and content remain unchanged.",
+    es: "Ajusta únicamente la claridad del fondo de la tarjeta seleccionada. 0% es el color original. Los valores positivos aclaran. Los valores negativos oscurecen. El texto, los bordes y el contenido no cambian.",
+  },
+  see: {
+    en: "The selected card family’s fill gets lighter toward white or darker toward black. 0% matches the original surface exactly.",
+    es: "El relleno de la familia de tarjetas se aclara hacia el blanco o se oscurece hacia el negro. 0% coincide exactamente con la superficie original.",
+  },
+  where: {
+    en: "Selected compatible card family only. Not a global recolor of unrelated cards.",
+    es: "Solo la familia de tarjetas compatible seleccionada. No recolorea tarjetas no relacionadas.",
+  },
+  compatible: {
+    en: "Patient Resource cards, Service cards, Editorial cards, and other standard card surfaces that use a semantic background fill.",
+    es: "Tarjetas de recursos para pacientes, tarjetas de servicio, tarjetas editoriales y otras superficies de tarjeta con relleno semántico.",
+  },
+  incompatible: {
+    en: "Header Logo, transparent media, marquee, Inset Badge Cutout / Integrated Cutout geometry, decorative effects, and elements without a surface background.",
+    es: "Logo del encabezado, media transparente, marquee, geometría de Recorte con insignia integrada, efectos decorativos y elementos sin fondo de superficie.",
+  },
+  persist: {
+    en: "Preview now. Apply Section stores it on Custom. Reset Section restores the Custom snapshot. Apply All as Current writes it to the public experience. Factory is never overwritten.",
+    es: "Vista previa inmediata. Aplicar sección lo guarda en Custom. Restablecer sección restaura la instantánea Custom. Aplicar todo como versión actual lo escribe en la experiencia pública. Factory nunca se sobrescribe.",
+  },
 });
 
 add("motion-entrance", "motion", "experience", {
@@ -1859,11 +2223,14 @@ add("beforeafter", "effects", "experience", {
 
 add("cursor", "effects", "experience", {
   label: { en: "Cursor companion", es: "Compañero del cursor" },
-  what: { en: "Off or a subtle follower near the pointer.", es: "Apagado o un seguidor sutil del puntero." },
+  what: {
+    en: "Global cursor interaction effect. Off or a subtle follower near the pointer.",
+    es: "Efecto global de interacción del cursor. Apagado o un seguidor sutil del puntero.",
+  },
   see: { en: "A small companion trails the cursor on pointer devices.", es: "Un compañero pequeño sigue el cursor." },
   where: {
-    en: "Global experience. Lab exposes it on Header Logo. Public mounts it from approved experience.",
-    es: "Experience global. El Lab lo muestra en el Logo. El público lo monta desde la experiencia aprobada.",
+    en: "Always available in Special Effects, independent of Selected Element. It affects the website preview globally, not only the selected media element. Public mounts it from approved experience.",
+    es: "Siempre disponible en Efectos especiales, independiente del elemento seleccionado. Afecta la vista previa del sitio de forma global, no solo el elemento de media seleccionado. El público lo monta desde la experiencia aprobada.",
   },
   compatible: { en: "Pointer devices.", es: "Dispositivos con puntero." },
   incompatible: {
@@ -1873,11 +2240,481 @@ add("cursor", "effects", "experience", {
   persist: persistExperience(),
 });
 
+add("hero-content-offset-y", "position", "experience", {
+  label: { en: "Vertical Position", es: "Posición vertical" },
+  what: {
+    en: "Moves the Home Hero Content group up or down as one block. 0 is the approved baseline.",
+    es: "Mueve el grupo de Contenido del héroe hacia arriba o abajo como un solo bloque. 0 es la base aprobada.",
+  },
+  see: {
+    en: "Headline, paragraph, buttons, and PREVENT / TREAT / PROTECT move together.",
+    es: "El titular, el párrafo, los botones y PREVENT / TREAT / PROTECT se mueven juntos.",
+  },
+  where: {
+    en: "Home > Hero > Hero Content only.",
+    es: "Solo Inicio > Héroe > Contenido del héroe.",
+  },
+  compatible: {
+    en: "Home Hero Content.",
+    es: "Contenido del héroe de inicio.",
+  },
+  incompatible: {
+    en: "Does not move Hero Media, Header, or other sections.",
+    es: "No mueve Hero Media, el encabezado ni otras secciones.",
+  },
+  persist: persistExperience(),
+});
+
+add("hero-content-offset-x", "position", "experience", {
+  label: { en: "Horizontal Position", es: "Posición horizontal" },
+  what: {
+    en: "Moves the Home Hero Content group left or right as one block. 0 is the approved baseline.",
+    es: "Mueve el grupo de Contenido del héroe a izquierda o derecha como un solo bloque. 0 es la base aprobada.",
+  },
+  see: {
+    en: "The entire content stack shifts horizontally over the photograph.",
+    es: "Toda la pila de contenido se desplaza en horizontal sobre la fotografía.",
+  },
+  where: {
+    en: "Home > Hero > Hero Content only.",
+    es: "Solo Inicio > Héroe > Contenido del héroe.",
+  },
+  compatible: {
+    en: "Home Hero Content.",
+    es: "Contenido del héroe de inicio.",
+  },
+  incompatible: {
+    en: "Does not crop or reposition the photograph.",
+    es: "No recorta ni reposiciona la fotografía.",
+  },
+  persist: persistExperience(),
+});
+
+add("hero-content-max-width", "position", "experience", {
+  label: { en: "Content Width", es: "Ancho del contenido" },
+  what: {
+    en: "Sets the max width of the Home Hero Content block. It does not change global typography or button size independently.",
+    es: "Define el ancho máximo del bloque de Contenido del héroe. No cambia la tipografía global ni el tamaño de los botones por separado.",
+  },
+  see: {
+    en: "The text column gets narrower or wider. Buttons wrap with the column.",
+    es: "La columna de texto se estrecha o ensancha. Los botones se ajustan con la columna.",
+  },
+  where: {
+    en: "Home > Hero > Hero Content only.",
+    es: "Solo Inicio > Héroe > Contenido del héroe.",
+  },
+  compatible: {
+    en: "Home Hero Content.",
+    es: "Contenido del héroe de inicio.",
+  },
+  incompatible: {
+    en: "Does not change heading font, heading scale, or other pages.",
+    es: "No cambia la fuente de títulos, la escala ni otras páginas.",
+  },
+  persist: persistExperience(),
+});
+
+add("hero-content-reset", "position", "experience", {
+  label: { en: "Reset Position", es: "Restablecer posición" },
+  what: {
+    en: "Restores Vertical Position, Horizontal Position, and Content Width to the Current/approved baseline for Hero Content.",
+    es: "Restablece Posición vertical, Posición horizontal y Ancho del contenido a la base Current/aprobada de Contenido del héroe.",
+  },
+  see: {
+    en: "Only these three Hero Content values return to 0 / default width.",
+    es: "Solo estos tres valores de Contenido del héroe vuelven a 0 / ancho predeterminado.",
+  },
+  where: {
+    en: "Home > Hero > Hero Content only.",
+    es: "Solo Inicio > Héroe > Contenido del héroe.",
+  },
+  compatible: {
+    en: "Home Hero Content.",
+    es: "Contenido del héroe de inicio.",
+  },
+  incompatible: {
+    en: "Does not reset Hero Media, copy, or other elements.",
+    es: "No restablece Hero Media, el texto ni otros elementos.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-position-x", "position", "experience", {
+  label: { en: "Horizontal Position", es: "Posición Horizontal" },
+  what: {
+    en: "Moves the image left or right inside its container.",
+    es: "Mueve la imagen hacia la izquierda o derecha dentro de su contenedor.",
+  },
+  see: {
+    en: "0 shows the left of the image, 50 centers it, 100 shows the right. The container does not move.",
+    es: "0 muestra la izquierda de la imagen, 50 la centra, 100 muestra la derecha. El contenedor no se mueve.",
+  },
+  where: {
+    en: "Selected Service Card Media only.",
+    es: "Solo la media de tarjeta de servicio seleccionada.",
+  },
+  compatible: {
+    en: "Home and Services service-category images.",
+    es: "Imágenes de categoría de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not change container size, radius, grid, Learn more, sibling cards, or Factory.",
+    es: "No cambia tamaño del contenedor, radio, cuadrícula, Learn more, tarjetas hermanas ni Factory.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-position-y", "position", "experience", {
+  label: { en: "Vertical Position", es: "Posición Vertical" },
+  what: {
+    en: "Moves the image up or down inside its container.",
+    es: "Mueve la imagen hacia arriba o abajo dentro de su contenedor.",
+  },
+  see: {
+    en: "0 shows the top of the image, 50 centers it, 100 shows the bottom. The container does not move.",
+    es: "0 muestra la parte superior de la imagen, 50 la centra, 100 muestra la inferior. El contenedor no se mueve.",
+  },
+  where: {
+    en: "Selected Service Card Media only.",
+    es: "Solo la media de tarjeta de servicio seleccionada.",
+  },
+  compatible: {
+    en: "Home and Services service-category images.",
+    es: "Imágenes de categoría de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not change container size, radius, grid, Learn more, sibling cards, or Factory.",
+    es: "No cambia tamaño del contenedor, radio, cuadrícula, Learn more, tarjetas hermanas ni Factory.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-position-zoom", "position", "experience", {
+  label: { en: "Zoom", es: "Zoom" },
+  what: {
+    en: "Enlarges or reduces the image inside its container.",
+    es: "Amplía o reduce la imagen dentro de su contenedor.",
+  },
+  see: {
+    en: "The photograph scales inside the same viewport. Aspect ratio is preserved. The frame does not resize.",
+    es: "La imagen cambia de escala dentro del mismo recuadro. Se conserva la proporción. El marco no cambia de tamaño.",
+  },
+  where: {
+    en: "Selected Service Card Media only. Uses the existing media scale state.",
+    es: "Solo la media de tarjeta de servicio seleccionada.",
+  },
+  compatible: {
+    en: "Home and Services service-category images.",
+    es: "Imágenes de categoría de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not stretch the image, change container geometry, or affect sibling cards.",
+    es: "No estira la imagen, no cambia la geometría del contenedor ni afecta tarjetas hermanas.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-position-reset", "position", "experience", {
+  label: { en: "Reset Position", es: "Restablecer posición" },
+  what: {
+    en: "Restores Horizontal Position, Vertical Position, and Zoom to the Current/approved values for the selected service card image.",
+    es: "Restablece Posición Horizontal, Posición Vertical y Zoom a los valores Current/aprobados de la imagen de tarjeta seleccionada.",
+  },
+  see: {
+    en: "Only this card’s crop returns to Current. Factory is not overwritten. Container shape is unchanged.",
+    es: "Solo el recorte de esta tarjeta vuelve a Current. Factory no se sobrescribe.",
+  },
+  where: {
+    en: "Home or Services > Service Card Media.",
+    es: "Inicio o Servicios > Media de tarjetas de servicio.",
+  },
+  compatible: {
+    en: "Service Card Media on Home and Services.",
+    es: "Media de tarjetas de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not change sibling cards, container shape, Factory, or unrelated visual properties.",
+    es: "No cambia tarjetas hermanas, la forma del contenedor, Factory ni propiedades visuales ajenas.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-pan-x", "position", "experience", {
+  label: { en: "Horizontal Pan", es: "Pan horizontal" },
+  what: {
+    en: "Slides the image left or right inside the same frame.",
+    es: "Desliza la imagen a la izquierda o derecha dentro del mismo recuadro.",
+  },
+  see: {
+    en: "0 is centered. Positive values move the image right. Negative values move it left. The frame stays still.",
+    es: "0 es el centro. Valores positivos mueven la imagen a la derecha. Los negativos, a la izquierda. El recuadro no se mueve.",
+  },
+  where: {
+    en: "Selected Service Card Media only. Same value as dragging the image in Preview.",
+    es: "Solo la media de tarjeta de servicio seleccionada. El mismo valor que al arrastrar la imagen en Preview.",
+  },
+  compatible: {
+    en: "Home and Services service-category images.",
+    es: "Imágenes de categoría de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not change Zoom, object position, container size, sibling cards, or Factory.",
+    es: "No cambia Zoom, posición del recorte, tamaño del contenedor, tarjetas hermanas ni Factory.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-pan-y", "position", "experience", {
+  label: { en: "Vertical Pan", es: "Pan vertical" },
+  what: {
+    en: "Slides the image up or down inside the same frame.",
+    es: "Desliza la imagen hacia arriba o abajo dentro del mismo recuadro.",
+  },
+  see: {
+    en: "0 is centered. Positive values move the image down. Negative values move it up. The frame stays still.",
+    es: "0 es el centro. Valores positivos mueven la imagen hacia abajo. Los negativos, hacia arriba. El recuadro no se mueve.",
+  },
+  where: {
+    en: "Selected Service Card Media only. Same value as dragging the image in Preview.",
+    es: "Solo la media de tarjeta de servicio seleccionada. El mismo valor que al arrastrar la imagen en Preview.",
+  },
+  compatible: {
+    en: "Home and Services service-category images.",
+    es: "Imágenes de categoría de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not change Zoom, object position, container size, sibling cards, or Factory.",
+    es: "No cambia Zoom, posición del recorte, tamaño del contenedor, tarjetas hermanas ni Factory.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-pan-reset", "position", "experience", {
+  label: { en: "Reset Pan", es: "Restablecer pan" },
+  what: {
+    en: "Restores Horizontal Pan and Vertical Pan to Current for this image only.",
+    es: "Restablece Pan horizontal y Pan vertical a Current solo para esta imagen.",
+  },
+  see: {
+    en: "Zoom, object position, fit, container, and the photograph stay as they are.",
+    es: "Zoom, posición del recorte, ajuste, contenedor y fotografía se quedan como están.",
+  },
+  where: {
+    en: "Home or Services > Service Card Media.",
+    es: "Inicio o Servicios > Media de tarjetas de servicio.",
+  },
+  compatible: {
+    en: "Service Card Media on Home and Services.",
+    es: "Media de tarjetas de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not reset Zoom, object position, fit, sibling cards, Factory, or Current.",
+    es: "No restablece Zoom, posición del recorte, ajuste, tarjetas hermanas, Factory ni Current.",
+  },
+  persist: persistExperience(),
+});
+
+add("media-pan-overflow", "position", "experience", {
+  label: { en: "Allow Free Overflow", es: "Permitir desbordamiento libre" },
+  what: {
+    en: "Lets the image move past the usual limits, which can show empty space inside the frame.",
+    es: "Permite mover la imagen más allá de los límites habituales, lo que puede dejar espacio vacío en el recuadro.",
+  },
+  see: {
+    en: "Off keeps the crop modest. On allows the full pan range.",
+    es: "Desactivado mantiene el recorte moderado. Activado permite todo el rango de pan.",
+  },
+  where: {
+    en: "Selected Service Card Media. Advanced option under Free Pan.",
+    es: "Media de tarjeta de servicio seleccionada. Opción avanzada bajo Pan libre.",
+  },
+  compatible: {
+    en: "Home and Services service-category images.",
+    es: "Imágenes de categoría de servicio en Inicio y Servicios.",
+  },
+  incompatible: {
+    en: "Does not change Zoom, object position, or container geometry.",
+    es: "No cambia Zoom, posición del recorte ni la geometría del contenedor.",
+  },
+  persist: persistExperience(),
+});
+
+add("content-page-active", "content", "content", {
+  label: { en: "Page active", es: "Página activa" },
+  what: {
+    en: "Turns the selected public page on or off. Inactive means it is not publicly visible.",
+    es: "Activa o desactiva la página pública seleccionada. Inactiva significa que no es visible al público.",
+  },
+  see: {
+    en: "An inactive page 404s on the public site and is omitted from the sitemap and navigation. Lab preview can still open it.",
+    es: "Una página inactiva da 404 en el sitio público y se omite del sitemap y la navegación. La vista previa del Lab aún puede abrirla.",
+  },
+  where: {
+    en: "The currently previewed manageable page only.",
+    es: "Solo la página administrable en vista previa.",
+  },
+  compatible: {
+    en: "Works with page section switches on the same page.",
+    es: "Funciona con los interruptores de sección de la misma página.",
+  },
+  incompatible: {
+    en: "Does not delete copy, routes, media, Theme, Experience, or Factory. Does not change publication status (Draft/Published).",
+    es: "No borra textos, rutas, media, Tema, Experiencia ni Factory. No cambia el estado de publicación (Borrador/Publicada).",
+  },
+  persist: persistContent(),
+});
+
+add("content-page-status", "content", "content", {
+  label: { en: "Publication status", es: "Estado de publicación" },
+  what: {
+    en: "Shows the stored publication status. It is informational in this panel.",
+    es: "Muestra el estado de publicación almacenado. En este panel es informativo.",
+  },
+  see: {
+    en: "Draft, Review, Approved, or Published. Active/Inactive never promotes Draft to Published.",
+    es: "Borrador, Revisión, Aprobada o Publicada. Activa/Inactiva nunca pasa un Borrador a Publicada.",
+  },
+  where: {
+    en: "The selected page, category, or treatment.",
+    es: "La página, categoría o tratamiento seleccionado.",
+  },
+  compatible: {
+    en: "Displayed next to Active/Inactive.",
+    es: "Se muestra junto a Activa/Inactiva.",
+  },
+  incompatible: {
+    en: "This control cannot rewrite literature or silently publish.",
+    es: "Este control no reescribe literatura ni publica en silencio.",
+  },
+  persist: persistContent(),
+});
+
+add("content-section-active", "content", "content", {
+  label: { en: "Page section active", es: "Sección de página activa" },
+  what: {
+    en: "Shows or hides one section of the selected page. The rest of the page stays available.",
+    es: "Muestra u oculta una sección de la página seleccionada. El resto de la página sigue disponible.",
+  },
+  see: {
+    en: "Only that section is omitted from the public page. Copy for the section is kept.",
+    es: "Solo esa sección se omite de la página pública. Su texto se conserva.",
+  },
+  where: {
+    en: "The currently previewed page’s listed sections.",
+    es: "Las secciones listadas de la página en vista previa.",
+  },
+  compatible: {
+    en: "Page can remain Active while a section is Inactive.",
+    es: "La página puede permanecer Activa con una sección Inactiva.",
+  },
+  incompatible: {
+    en: "Does not delete the section record, media, or literature.",
+    es: "No borra el registro de la sección, media ni literatura.",
+  },
+  persist: persistContent(),
+});
+
+add("content-category-active", "content", "content", {
+  label: { en: "Category active", es: "Categoría activa" },
+  what: {
+    en: "Turns a service category on or off using the existing enabled flag. Status is not changed.",
+    es: "Activa o desactiva una categoría de servicios con el indicador enabled existente. El estado no cambia.",
+  },
+  see: {
+    en: "An inactive or unpublished category is absent from public lists, sitemap, and category routes. Child treatments are not exposed.",
+    es: "Una categoría inactiva o no publicada no aparece en listas públicas, sitemap ni rutas de categoría. No se exponen tratamientos hijos.",
+  },
+  where: {
+    en: "The category shown for the current Services preview.",
+    es: "La categoría mostrada en la vista previa de Servicios actual.",
+  },
+  compatible: {
+    en: "Uses source-of-truth enabled + status. Public only when enabled and status is published.",
+    es: "Usa enabled + status como fuente de verdad. Público solo si enabled y status es published.",
+  },
+  incompatible: {
+    en: "Does not rewrite category copy, media keys, or child literature. Does not promote Draft to Published.",
+    es: "No reescribe textos, claves de media ni literatura hija. No pasa Borrador a Publicada.",
+  },
+  persist: persistContent(),
+});
+
+add("content-treatment-active", "content", "content", {
+  label: { en: "Treatment active", es: "Tratamiento activo" },
+  what: {
+    en: "Turns a treatment on or off using the existing enabled flag. Status stays as stored.",
+    es: "Activa o desactiva un tratamiento con el indicador enabled existente. El estado permanece como está almacenado.",
+  },
+  see: {
+    en: "Public only when enabled is true and status is published. Inactive/draft treatments are absent from lists, sitemap, and public routes (404).",
+    es: "Público solo si enabled es true y status es published. Los tratamientos inactivos o borrador no aparecen en listas, sitemap ni rutas públicas (404).",
+  },
+  where: {
+    en: "The treatment in the current Services preview.",
+    es: "El tratamiento de la vista previa de Servicios actual.",
+  },
+  compatible: {
+    en: "Reactivating a published treatment restores the same stored literature.",
+    es: "Reactivar un tratamiento publicado restaura la misma literatura almacenada.",
+  },
+  incompatible: {
+    en: "Does not delete FAQs, metadata, media keys, or copy. Does not silently publish drafts such as unconfirmed aligner or Botox records.",
+    es: "No borra preguntas frecuentes, metadatos, claves de media ni textos. No publica en silencio borradores como alineadores no confirmados o Botox.",
+  },
+  persist: persistContent(),
+});
+
+add("content-treatment-section-active", "content", "content", {
+  label: { en: "Treatment section active", es: "Sección de tratamiento activa" },
+  what: {
+    en: "Toggles sections.<id>.enabled for the selected treatment. The treatment page can stay public.",
+    es: "Cambia sections.<id>.enabled del tratamiento seleccionado. La página del tratamiento puede seguir pública.",
+  },
+  see: {
+    en: "Only that section is omitted. Overview, FAQ, and other literature remain stored.",
+    es: "Solo se omite esa sección. Descripción general, FAQ y el resto de la literatura siguen almacenadas.",
+  },
+  where: {
+    en: "Existing section records on the selected treatment. Missing sections are not invented.",
+    es: "Registros de sección existentes del tratamiento seleccionado. No se inventan secciones faltantes.",
+  },
+  compatible: {
+    en: "Uses the existing sections.<section>.enabled field. No second publication store for copy.",
+    es: "Usa el campo existente sections.<section>.enabled. No hay un segundo almacén de publicación para el texto.",
+  },
+  incompatible: {
+    en: "Does not delete the section or its literature. Does not change Theme or Experience.",
+    es: "No borra la sección ni su literatura. No cambia Tema ni Experiencia.",
+  },
+  persist: persistContent(),
+});
+
 export const labControls: Record<LabControlId, LabControlDef> = Object.fromEntries(
   controls.map((item) => [item.id, item]),
 ) as Record<LabControlId, LabControlDef>;
 
 export const labControlIds = controls.map((item) => item.id);
+
+export const SERVICE_CARD_POSITION_CONTROL_IDS = [
+  "media-position-x",
+  "media-position-y",
+  "media-position-zoom",
+  "media-position-reset",
+  "media-pan-x",
+  "media-pan-y",
+  "media-pan-reset",
+  "media-pan-overflow",
+] as const satisfies ReadonlyArray<LabControlId>;
+
+for (const id of SERVICE_CARD_POSITION_CONTROL_IDS) {
+  const item = labControls[id];
+  if (!item || !item.help || !item.help.label) {
+    throw new Error(
+      `Lab control "${id}" is not registered with bilingual help in labControls.`,
+    );
+  }
+}
 
 export const labWords: Record<LabLanguage, Record<string, string>> = {
   en: {
@@ -1954,7 +2791,7 @@ export const labWords: Record<LabLanguage, Record<string, string>> = {
     unavailableActions: "Corner Action, Top Action, and Bottom Action are hidden here because this media is not a real link, CTA, or interactive destination. Arrows are action indicators, not decoration.",
     unavailableCarousel: "Carousel Card Chrome is available only for carousel/card-capable targets, not as a normal portrait style.",
     unavailableVideo: "Video Card Chrome is available only for video-capable media and poster/video preview targets.",
-    mediaIntro: "Media Composer controls the selected image inside its real container. Container style still applies per component.",
+    mediaIntro: "Change the selected image, then position it. Apply saves this target only.",
     copyTheme: "Copy theme config",
     copyExperience: "Copy experience config",
     defaultAsset: "Component default",
@@ -2052,7 +2889,7 @@ export const labWords: Record<LabLanguage, Record<string, string>> = {
     unavailableActions: "Corner Action, Top Action y Bottom Action están ocultos aquí porque esta media no es un enlace, CTA o destino interactivo real. Las flechas indican acción, no son decoración.",
     unavailableCarousel: "Carousel Card Chrome solo está disponible en destinos de carrusel/tarjeta, no como estilo normal de retrato.",
     unavailableVideo: "Video Card Chrome solo está disponible en media con video y destinos de póster/vista previa.",
-    mediaIntro: "Media Composer controla la imagen seleccionada dentro de su contenedor real. El estilo de contenedor sigue aplicando por componente.",
+    mediaIntro: "Cambie la imagen seleccionada y luego posicione. Aplicar guarda solo este destino.",
     copyTheme: "Copiar configuración de tema",
     copyExperience: "Copiar configuración de experiencia",
     defaultAsset: "Predeterminado del componente",
@@ -2082,6 +2919,7 @@ export const labTargetLabels: Record<LabLanguage, Record<VisualTargetId, string>
   en: {
     "header-logo": "Header Logo",
     "home-hero-media": "Home Hero Media",
+    "home-hero-content": "Hero Content",
     "home-doctor-media": "Dr. Matute Media",
     "home-care-areas": "Service Card Media",
     "home-cta": "Primary CTA",
@@ -2092,10 +2930,13 @@ export const labTargetLabels: Record<LabLanguage, Record<VisualTargetId, string>
     "services-treatment-media": "Treatment Media",
     "contact-media": "Contact Media",
     "technology-media": "Technology Media",
+    "patients-resource-cards": "Patient Resource Cards",
+    "editorial-cards": "Editorial Cards",
   },
   es: {
     "header-logo": "Logo del encabezado",
     "home-hero-media": "Media del héroe (inicio)",
+    "home-hero-content": "Contenido del héroe",
     "home-doctor-media": "Media del Dr. Matute",
     "home-care-areas": "Media de tarjetas de servicio",
     "home-cta": "CTA primario",
@@ -2106,6 +2947,8 @@ export const labTargetLabels: Record<LabLanguage, Record<VisualTargetId, string>
     "services-treatment-media": "Media de tratamientos",
     "contact-media": "Media de contacto",
     "technology-media": "Media de tecnología",
+    "patients-resource-cards": "Tarjetas de recursos para pacientes",
+    "editorial-cards": "Tarjetas editoriales",
   },
 };
 
@@ -2114,8 +2957,13 @@ export const labPageLabels: Record<LabLanguage, Record<PreviewPagePath, string>>
     "/": "Home",
     "/about": "About",
     "/about/dr-jonnathan-matute": "Dr. Matute",
+    "/about/team": "Team",
     "/services": "Services",
     "/patients": "Patients",
+    "/patients/first-visit": "First visit",
+    "/patients/financial-options": "Financial options",
+    "/patients/insurance": "Insurance",
+    "/patients/forms": "Patient forms",
     "/technology": "Technology",
     "/contact": "Contact",
   },
@@ -2123,8 +2971,13 @@ export const labPageLabels: Record<LabLanguage, Record<PreviewPagePath, string>>
     "/": "Inicio",
     "/about": "Acerca de",
     "/about/dr-jonnathan-matute": "Dr. Matute",
+    "/about/team": "Equipo",
     "/services": "Servicios",
     "/patients": "Pacientes",
+    "/patients/first-visit": "Primera visita",
+    "/patients/financial-options": "Opciones financieras",
+    "/patients/insurance": "Seguro",
+    "/patients/forms": "Formularios",
     "/technology": "Tecnología",
     "/contact": "Contacto",
   },
@@ -2454,6 +3307,7 @@ export const selectedElementMatrix: Array<{
 }> = [
   { id: "header-logo", page: "/", component: "HeaderLogo / SiteHeader", brand: true, colors: true, typography: true, media: true, containers: true, motion: false, effects: { en: "Cursor companion", es: "Compañero de cursor" } },
   { id: "home-hero-media", page: "/", component: "Hero ExperienceSlot", brand: true, colors: true, typography: true, media: true, containers: true, motion: true, effects: { en: "Video", es: "Video" } },
+  { id: "home-hero-content", page: "/", component: "Hero Content", brand: true, colors: true, typography: true, media: false, containers: false, motion: false, effects: { en: "Position", es: "Posición" } },
   { id: "home-doctor-media", page: "/", component: "PracticeIntroduction / ExperienceMedia", brand: true, colors: true, typography: true, media: true, containers: true, motion: true, effects: { en: "Badges (Inset Badge Cutout). No action arrows.", es: "Insignias (Recorte con insignia integrada). Sin flechas de acción." } },
   { id: "home-care-areas", page: "/", component: "CareAreaCollection", brand: true, colors: true, typography: true, media: true, containers: true, motion: true, effects: { en: "Carousel, corner action", es: "Carrusel, acción de esquina" } },
   { id: "home-cta", page: "/", component: "PatientCta", brand: true, colors: true, typography: true, media: false, containers: true, motion: true, effects: { en: "None", es: "Ninguno" } },
@@ -2464,6 +3318,8 @@ export const selectedElementMatrix: Array<{
   { id: "services-treatment-media", page: "/services", component: "TreatmentItem / groups", brand: true, colors: true, typography: true, media: true, containers: true, motion: true, effects: { en: "None (no video/carousel chrome)", es: "Ninguno (sin cromado de video/carrusel)" } },
   { id: "technology-media", page: "/technology", component: "TechnologyPage slot", brand: true, colors: true, typography: true, media: true, containers: true, motion: true, effects: { en: "Video, badges. Before/after is experimental and hidden.", es: "Video, insignias. Antes/después es experimental y está oculto." } },
   { id: "contact-media", page: "/contact", component: "ContactMediaStage", brand: true, colors: true, typography: true, media: true, containers: true, motion: true, effects: { en: "None special by default", es: "Ningún efecto especial por defecto" } },
+  { id: "patients-resource-cards", page: "/patients", component: "CardGridSection / PatientsHub", brand: true, colors: true, typography: true, media: false, containers: true, motion: false, effects: { en: "Surface lightness", es: "Claridad del fondo" } },
+  { id: "editorial-cards", page: "/services", component: "InfoCard / editorial-card", brand: true, colors: true, typography: true, media: false, containers: true, motion: false, effects: { en: "Surface lightness. 0% = WCDA Surface #E4D9D1.", es: "Claridad del fondo. 0% = Superficie WCDA #E4D9D1." } },
 ];
 
 export const unavailableNotes = {

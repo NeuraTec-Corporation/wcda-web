@@ -1,0 +1,83 @@
+/* WCDA_CANVAS_EXPERIMENT_START
+   Reversible visual test only.
+   Undo: remove the `@import "./canvas-experiment.css"` line from globals.css.
+   Does not write Factory, Current, or Brand Canon (#EBE1D8 / #002774).
+   WCDA_CANVAS_EXPERIMENT_END */
+
+:root {
+  /* Independent page / header / footer surfaces. Lab writes --theme-*-background. */
+  --wcda-canvas: var(--theme-page-background, #F1E8DC);
+  --wcda-header: var(--theme-header-background, #F1E8DC);
+  --wcda-footer: var(--theme-footer-background, #F1E8DC);
+
+  /* Approved unified page canvas — do not retune card surfaces. */
+  --color-background: var(--wcda-canvas);
+  --color-surface: var(--wcda-canvas);
+  --color-surface-muted: var(--wcda-canvas);
+  --color-section-surface: var(--wcda-canvas);
+  --theme-outline-fill: var(--wcda-canvas);
+  --theme-outline-hover: var(--wcda-canvas);
+
+  /*
+    Container family, same hue as Treatments & Services (#EBE1D8).
+    Level 1 #EBE1D8  — primary cards
+    Level 2 #E5DBD3  — media wells / quiet panels (lightness only)
+    Level 3 #E0D6CE  — icon circles
+  */
+  --wcda-surface-soft: #EBE1D8;
+  --wcda-surface: #EBE1D8;
+  --wcda-surface-strong: #E5DBD3;
+  --wcda-placeholder: #E5DBD3;
+  --wcda-icon-surface: #E0D6CE;
+  --wcda-border: #E4D8CC;
+  --color-border: var(--wcda-border);
+  --color-placeholder: var(--wcda-placeholder);
+  --color-icon-surface: var(--wcda-icon-surface);
+}
+
+html,
+body {
+  background-color: var(--wcda-canvas);
+}
+
+header {
+  background-color: color-mix(in srgb, var(--wcda-header) 95%, transparent);
+}
+
+header summary,
+header details > div {
+  background-color: var(--wcda-header);
+}
+
+footer {
+  background-color: var(--wcda-footer);
+}
+
+/* Card chrome → Level 1. Media wells keep placeholder (Level 2). */
+.exp-container[data-container-preset="clean"],
+.exp-container[data-container-preset="floating-badge"],
+.exp-container[data-container-preset="corner-action"],
+.exp-container[data-container-preset="top-action"],
+.exp-container[data-container-preset="bottom-action"],
+.exp-container[data-container-preset="video-card"],
+.exp-container[data-container-preset="soft-card"],
+.exp-container[data-container-preset="feature-card"],
+.exp-container[data-container-preset="carousel-card"],
+.exp-container[data-container-preset="badge-card"] {
+  --exp-surface-fill: var(--wcda-surface);
+  background-color: color-mix(
+    in srgb,
+    var(--wcda-surface) var(--exp-surface-keep, 100%),
+    var(--exp-surface-toward, var(--wcda-lift))
+  );
+}
+
+.media-placeholder-panel {
+  background-color: var(--wcda-placeholder);
+  background-image: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--wcda-surface) 42%, transparent),
+    transparent 46%,
+    color-mix(in srgb, var(--color-foreground) 4%, transparent)
+  );
+}

@@ -1,3 +1,4 @@
+import { Section } from "@/components/ui/Section";
 import { ActionRow } from "@/components/ui/ActionRow";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -18,12 +19,12 @@ export function MapSection() {
   const headingId = "contact-map-heading";
   const title = maps?.title ?? siteConfig.name;
   const embedUrl = maps?.embedUrl;
+  const mapTitle = address
+    ? `Google Map of ${title} at ${address.formatted}`
+    : `Google Map of ${title}`;
 
   return (
-    <section
-      className="bg-surface-muted pt-section md:pt-section-lg"
-      aria-labelledby={headingId}
-    >
+    <Section tone="muted" aria-labelledby={headingId}>
       <Container>
         <div className="grid min-w-0 items-end gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
           <SectionHeading
@@ -45,32 +46,33 @@ export function MapSection() {
             />
           ) : null}
         </div>
-      </Container>
-      <ContactMediaStage className="relative mt-stack h-72 w-full overflow-hidden md:h-96 lg:h-[28rem]">
-        {embedUrl ? (
-          <iframe
-            title={`Map of ${title}`}
-            src={embedUrl}
-            className="absolute inset-0 h-full w-full border-0"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        ) : (
-          <div className="media-placeholder-panel flex h-full min-h-0 items-center justify-center border-t border-border px-gutter">
-            <div className="max-w-sm border border-border/70 px-6 py-5 text-center">
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-placeholder-ink">
-                {siteConfig.shortName}
-              </p>
-              <p className="mt-3 text-sm font-medium text-foreground sm:text-base">
-                {address ? address.line1 : siteConfig.identity.label}
-              </p>
-              {address ? (
-                <p className="mt-1 text-sm text-muted">{address.line2}</p>
-              ) : null}
+        <ContactMediaStage className="relative mt-stack h-72 w-full overflow-hidden rounded-lg border border-border md:h-96 lg:h-[28rem]">
+          {embedUrl ? (
+            <iframe
+              title={mapTitle}
+              src={embedUrl}
+              className="absolute inset-0 h-full w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          ) : (
+            <div className="media-placeholder-panel flex h-full min-h-0 items-center justify-center px-gutter">
+              <div className="max-w-sm border border-border/70 px-6 py-5 text-center">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-placeholder-ink">
+                  {siteConfig.shortName}
+                </p>
+                <p className="mt-3 text-sm font-medium text-foreground sm:text-base">
+                  {address ? address.line1 : siteConfig.identity.label}
+                </p>
+                {address ? (
+                  <p className="mt-1 text-sm text-muted">{address.line2}</p>
+                ) : null}
+              </div>
             </div>
-          </div>
-        )}
-      </ContactMediaStage>
-    </section>
+          )}
+        </ContactMediaStage>
+      </Container>
+    </Section>
   );
 }

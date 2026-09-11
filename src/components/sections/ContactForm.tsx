@@ -21,7 +21,15 @@ export function ContactForm() {
   }
 
   return (
-    <Card className="bg-surface p-card-lg">
+    <Card
+      className="p-card-lg"
+      data-visual-target="editorial-cards"
+      data-surface-mix=""
+      style={{
+        ["--exp-surface-fill" as string]: "var(--wcda-surface)",
+        ["--color-border" as string]: "var(--wcda-border)",
+      }}
+    >
       <h2 className="text-lg font-semibold tracking-tight text-foreground">
         Send a message
       </h2>

@@ -12,7 +12,13 @@ export const metadata = createPageMetadata({
 export default function Page() {
   return (
     <>
-      <PageIntro {...accessibilityPage} />
+      <PageIntro
+        {...accessibilityPage}
+        breadcrumb={[
+          { href: "/", label: "Home" },
+          { label: "Accessibility" },
+        ]}
+      />
       {accessibilitySections.map((section, index) => (
         <ContentBlockSection
           key={section.headingId}

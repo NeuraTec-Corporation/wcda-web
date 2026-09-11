@@ -1,11 +1,6 @@
-import { ActionRow } from "@/components/ui/ActionRow";
-import { Container } from "@/components/ui/Container";
-import { MediaFrame } from "@/components/ui/MediaFrame";
-import { CompositionOffset } from "@/components/experience/CompositionOffset";
-import { Prose } from "@/components/ui/Prose";
-import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TreatmentList } from "@/components/sections/TreatmentList";
+import { EditorialHero, OptionalMediaPanel } from "@/components/editorial";
+import { Prose } from "@/components/ui/Prose";
 import { headerCta } from "@/data/navigation";
 import type { ServiceCategory, ServiceRecord } from "@/types/content";
 
@@ -20,36 +15,32 @@ export function ServiceCategoryPage({
 }: ServiceCategoryPageProps) {
   return (
     <>
-      <Section className="py-10 md:py-16" aria-labelledby="category-heading">
-        <Container>
-          <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
-            <div className="exp-shell relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
-              <CompositionOffset side="left" />
-              <MediaFrame
-                mediaKey={category.mediaKey}
-                className="relative rounded-lg border border-border"
-                sizes="(min-width: 64rem) 22rem, 100vw"
-              />
-            </div>
-            <div className="min-w-0">
-              <SectionHeading
-                as="h1"
-                id="category-heading"
-                eyebrow="Areas of Care"
-                title={category.title}
-                description={category.summary}
-              />
-              <Prose className="mt-stack">
-                <p>{category.description}</p>
-              </Prose>
-              <ActionRow
-                primary={headerCta}
-                secondary={{ href: "/services", label: "All services" }}
-              />
-            </div>
-          </div>
-        </Container>
-      </Section>
+      <EditorialHero
+        headingId="category-heading"
+        eyebrow="Areas of Care"
+        title={category.title}
+        description={category.summary}
+        breadcrumb={[
+          { href: "/", label: "Home" },
+          { href: "/services", label: "Services" },
+          { label: category.title },
+        ]}
+        primaryAction={headerCta}
+        secondaryAction={{ href: "/services", label: "All services" }}
+        media={
+          <OptionalMediaPanel
+            mediaKey={category.mediaKey}
+            visualTarget="services-care-cards"
+            aspectRatio="4 / 3"
+            sizes="(min-width: 64rem) 28rem, 100vw"
+          />
+        }
+        mediaFirst
+      >
+        <Prose className="mt-stack max-w-none">
+          <p>{category.description}</p>
+        </Prose>
+      </EditorialHero>
       <TreatmentList
         headingId="category-treatments-heading"
         title="Treatments & services"

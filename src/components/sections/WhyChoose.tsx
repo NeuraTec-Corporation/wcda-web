@@ -13,7 +13,8 @@ export function WhyChoose({
     <CardGridSection
       headingId={headingId}
       tone="surface"
-      variant="ruled"
+      variant="cards"
+      columns={3}
       {...content}
     />
   );

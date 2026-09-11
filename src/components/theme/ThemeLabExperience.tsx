@@ -4,19 +4,36 @@ import {
   containerPresetsForTarget,
   containerToMediaStyle,
   getComponentConfig,
-  headerLogoContainerStyles,
+  getContainerSurfaceIntensity,
   HEADER_LOGO_STYLE_IDS,
+  HERO_CONTENT_OFFSET_MAX,
+  HERO_CONTENT_OFFSET_MIN,
+  HERO_CONTENT_WIDTH_MAX,
+  HERO_CONTENT_WIDTH_MIN,
+  heroContentLayout,
   INSET_BADGE_SIZE_MAX,
   INSET_BADGE_SIZE_MIN,
   insetBadgeSizePx,
   isActionCompatibleTarget,
   isCarouselChromeTarget,
   isMediaComposerTarget,
+  isPerItemMediaTarget,
+  isSurfaceIntensityControlVisible,
+  isSurfaceIntensityTarget,
   isVideoChromeTarget,
   labVisibleContainerPreset,
+  MEDIA_PAN_MAX,
+  MEDIA_PAN_MIN,
   mediaStylesForTarget,
   mediaStyleToContainer,
+  resolveItemMedia,
+  resolveMediaPan,
+  SURFACE_LIGHTNESS_MAX,
+  SURFACE_LIGHTNESS_MIN,
   updateComponentConfig,
+  updateContainerSurfaceIntensity,
+  updateItemAsset,
+  updateItemMedia,
   type AspectRatioPreset,
   type BadgeDiameter,
   type BadgeIconId,
@@ -68,25 +85,26 @@ import {
   useLabLanguage,
 } from "@/components/theme/LabControlHelp";
 import {
-  getAssetsByCategory,
   getContrastWarning,
   logoWidthPresets,
-  mediaAssetCategories,
   mediaPaddingPresets,
   previewBackgrounds,
   scaleRangeForTarget,
   sizePresetsForTarget,
+  type ComposerAssetId,
   type MediaAlignment,
   type MediaPaddingPreset,
   type MediaSizePreset,
   type PreviewBackgroundId,
 } from "@/config/media-assets";
+import { MediaAssetGallery } from "@/components/theme/MediaAssetGallery";
 
 type LabTab = "theme" | "media" | "containers" | "motion" | "effects";
 
 type ThemeLabExperienceProps = {
   experience: ExperienceValues;
   selectedTarget: VisualTargetId;
+  itemKey?: string;
   onChange: (experience: ExperienceValues) => void;
 };
 
@@ -123,7 +141,13 @@ function FieldLabel({
 }
 
 function controlLabel(id: LabControlId, language: ReturnType<typeof useLabLanguage>) {
-  return labText(labControls[id].help.label, language);
+  const item = labControls[id];
+  if (!item) {
+    throw new Error(
+      `Lab control "${id}" is not registered in labControls.`,
+    );
+  }
+  return labText(item.help.label, language);
 }
 
 function GlobalMediaScopeNote() {
@@ -137,22 +161,41 @@ function GlobalMediaScopeNote() {
   );
 }
 
+function GlobalCursorScopeNote() {
+  const language = useLabLanguage();
+  return (
+    <p className="rounded-md border border-amber-500/30 bg-amber-400/10 px-3 py-2 text-[0.7rem] leading-relaxed text-amber-100/90">
+      {language === "es"
+        ? "Efecto global de interacción del cursor. Afecta la vista previa del sitio de forma global, no solo el elemento de media seleccionado."
+        : "Global cursor interaction effect. It affects the website preview globally, not only the selected media element."}
+    </p>
+  );
+}
+
 export function ThemeLabMediaPanel({
   experience,
   selectedTarget,
+  itemKey,
   onChange,
-}: ThemeLabExperienceProps) {
+  openPickerSignal = 0,
+}: ThemeLabExperienceProps & { openPickerSignal?: number }) {
   const w = useWord();
   const language = useLabLanguage();
   const media = experience.media;
   const slot = getComponentConfig(experience, selectedTarget);
   const isLogo = selectedTarget === "header-logo";
   const composerEnabled = isMediaComposerTarget(selectedTarget);
+  const perItemPosition = Boolean(
+    itemKey && isPerItemMediaTarget(selectedTarget),
+  );
   const scaleRange = scaleRangeForTarget(selectedTarget);
   const sizeOptions = sizePresetsForTarget(selectedTarget);
   const widthOptions = logoWidthPresets();
+  const assetValue: ComposerAssetId = itemKey
+    ? (slot.itemAssets?.[itemKey] ?? "default")
+    : slot.assetId;
   const contrastWarning = getContrastWarning({
-    assetId: slot.assetId,
+    assetId: assetValue,
     previewBackground: slot.previewBackground,
     target: selectedTarget,
   });
@@ -198,42 +241,29 @@ export function ThemeLabMediaPanel({
       </p>
       {composerEnabled ? (
         <>
-          <FieldLabel htmlFor="exp-asset" helpId="media-asset">
-            {isLogo
-              ? language === "es"
-                ? "Recurso de logo"
-                : "Logo asset"
-              : language === "es"
-                ? "Recurso de imagen"
-                : "Image asset"}
-          </FieldLabel>
-          <select
+          <MediaAssetGallery
             id="exp-asset"
-            className={selectClass}
-            value={slot.assetId}
-            onChange={(event) => patchSlot({ assetId: event.target.value })}
-          >
-            <option value="default">{w("defaultAsset")}</option>
-            <option value="placeholder">{w("placeholder")}</option>
-            {mediaAssetCategories.map((category) => {
-              const assets = getAssetsByCategory(category.id);
-              return (
-                <optgroup key={category.id} label={wordOrLabel(w, category.id, category.label)}>
-                  {assets.length > 0 ? (
-                    assets.map((asset) => (
-                      <option key={asset.id} value={asset.id}>
-                        {asset.label}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled value={`${category.id}-empty`}>
-                      {w("noAssets")}
-                    </option>
-                  )}
-                </optgroup>
-              );
-            })}
-          </select>
+            language={language}
+            target={selectedTarget}
+            itemKey={itemKey}
+            value={assetValue}
+            openSignal={openPickerSignal}
+            onSelect={(assetId) => {
+              if (itemKey) {
+                onChange(
+                  updateItemAsset(
+                    experience,
+                    selectedTarget,
+                    itemKey,
+                    assetId,
+                  ),
+                );
+                return;
+              }
+              patchSlot({ assetId });
+            }}
+          />
+          <LabControlHelp id="media-asset" />
           {contrastWarning ? (
             <p
               role="status"
@@ -242,6 +272,8 @@ export function ThemeLabMediaPanel({
               ⚠ {w("lowContrast")}
             </p>
           ) : null}
+          {perItemPosition ? null : (
+            <>
           <label
             className="flex items-center justify-between text-sm text-zinc-200"
             htmlFor="exp-scale"
@@ -317,6 +349,48 @@ export function ThemeLabMediaPanel({
             <option value="contain">{w("contain")}</option>
             <option value="cover">{w("cover")}</option>
           </select>
+          <div className="flex flex-wrap gap-1">
+            {(
+              [
+                ["center", 50, 50],
+                ["top", 50, 0],
+                ["bottom", 50, 100],
+                ["left", 0, 50],
+                ["right", 100, 50],
+              ] as const
+            ).map(([id, x, y]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => patchSlot({ positionX: x, positionY: y })}
+                className={`min-h-9 rounded-md border px-2 text-[0.7rem] ${
+                  slot.positionX === x && slot.positionY === y
+                    ? "border-cyan-400 text-white"
+                    : "border-zinc-700 text-zinc-300 hover:border-zinc-500"
+                }`}
+              >
+                {id === "center"
+                  ? language === "es"
+                    ? "Centro"
+                    : "Center"
+                  : id === "top"
+                    ? language === "es"
+                      ? "Arriba"
+                      : "Top"
+                    : id === "bottom"
+                      ? language === "es"
+                        ? "Abajo"
+                        : "Bottom"
+                      : id === "left"
+                        ? language === "es"
+                          ? "Izquierda"
+                          : "Left"
+                        : language === "es"
+                          ? "Derecha"
+                          : "Right"}
+              </button>
+            ))}
+          </div>
           {isLogo ? (
             <>
               <FieldLabel htmlFor="exp-logo-width" helpId="media-logo-width">
@@ -425,13 +499,15 @@ export function ThemeLabMediaPanel({
               </option>
             ))}
           </select>
+            </>
+          )}
         </>
       ) : (
         <p className="text-xs leading-relaxed text-zinc-500">
           {w("noComposer")}
         </p>
       )}
-      {mediaStylesForTarget(selectedTarget).length > 0 ? (
+      {perItemPosition || mediaStylesForTarget(selectedTarget).length === 0 ? null : (
         <>
           <FieldLabel htmlFor="exp-media-style" helpId="media-style">
             {isLogo
@@ -461,9 +537,16 @@ export function ThemeLabMediaPanel({
             ))}
           </select>
         </>
-      ) : null}
-      {composerEnabled && !isLogo ? (
-        <>
+      )}
+      {composerEnabled && !isLogo && !perItemPosition ? (
+        <details
+          id="lab-media-advanced"
+          className="rounded-md border border-zinc-800 bg-zinc-950/60 px-3 py-2"
+        >
+          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">
+            {language === "es" ? "Avanzado" : "Advanced"}
+          </summary>
+          <div className="mt-3 flex flex-col gap-4">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200/90">
             {language === "es"
               ? "Configuración global de imágenes"
@@ -528,7 +611,8 @@ export function ThemeLabMediaPanel({
             <option value="dark">{w("dark")}</option>
             <option value="brand">{w("brandTint")}</option>
           </select>
-        </>
+          </div>
+        </details>
       ) : null}
     </div>
   );
@@ -543,13 +627,10 @@ export function ThemeLabContainersPanel({
   const language = useLabLanguage();
   const slot = getComponentConfig(experience, selectedTarget);
   const isLogo = selectedTarget === "header-logo";
-  const availablePresets = containerPresetsForTarget(selectedTarget);
-  const current = isLogo
-    ? slot.mediaStyle
-    : labVisibleContainerPreset(slot.containerPreset, selectedTarget);
-  const logoStyle = HEADER_LOGO_STYLE_IDS.includes(slot.mediaStyle)
-    ? slot.mediaStyle
-    : "transparent-strip";
+  const availablePresets = isLogo
+    ? []
+    : containerPresetsForTarget(selectedTarget);
+  const current = labVisibleContainerPreset(slot.containerPreset, selectedTarget);
   const currentListed = availablePresets.some((preset) => preset.id === current);
   const showActionNote =
     !isLogo &&
@@ -566,21 +647,19 @@ export function ThemeLabContainersPanel({
   return (
     <fieldset className="min-w-0">
       <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
-        {isLogo
-          ? language === "es"
-            ? "Franja de marca del encabezado"
-            : "Header brand strip"
-          : labText(labControls["container-preset"].help.label, language)}
+        {labText(labControls["container-preset"].help.label, language)}
       </legend>
       <LabControlHelp id="container-preset" />
       <p className="mt-2 text-xs leading-relaxed text-zinc-500">
-        {isLogo
-          ? w("headerStrip")
-          : availablePresets.length === 0
-            ? w("noContainer")
-            : language === "es"
-              ? "Aplica solo al componente seleccionado. Los colores de tema siguen siendo globales. Cambiar preajustes no guarda hasta Aplicar."
-              : "Applies to the selected media or card only. Theme colors stay global. Cycling presets is unsaved until Apply."}
+        {availablePresets.length === 0
+          ? isSurfaceIntensityTarget(selectedTarget)
+            ? language === "es"
+              ? "Este destino no tiene preajustes de contenedor. La claridad del fondo aplica a esta familia de tarjetas."
+              : "This target has no container presets. Surface lightness applies to this card family."
+            : w("noContainer")
+          : language === "es"
+            ? "Aplica solo al componente seleccionado. Los colores de tema siguen siendo globales. Cambiar preajustes no guarda hasta Aplicar."
+            : "Applies to the selected media or card only. Theme colors stay global. Cycling presets is unsaved until Apply."}
       </p>
       {availablePresets.some(
         (preset) =>
@@ -620,29 +699,7 @@ export function ThemeLabContainersPanel({
         </p>
       ) : null}
       <div className="mt-3 grid grid-cols-1 gap-2">
-        {isLogo
-          ? headerLogoContainerStyles.map((preset) => (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() =>
-                  onChange(
-                    updateComponentConfig(experience, selectedTarget, {
-                      mediaStyle: preset.id,
-                      containerPreset: "clean",
-                    }),
-                  )
-                }
-                className={`min-h-11 rounded-md border px-3 text-left text-sm ${
-                  logoStyle === preset.id
-                    ? "border-cyan-400 bg-cyan-400/10 text-white"
-                    : "border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-500"
-                }`}
-              >
-                {preset.label}
-              </button>
-            ))
-          : availablePresets.map((preset) => (
+        {availablePresets.map((preset) => (
               <button
                 key={preset.id}
                 type="button"
@@ -716,6 +773,48 @@ export function ThemeLabContainersPanel({
             className="mt-2 w-full"
           />
           <LabControlHelp id="container-circle-size" />
+        </div>
+      ) : null}
+      {isSurfaceIntensityControlVisible(selectedTarget, current) ? (
+        <div className="mt-3">
+          <div className="flex items-center justify-between gap-3">
+            <label
+              htmlFor="exp-surface-intensity"
+              className="text-sm text-zinc-200"
+            >
+              {controlLabel("container-surface-intensity", language)}
+            </label>
+            <span className="font-mono text-sm text-zinc-400">
+              {(() => {
+                const pct = Math.round(
+                  getContainerSurfaceIntensity(experience, selectedTarget) *
+                    100,
+                );
+                return `${pct > 0 ? "+" : ""}${pct}%`;
+              })()}
+            </span>
+          </div>
+          <input
+            id="exp-surface-intensity"
+            type="range"
+            min={SURFACE_LIGHTNESS_MIN * 100}
+            max={SURFACE_LIGHTNESS_MAX * 100}
+            step={1}
+            value={Math.round(
+              getContainerSurfaceIntensity(experience, selectedTarget) * 100,
+            )}
+            onChange={(event) =>
+              onChange(
+                updateContainerSurfaceIntensity(
+                  experience,
+                  selectedTarget,
+                  Number(event.target.value) / 100,
+                ),
+              )
+            }
+            className="mt-2 w-full"
+          />
+          <LabControlHelp id="container-surface-intensity" />
         </div>
       ) : null}
       {(() => {
@@ -831,25 +930,72 @@ export function ThemeLabEffectsPanel({
   experience,
   selectedTarget,
   onChange,
-  emptyLabel,
-}: ThemeLabExperienceProps & { emptyLabel?: string }) {
+  variant = "editor",
+}: ThemeLabExperienceProps & { variant?: "editor" | "system" }) {
   const w = useWord();
   const language = useLabLanguage();
-  const scope = labControlScope(selectedTarget);
+  const base = labControlScope(selectedTarget);
+  const scope =
+    variant === "system"
+      ? {
+          ...base,
+          marquee: false,
+          badges: true,
+          cornerAction: true,
+          carousel: true,
+          video: true,
+          beforeAfter: true,
+          cursor: true,
+        }
+      : {
+          ...base,
+          badges: false,
+          cornerAction: false,
+          carousel: false,
+          video: false,
+          beforeAfter: false,
+          cursor: false,
+        };
+  const showCursor = variant === "system";
+  const showElementEffects = true;
   return (
     <div className="flex flex-col gap-5">
-      {!(
-        scope.marquee ||
-        scope.video ||
-        scope.carousel ||
-        scope.badges ||
-        scope.cornerAction ||
-        scope.cursor
-      ) ? (
-        <p className="text-sm text-zinc-500">
-          {emptyLabel ?? "No special effects apply to this element."}
-        </p>
+      {showCursor ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Compañero de cursor" : "Cursor companion"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <GlobalCursorScopeNote />
+          {variant === "system" ? (
+            <p className="rounded-md border border-amber-500/30 bg-amber-400/10 px-3 py-2 text-[0.7rem] leading-relaxed text-amber-100/90">
+              {language === "es"
+                ? "Badges, video, carrusel y acciones de esquina son Experience globales. No pertenecen al elemento seleccionado en Editor."
+                : "Badges, video, carousel, and corner actions are global Experience settings. They do not belong to the selected Editor element."}
+            </p>
+          ) : null}
+          <FieldLabel htmlFor="exp-cursor" helpId="cursor">
+            {controlLabel("cursor", language)}
+          </FieldLabel>
+          <select
+            id="exp-cursor"
+            className={selectClass}
+            value={experience.cursorCompanion}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                cursorCompanion: event.target.value as CursorCompanionMode,
+              })
+            }
+          >
+            <option value="off">{w("off")}</option>
+            <option value="subtle">{w("subtle")}</option>
+          </select>
+        </div>
+      </fieldset>
       ) : null}
+      {showElementEffects ? (
+      <>
       {scope.marquee ? (
       <fieldset className="min-w-0">
         <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
@@ -1650,31 +1796,402 @@ export function ThemeLabEffectsPanel({
         </div>
       </fieldset>
       ) : null}
-
-      {scope.cursor ? (
-      <fieldset className="min-w-0">
-        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
-          {language === "es" ? "Compañero de cursor" : "Cursor companion"}
-        </legend>
-        <FieldLabel htmlFor="exp-cursor" helpId="cursor">
-            {controlLabel("cursor", language)}
-          </FieldLabel>
-        <select
-          id="exp-cursor"
-          className={selectClass}
-          value={experience.cursorCompanion}
-          onChange={(event) =>
-            onChange({
-              ...experience,
-              cursorCompanion: event.target.value as CursorCompanionMode,
-            })
-          }
-        >
-          <option value="off">{w("off")}</option>
-          <option value="subtle">{w("subtle")}</option>
-        </select>
-      </fieldset>
+      </>
       ) : null}
+    </div>
+  );
+}
+
+export function ThemeLabPositionPanel({
+  experience,
+  selectedTarget,
+  itemKey,
+  baseline,
+  onChange,
+}: ThemeLabExperienceProps & { baseline: ExperienceValues }) {
+  const language = useLabLanguage();
+  const perItemPosition = Boolean(
+    itemKey && isPerItemMediaTarget(selectedTarget),
+  );
+
+  if (perItemPosition && itemKey) {
+    const mediaItemKey = itemKey;
+    const scaleRange = scaleRangeForTarget(selectedTarget);
+    const live = resolveItemMedia(
+      getComponentConfig(experience, selectedTarget),
+      mediaItemKey,
+    );
+    const approved = resolveItemMedia(
+      getComponentConfig(baseline, selectedTarget),
+      mediaItemKey,
+    );
+    const scalePercent = Math.round(live.scale * 100);
+
+    function patchMedia(patch: {
+      scale?: number;
+      positionX?: number;
+      positionY?: number;
+      panX?: number;
+      panY?: number;
+      allowFreeOverflow?: boolean;
+    }) {
+      onChange(updateItemMedia(experience, selectedTarget, mediaItemKey, patch));
+    }
+
+    function resetPosition() {
+      patchMedia({
+        scale: approved.scale,
+        positionX: approved.positionX,
+        positionY: approved.positionY,
+      });
+    }
+
+    const pan = resolveMediaPan(live);
+    const approvedPan = resolveMediaPan(approved);
+
+    function resetPan() {
+      patchMedia({
+        panX: approvedPan.panX,
+        panY: approvedPan.panY,
+      });
+    }
+
+    function formatPan(value: number) {
+      const rounded = Math.round(value);
+      return rounded > 0 ? `+${rounded}` : String(rounded);
+    }
+
+    return (
+      <div className="flex flex-col gap-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Posición / recorte" : "Position / Crop"}
+        </p>
+        <div>
+          <FieldLabel htmlFor="service-card-fit" helpId="media-fit">
+            {controlLabel("media-fit", language)}
+          </FieldLabel>
+          <select
+            id="service-card-fit"
+            className={selectClass}
+            value={live.fit}
+            onChange={(event) =>
+              onChange(
+                updateComponentConfig(experience, selectedTarget, {
+                  fit: event.target.value as MediaFit,
+                }),
+              )
+            }
+          >
+            <option value="contain">
+              {labWords[language].contain ?? "Contain"}
+            </option>
+            <option value="cover">
+              {labWords[language].cover ?? "Cover"}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="service-card-x"
+          >
+            <span>{controlLabel("media-position-x", language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {live.positionX}
+            </span>
+          </label>
+          <input
+            id="service-card-x"
+            type="range"
+            min={0}
+            max={100}
+            value={live.positionX}
+            onChange={(event) =>
+              patchMedia({ positionX: Number(event.target.value) })
+            }
+            className="mt-1.5 w-full"
+          />
+          <LabControlHelp id="media-position-x" />
+        </div>
+        <div>
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="service-card-y"
+          >
+            <span>{controlLabel("media-position-y", language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {live.positionY}
+            </span>
+          </label>
+          <input
+            id="service-card-y"
+            type="range"
+            min={0}
+            max={100}
+            value={live.positionY}
+            onChange={(event) =>
+              patchMedia({ positionY: Number(event.target.value) })
+            }
+            className="mt-1.5 w-full"
+          />
+          <LabControlHelp id="media-position-y" />
+        </div>
+        <div>
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="service-card-zoom"
+          >
+            <span>{controlLabel("media-position-zoom", language)}</span>
+            <span className="font-mono text-xs text-zinc-400">
+              {scalePercent}%
+            </span>
+          </label>
+          <input
+            id="service-card-zoom"
+            type="range"
+            min={scaleRange.min}
+            max={scaleRange.max}
+            step={scaleRange.step}
+            value={live.scale}
+            onChange={(event) =>
+              patchMedia({ scale: Number(event.target.value) })
+            }
+            className="mt-1.5 w-full"
+          />
+          <LabControlHelp id="media-position-zoom" />
+        </div>
+        <button
+          type="button"
+          onClick={resetPosition}
+          disabled={
+            live.scale === approved.scale &&
+            live.positionX === approved.positionX &&
+            live.positionY === approved.positionY
+          }
+          className="min-h-11 rounded-md border border-zinc-700 px-3 text-sm text-zinc-200 hover:border-zinc-500 disabled:cursor-not-allowed disabled:border-zinc-800 disabled:text-zinc-600"
+        >
+          {controlLabel("media-position-reset", language)}
+        </button>
+        <p className="text-[0.7rem] leading-relaxed text-zinc-500">
+          {language === "es"
+            ? "Mueve la imagen dentro del recuadro. El tamaño del recuadro no cambia. Aplicar guarda solo esta imagen en Custom."
+            : "Moves the image inside the existing media area. The frame size does not change. Apply saves only this image to Custom."}
+        </p>
+        <div
+          id="lab-free-pan"
+          className="flex flex-col gap-5 border-t border-zinc-800 pt-5"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+            {language === "es" ? "Pan libre" : "Free Pan"}
+          </p>
+          <p className="text-[0.7rem] leading-relaxed text-zinc-500">
+            {language === "es"
+              ? "Arrastra la imagen directamente en Preview para posicionarla libremente."
+              : "Drag the image directly in Preview for free positioning."}
+          </p>
+          <div>
+            <label
+              className="flex items-center justify-between text-sm text-zinc-200"
+              htmlFor="service-card-pan-x"
+            >
+              <span>{controlLabel("media-pan-x", language)}</span>
+              <span className="font-mono text-xs text-zinc-400">
+                {formatPan(pan.panX)}
+              </span>
+            </label>
+            <input
+              id="service-card-pan-x"
+              type="range"
+              min={MEDIA_PAN_MIN}
+              max={MEDIA_PAN_MAX}
+              step={1}
+              value={pan.panX}
+              onChange={(event) =>
+                patchMedia({ panX: Number(event.target.value) })
+              }
+              className="mt-1.5 w-full"
+            />
+            <LabControlHelp id="media-pan-x" />
+          </div>
+          <div>
+            <label
+              className="flex items-center justify-between text-sm text-zinc-200"
+              htmlFor="service-card-pan-y"
+            >
+              <span>{controlLabel("media-pan-y", language)}</span>
+              <span className="font-mono text-xs text-zinc-400">
+                {formatPan(pan.panY)}
+              </span>
+            </label>
+            <input
+              id="service-card-pan-y"
+              type="range"
+              min={MEDIA_PAN_MIN}
+              max={MEDIA_PAN_MAX}
+              step={1}
+              value={pan.panY}
+              onChange={(event) =>
+                patchMedia({ panY: Number(event.target.value) })
+              }
+              className="mt-1.5 w-full"
+            />
+            <LabControlHelp id="media-pan-y" />
+          </div>
+          <button
+            type="button"
+            onClick={resetPan}
+            disabled={
+              pan.panX === approvedPan.panX && pan.panY === approvedPan.panY
+            }
+            className="min-h-11 rounded-md border border-zinc-700 px-3 text-sm text-zinc-200 hover:border-zinc-500 disabled:cursor-not-allowed disabled:border-zinc-800 disabled:text-zinc-600"
+          >
+            {controlLabel("media-pan-reset", language)}
+          </button>
+          <div>
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-zinc-500">
+              {language === "es" ? "Avanzado" : "Advanced"}
+            </p>
+            <label
+              htmlFor="service-card-pan-overflow"
+              className="mt-2 flex min-h-11 items-center gap-2 text-sm text-zinc-200"
+            >
+              <input
+                id="service-card-pan-overflow"
+                type="checkbox"
+                checked={pan.allowFreeOverflow}
+                onChange={(event) =>
+                  patchMedia({ allowFreeOverflow: event.target.checked })
+                }
+              />
+              {controlLabel("media-pan-overflow", language)}
+            </label>
+            <LabControlHelp id="media-pan-overflow" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (selectedTarget !== "home-hero-content") {
+    return (
+      <p className="text-sm leading-relaxed text-zinc-400">
+        {language === "es"
+          ? "Estos controles aplican a Inicio > Héroe > Contenido del héroe, o a Media de tarjetas de servicio."
+          : "These controls apply to Home > Hero > Hero Content, or to Service Card Media."}
+      </p>
+    );
+  }
+
+  const slot = getComponentConfig(experience, selectedTarget);
+  const layout = heroContentLayout(slot);
+  const baselineLayout = heroContentLayout(
+    getComponentConfig(baseline, selectedTarget),
+  );
+
+  function patchLayout(patch: {
+    layoutOffsetX?: number;
+    layoutOffsetY?: number;
+    layoutMaxWidth?: number;
+  }) {
+    onChange(updateComponentConfig(experience, selectedTarget, patch));
+  }
+
+  function resetPosition() {
+    patchLayout({
+      layoutOffsetX: baselineLayout.offsetX,
+      layoutOffsetY: baselineLayout.offsetY,
+      layoutMaxWidth: baselineLayout.maxWidth,
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+        {language === "es" ? "Posición" : "Position"}
+      </p>
+      <div>
+        <FieldLabel htmlFor="hero-content-offset-y" helpId="hero-content-offset-y">
+          {controlLabel("hero-content-offset-y", language)}
+        </FieldLabel>
+        <div className="mt-1.5 flex items-center gap-3">
+          <input
+            id="hero-content-offset-y"
+            type="range"
+            min={HERO_CONTENT_OFFSET_MIN}
+            max={HERO_CONTENT_OFFSET_MAX}
+            step={1}
+            value={layout.offsetY}
+            onChange={(event) =>
+              patchLayout({ layoutOffsetY: Number(event.target.value) })
+            }
+            className="w-full"
+          />
+          <span className="w-12 shrink-0 text-right font-mono text-xs text-zinc-400">
+            {layout.offsetY}
+          </span>
+        </div>
+      </div>
+      <div>
+        <FieldLabel htmlFor="hero-content-offset-x" helpId="hero-content-offset-x">
+          {controlLabel("hero-content-offset-x", language)}
+        </FieldLabel>
+        <div className="mt-1.5 flex items-center gap-3">
+          <input
+            id="hero-content-offset-x"
+            type="range"
+            min={HERO_CONTENT_OFFSET_MIN}
+            max={HERO_CONTENT_OFFSET_MAX}
+            step={1}
+            value={layout.offsetX}
+            onChange={(event) =>
+              patchLayout({ layoutOffsetX: Number(event.target.value) })
+            }
+            className="w-full"
+          />
+          <span className="w-12 shrink-0 text-right font-mono text-xs text-zinc-400">
+            {layout.offsetX}
+          </span>
+        </div>
+      </div>
+      <div>
+        <FieldLabel htmlFor="hero-content-max-width" helpId="hero-content-max-width">
+          {controlLabel("hero-content-max-width", language)}
+        </FieldLabel>
+        <div className="mt-1.5 flex items-center gap-3">
+          <input
+            id="hero-content-max-width"
+            type="range"
+            min={HERO_CONTENT_WIDTH_MIN}
+            max={HERO_CONTENT_WIDTH_MAX}
+            step={0.5}
+            value={layout.maxWidth}
+            onChange={(event) =>
+              patchLayout({ layoutMaxWidth: Number(event.target.value) })
+            }
+            className="w-full"
+          />
+          <span className="w-16 shrink-0 text-right font-mono text-xs text-zinc-400">
+            {layout.maxWidth.toFixed(1)}rem
+          </span>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={resetPosition}
+        disabled={
+          layout.offsetX === baselineLayout.offsetX &&
+          layout.offsetY === baselineLayout.offsetY &&
+          layout.maxWidth === baselineLayout.maxWidth
+        }
+        className="min-h-11 rounded-md border border-zinc-700 px-3 text-sm text-zinc-200 hover:border-zinc-500 disabled:cursor-not-allowed disabled:border-zinc-800 disabled:text-zinc-600"
+      >
+        {controlLabel("hero-content-reset", language)}
+      </button>
+      <p className="text-[0.7rem] leading-relaxed text-zinc-500">
+        {language === "es"
+          ? "0 / 34rem es la base aprobada. Aplicar elemento guarda solo estos valores en Custom. El sitio público no cambia hasta promover a Current."
+          : "0 / 34rem is the approved baseline. Apply Element saves only these values to Custom. The public site does not change until promoted to Current."}
+      </p>
     </div>
   );
 }
