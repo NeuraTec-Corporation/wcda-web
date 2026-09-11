@@ -1,19 +1,45 @@
 "use client";
 
 import { useLayoutEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useExperience } from "@/components/experience/useExperience";
-import { applyScopedElementFills } from "@/config/scoped-colors";
+import {
+  applyScopedElementFills,
+  scopedElementFillCss,
+} from "@/config/scoped-colors";
 
 export function ScopedColorRuntime() {
+  const pathname = usePathname();
   const experience = useExperience();
+  const scopedColors = experience.scopedColors;
 
   useLayoutEffect(() => {
-    applyScopedElementFills(experience.scopedColors);
-    const frame = window.requestAnimationFrame(() => {
-      applyScopedElementFills(experience.scopedColors);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [experience]);
+    let frame = 0;
+    const paint = () => applyScopedElementFills(scopedColors);
+    const schedule = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(paint);
+    };
 
-  return null;
+    paint();
+    schedule();
+
+    const root = document.getElementById("main-content") ?? document.body;
+    const observer = new MutationObserver(schedule);
+    observer.observe(root, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+    };
+  }, [pathname, scopedColors]);
+
+  return (
+    <style
+      id="wcda-scoped-element-fills"
+      dangerouslySetInnerHTML={{
+        __html: scopedElementFillCss(scopedColors),
+      }}
+    />
+  );
 }

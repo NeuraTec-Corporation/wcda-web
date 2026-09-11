@@ -20,7 +20,10 @@ export {
   setSectionScopedColor,
   applyScopedElementFills,
   clearScopedElementFills,
+  resolveScopedElementFill,
   scopedCanvasStyle,
+  scopedElementFillCss,
+  scopedElementFillStyle,
   scopedSurfaceStyle,
 } from "@/config/scoped-colors";
 

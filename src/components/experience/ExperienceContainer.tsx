@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { useExperience } from "@/components/experience/useExperience";
 import { IntegratedCutout } from "@/components/experience/IntegratedCutout";
@@ -10,6 +10,10 @@ import {
   isInsetBadgeCutoutPreset,
   type VisualTargetId,
 } from "@/config/experience";
+import {
+  resolveScopedElementFill,
+  scopedElementFillStyle,
+} from "@/config/scoped-colors";
 
 type ExperienceContainerProps = {
   visualTarget: VisualTargetId;
@@ -24,24 +28,18 @@ export function ExperienceContainer({
 }: ExperienceContainerProps) {
   const experience = useExperience();
   const config = getComponentConfig(experience, visualTarget);
+  const fillHex = resolveScopedElementFill(
+    experience.scopedColors,
+    visualTarget,
+  );
   const container = (
     <div
       className={cn("exp-container", className)}
       data-visual-target={visualTarget}
       data-container-preset={config.containerPreset}
       data-media-style={config.mediaStyle}
-      data-scoped-fill={
-        experience.scopedColors?.elements?.[visualTarget] ? "1" : undefined
-      }
-      style={
-        experience.scopedColors?.elements?.[visualTarget]
-          ? {
-              ["--exp-surface-fill" as string]:
-                experience.scopedColors.elements[visualTarget],
-              ["--exp-surface-keep" as string]: "100%",
-            }
-          : undefined
-      }
+      data-scoped-fill={fillHex ? "1" : undefined}
+      style={scopedElementFillStyle(fillHex) as CSSProperties | undefined}
     >
       {children}
     </div>

@@ -2133,6 +2133,11 @@ export function ThemeLab() {
     const elementId = section ? defaultElementId(section) : "section";
     setEditorElementId(elementId);
     const element = findElement(section, elementId);
+    setLocalColorProperty(
+      defaultLocalProperty(
+        element?.id === "section" ? "section" : element?.visualTarget,
+      ),
+    );
     if (element?.visualTarget) {
       setSelectedTarget(element.visualTarget);
     }
@@ -2155,6 +2160,11 @@ export function ThemeLab() {
     const elementId = defaultElementId(section);
     setEditorElementId(elementId);
     const element = findElement(section, elementId);
+    setLocalColorProperty(
+      defaultLocalProperty(
+        element?.id === "section" ? "section" : element?.visualTarget,
+      ),
+    );
     if (element?.visualTarget) {
       setSelectedTarget(element.visualTarget);
     }
@@ -2168,6 +2178,11 @@ export function ThemeLab() {
   function commitEditorElement(id: LabEditorElementId) {
     setEditorElementId(id);
     const element = findElement(resolvedSection, id);
+    setLocalColorProperty(
+      defaultLocalProperty(
+        element?.id === "section" ? "section" : element?.visualTarget,
+      ),
+    );
     if (element?.visualTarget) {
       setSelectedTarget(element.visualTarget);
     }
@@ -2319,6 +2334,7 @@ export function ThemeLab() {
             setPreviewPage(page.path);
             setPreviewSectionId(payload.sectionId ?? "");
             setEditorElementId("section");
+            setLocalColorProperty("sectionBackground");
             setLabSection("content");
             placeContextMenu(payload);
           };
@@ -2341,6 +2357,13 @@ export function ThemeLab() {
       setPreviewPage(match.page.path);
       setPreviewSectionId(match.section.id);
       setEditorElementId(match.element.id);
+      setLocalColorProperty(
+        defaultLocalProperty(
+          match.element.id === "section"
+            ? "section"
+            : match.element.visualTarget,
+        ),
+      );
       if (match.element.visualTarget) {
         setSelectedTarget(match.element.visualTarget);
       }

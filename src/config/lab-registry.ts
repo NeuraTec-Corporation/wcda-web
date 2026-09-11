@@ -144,6 +144,12 @@ const CONTAINER_ONLY: LabControlFamily[] = ["containers"];
 const MARQUEE_EFFECTS: LabControlFamily[] = ["effects"];
 const CTA_CONTAINER: LabControlFamily[] = ["containers"];
 
+const EDITORIAL_CARDS_ELEMENT = visual(
+  "editorial-cards",
+  { en: "Editorial Cards", es: "Tarjetas editoriales" },
+  CONTAINER_ONLY,
+);
+
 function careCardElements(
   visualTarget: "home-care-areas" | "services-care-cards",
   categories: readonly { slug: string; title: string }[],
@@ -202,14 +208,18 @@ export const labPages: readonly LabPageDef[] = [
     ],
     marquee: [visual("home-marquee", { en: "Services Marquee", es: "Marquee de servicios" }, MARQUEE_EFFECTS)],
     careAreas: careCardElements("home-care-areas", getFeaturedCareAreas()),
+    whyChoose: [EDITORIAL_CARDS_ELEMENT],
     practice: [visual("home-doctor-media", { en: "Dr. Matute Media", es: "Media del Dr. Matute" }, MEDIA_CONTAINER)],
     patientCta: [visual("home-cta", { en: "Primary CTA", es: "CTA primario" }, CTA_CONTAINER)],
   }),
   pageDef("about", {
     philosophy: [visual("about-content", { en: "About Media", es: "Media de About" }, MEDIA_CONTAINER)],
+    whyChoose: [EDITORIAL_CARDS_ELEMENT],
+    links: [EDITORIAL_CARDS_ELEMENT],
   }),
   pageDef("doctor", {
     intro: [visual("about-doctor-media", { en: "Dr. Matute Media", es: "Media del Dr. Matute" }, MEDIA_CONTAINER)],
+    education: [EDITORIAL_CARDS_ELEMENT],
   }),
   pageDef("team", {}),
   pageDef("services", {
@@ -219,25 +229,32 @@ export const labPages: readonly LabPageDef[] = [
   pageDef("patients", {
     resources: [visual("patients-resource-cards", { en: "Patient Resource Cards", es: "Tarjetas de recursos para pacientes" }, CONTAINER_ONLY)],
   }),
-  pageDef("patients-first-visit", {}),
-  pageDef("patients-financial-options", {}),
-  pageDef("patients-insurance", {}),
-  pageDef("patients-forms", {}),
+  pageDef("patients-first-visit", {
+    details: [EDITORIAL_CARDS_ELEMENT],
+  }),
+  pageDef("patients-financial-options", {
+    details: [EDITORIAL_CARDS_ELEMENT],
+  }),
+  pageDef("patients-insurance", {
+    details: [EDITORIAL_CARDS_ELEMENT],
+  }),
+  pageDef("patients-forms", {
+    details: [EDITORIAL_CARDS_ELEMENT],
+  }),
   pageDef("technology", {
     details: [visual("technology-media", { en: "Technology Media", es: "Media de tecnología" }, MEDIA_CONTAINER)],
+    tools: [EDITORIAL_CARDS_ELEMENT],
   }),
   pageDef("contact", {
     intro: [visual("contact-media", { en: "Contact Media", es: "Media de contacto" }, MEDIA_CONTAINER)],
+    details: [EDITORIAL_CARDS_ELEMENT],
+    form: [EDITORIAL_CARDS_ELEMENT],
   }),
 ];
 
 export const labGlobalElements = {
   headerLogo: visual("header-logo", { en: "Header Logo", es: "Logo del encabezado" }, ["media"]),
-  editorialCards: visual(
-    "editorial-cards",
-    { en: "Editorial Cards", es: "Tarjetas editoriales" },
-    CONTAINER_ONLY,
-  ),
+  editorialCards: EDITORIAL_CARDS_ELEMENT,
 } as const;
 
 export const SYSTEM_FAMILIES: readonly LabControlFamily[] = [

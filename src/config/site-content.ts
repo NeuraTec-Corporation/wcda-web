@@ -481,6 +481,7 @@ export const factorySiteContent: SiteContentPatch = {};
 
 /* WCDA_APPROVED_SITE_CONTENT_START */
 export const approvedSiteContent: SiteContentPatch = {
+  "home.hero.heading": "Thoughtful dentistry Personal care",
   "home.hero.pillar1": "Prevent •",
   "home.hero.pillar2": "Treat •",
 };
