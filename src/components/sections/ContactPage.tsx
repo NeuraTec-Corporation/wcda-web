@@ -1,3 +1,5 @@
+import { Breadcrumb } from "@/components/editorial/Breadcrumb";
+import { InfoCard, InfoCardGrid } from "@/components/editorial";
 import { ActionRow } from "@/components/ui/ActionRow";
 import { Container } from "@/components/ui/Container";
 import { HoursList } from "@/components/ui/HoursList";
@@ -16,6 +18,7 @@ import {
 } from "@/data/contact";
 import { headerCta } from "@/data/navigation";
 import type { NavItem } from "@/types/navigation";
+import { PublicationGate } from "@/components/content/PublicationGate";
 
 type ContactPageProps = {
   secondaryAction?: NavItem;
@@ -33,20 +36,33 @@ export function ContactPage({ secondaryAction }: ContactPageProps) {
       <Container>
         <div className="grid min-w-0 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,28rem)] lg:items-start lg:gap-16">
           <div className="min-w-0">
-            <SectionHeading
-              as="h1"
-              id={contactIntro.headingId}
-              eyebrow={contactIntro.eyebrow}
-              title={contactIntro.title}
-              description={contactIntro.description}
-            />
-            <dl className="mt-stack-lg divide-y divide-border border-y border-border">
+            <PublicationGate page="contact" section="intro">
+              <Breadcrumb
+                items={[
+                  { href: "/", label: "Home" },
+                  { label: contactIntro.title },
+                ]}
+                className="mb-5"
+              />
+              <SectionHeading
+                as="h1"
+                id={contactIntro.headingId}
+                eyebrow={contactIntro.eyebrow}
+                title={contactIntro.title}
+                description={contactIntro.description}
+                measure="column"
+              />
+            </PublicationGate>
+            <PublicationGate page="contact" section="details">
+            <InfoCardGrid columns={2} className="mt-stack-lg">
               {address ? (
-                <div className="grid min-w-0 gap-1 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
-                  <dt className="text-sm font-medium text-foreground">
-                    Address
-                  </dt>
-                  <dd className="text-sm leading-relaxed text-muted">
+                <InfoCard
+                  headingId="contact-address-heading"
+                  title="Address"
+                  sectionId="overview"
+                  headingLevel="h2"
+                >
+                  <p className="text-sm leading-relaxed text-muted">
                     <TextLink
                       href={address.mapsHref}
                       className="min-h-0 text-sm font-normal text-muted hover:text-primary"
@@ -55,54 +71,70 @@ export function ContactPage({ secondaryAction }: ContactPageProps) {
                       <br />
                       {address.line2}
                     </TextLink>
-                  </dd>
-                </div>
+                  </p>
+                </InfoCard>
               ) : null}
               {phone ? (
-                <div className="grid min-w-0 gap-1 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
-                  <dt className="text-sm font-medium text-foreground">Phone</dt>
-                  <dd className="text-sm leading-relaxed text-muted">
+                <InfoCard
+                  headingId="contact-phone-heading"
+                  title="Phone"
+                  sectionId="whatToExpect"
+                  index={1}
+                  headingLevel="h2"
+                >
+                  <p className="text-sm leading-relaxed text-muted">
                     <TextLink
                       href={phone.href}
                       className="min-h-0 text-sm font-normal text-muted hover:text-primary"
                     >
                       {phone.display}
                     </TextLink>
-                  </dd>
-                </div>
+                  </p>
+                </InfoCard>
               ) : null}
               {email ? (
-                <div className="grid min-w-0 gap-1 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
-                  <dt className="text-sm font-medium text-foreground">Email</dt>
-                  <dd className="break-words text-sm leading-relaxed text-muted">
+                <InfoCard
+                  headingId="contact-email-heading"
+                  title="Email"
+                  sectionId="maintenance"
+                  index={2}
+                  headingLevel="h2"
+                >
+                  <p className="break-words text-sm leading-relaxed text-muted">
                     <TextLink
                       href={email.href}
                       className="min-h-0 text-sm font-normal text-muted hover:text-primary"
                     >
                       {email.display}
                     </TextLink>
-                  </dd>
-                </div>
+                  </p>
+                </InfoCard>
               ) : null}
               {hours ? (
-                <div className="grid min-w-0 gap-1 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
-                  <dt className="text-sm font-medium text-foreground">Hours</dt>
-                  <dd>
-                    <HoursList
-                      entries={hours.entries}
-                      lines={hours.lines}
-                      summary={hours.summary}
-                      className="grid min-w-0 gap-2 text-sm leading-relaxed text-muted"
-                    />
-                  </dd>
-                </div>
+                <InfoCard
+                  headingId="contact-hours-heading"
+                  title="Hours"
+                  sectionId="howItWorks"
+                  index={3}
+                  headingLevel="h2"
+                >
+                  <HoursList
+                    entries={hours.entries}
+                    lines={hours.lines}
+                    summary={hours.summary}
+                    className="grid min-w-0 gap-2 text-sm leading-relaxed text-muted"
+                  />
+                </InfoCard>
               ) : null}
               {socialLinks.length > 0 ? (
-                <div className="grid min-w-0 gap-1 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
-                  <dt className="text-sm font-medium text-foreground">
-                    Instagram
-                  </dt>
-                  <dd className="flex min-w-0 flex-col">
+                <InfoCard
+                  headingId="contact-social-heading"
+                  title="Instagram"
+                  sectionId="relatedTreatments"
+                  index={4}
+                  headingLevel="h2"
+                >
+                  <div className="flex min-w-0 flex-col">
                     {socialLinks.map((link) => (
                       <SocialIconLink
                         key={link.platform}
@@ -112,16 +144,19 @@ export function ContactPage({ secondaryAction }: ContactPageProps) {
                         className="min-h-0 text-sm font-normal text-muted"
                       />
                     ))}
-                  </dd>
-                </div>
+                  </div>
+                </InfoCard>
               ) : null}
-            </dl>
+            </InfoCardGrid>
             <ActionRow
               primary={headerCta}
               secondary={secondaryAction}
             />
+        </PublicationGate>
           </div>
+          <PublicationGate page="contact" section="form">
           <ContactForm />
+          </PublicationGate>
         </div>
       </Container>
     </Section>

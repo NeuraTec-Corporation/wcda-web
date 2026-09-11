@@ -1,6 +1,7 @@
 import {
   themePresets,
   themeValuesEqual,
+  wcdaDesignerTheme,
   wcdaFactoryTheme,
   type ThemePresetId,
   type ThemeValues,
@@ -20,11 +21,19 @@ export type LabSectionId =
   | "brand"
   | "colors"
   | "typography"
+  | "surfaces"
+  | "header"
+  | "footer"
   | "media"
+  | "position"
   | "containers"
   | "motion"
   | "effects"
-  | "recovery";
+  | "content"
+  | "copy"
+  | "approval"
+  | "recovery"
+  | "tools";
 
 export const labSources: LabSourceId[] = [
   "factory",
@@ -38,11 +47,18 @@ export const labSections: LabSectionId[] = [
   "brand",
   "colors",
   "typography",
+  "surfaces",
+  "header",
+  "footer",
   "media",
   "containers",
   "motion",
   "effects",
+  "content",
+  "copy",
+  "approval",
   "recovery",
+  "tools",
 ];
 
 export const wcdaInspiredTheme: ThemeValues = themePresets["wcda-inspired"];
@@ -73,15 +89,36 @@ export type LabCopy = {
   brand: string;
   colors: string;
   typography: string;
+  surfaces: string;
+  header: string;
+  footer: string;
   media: string;
+  position: string;
   containers: string;
   motion: string;
-  effects: string;
+    effects: string;
+    content: string;
+    copy: string;
+  approval: string;
   recovery: string;
+  tools: string;
   presets: string;
   previewPage: string;
+  previewSection: string;
   selectedElement: string;
   viewport: string;
+  editorMode: string;
+  systemMode: string;
+  approvalMode: string;
+  recoveryMode: string;
+  areaEditorHelp: string;
+  areaSystemHelp: string;
+  areaApprovalHelp: string;
+  areaRecoveryHelp: string;
+  isolateSection: string;
+  isolateSectionHint: string;
+  sectionItself: string;
+  context: string;
   desktop: string;
   tablet: string;
   mobile: string;
@@ -97,6 +134,9 @@ export type LabCopy = {
   loadInspired: string;
   loadInspiredHint: string;
   designerNotApplied: string;
+  loadedDesigner: string;
+  confirmLoadDesignerTitle: string;
+  confirmLoadDesignerBody: string;
   applyCustom: string;
   applyCustomHint: string;
   copyTheme: string;
@@ -128,6 +168,72 @@ export type LabCopy = {
   colorsSurfaces: string;
   colorsText: string;
   colorsStructure: string;
+  applySection: string;
+  resetSection: string;
+  applySectionHint: string;
+  applyElement: string;
+  resetElement: string;
+  applyElementHint: string;
+  elementAppliedMessage: string;
+  elementResetMessage: string;
+  elementUnsaved: string;
+  pageUnsaved: string;
+  systemUnsaved: string;
+  sectionNoChanges: string;
+  sectionUnsaved: string;
+  sectionAppliedToCustom: string;
+  unsavedChanges: string;
+  appliedToCustomNotCurrent: string;
+  promotedToCurrent: string;
+  allCustomPromoted: string;
+  scopeLabel: string;
+  pathLabel: string;
+  stateLabel: string;
+  pendingCustomScopes: string;
+  noPendingCustom: string;
+  promoteElement: string;
+  promoteSection: string;
+  promoteSystem: string;
+  promoteDisabledUnsaved: string;
+  restoreCurrent: string;
+  unsavedNavTitle: string;
+  unsavedNavBody: string;
+  unsavedNavStay: string;
+  unsavedNavDiscard: string;
+  unsavedNavApply: string;
+  pendingChangesTitle: string;
+  applyAllUnsaved: string;
+  publishReady: string;
+  applyAndPublishAll: string;
+  publishedStatus: string;
+  pendingNone: string;
+  pendingReview: string;
+  pendingUnsavedHeading: string;
+  pendingReadyHeading: string;
+  discardChange: string;
+  appliedUnsavedSummary: string;
+  confirmApplyPublishTitle: string;
+  confirmApplyPublishBody: string;
+  confirmApplyPublishAction: string;
+  confirmCopyWarningTitle: string;
+  confirmCopyWarningBody: string;
+  confirmPromoteElementTitle: string;
+  confirmPromoteElementBody: string;
+  confirmPromoteSectionTitle: string;
+  confirmPromoteSectionBody: string;
+  confirmPromoteSystemTitle: string;
+  confirmPromoteSystemBody: string;
+  applyAllAsCurrent: string;
+  applyAllAsCurrentHint: string;
+  resetAllToCurrent: string;
+  resetAllToCurrentHint: string;
+  confirmApplyAllTitle: string;
+  confirmApplyAllBody: string;
+  confirmResetAllTitle: string;
+  confirmResetAllBody: string;
+  sectionAppliedMessage: string;
+  sectionResetMessage: string;
+  resetAllDone: string;
 };
 
 export const labCopy: Record<LabLanguage, LabCopy> = {
@@ -152,6 +258,7 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     editing: "Editing",
     approved: "Approved",
     unsaved: "Unsaved",
+    unsavedChanges: "Unsaved changes",
     saved: "Saved",
     entireSite: "Entire website",
     globalTheme: "Global theme",
@@ -159,15 +266,40 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     brand: "Brand",
     colors: "Colors",
     typography: "Typography",
+    surfaces: "Global Surfaces",
+    header: "Header",
+    footer: "Footer",
     media: "Media",
+    position: "Position / Crop",
     containers: "Containers",
     motion: "Motion",
     effects: "Special Effects",
+    content: "Publication",
+    copy: "Content",
+    approval: "Approval & Publish",
     recovery: "Recovery",
+    tools: "Color Tools",
     presets: "Presets",
     previewPage: "Preview page",
+    previewSection: "Section",
     selectedElement: "Selected element",
     viewport: "Viewport",
+    editorMode: "Editor",
+    systemMode: "System",
+    approvalMode: "Approval & Publish",
+    recoveryMode: "Recovery",
+    areaEditorHelp:
+      "Edit a page, section, or element. Apply saves the selected scope. Publish makes ready changes live.",
+    areaSystemHelp: "Manage website-wide design and experience settings.",
+    areaApprovalHelp:
+      "Review Unsaved and Ready to publish changes. Apply All Unsaved does not publish. Publish All Ready publishes only already-applied changes.",
+    areaRecoveryHelp:
+      "Load or restore known Current or Factory states. Recovery does not publish new changes.",
+    isolateSection: "Isolate Section",
+    isolateSectionHint:
+      "Editor view only. Hides other sections in the Lab preview. Does not change publication, Current, or Factory.",
+    sectionItself: "Section itself",
+    context: "Context",
     desktop: "Desktop",
     tablet: "Tablet",
     mobile: "Mobile",
@@ -176,21 +308,26 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     shapeDensity: "Shape and density",
     undoUnsaved: "Undo unsaved changes",
     undoUnsavedHint:
-      "Return Custom to the state this editing session started from. Does not save.",
+      "Return unsaved section drafts to the last Applied-to-Custom snapshot. Does not change Current or Factory.",
     loadCurrent: "Load Current",
     loadCurrentHint:
-      "Load the approved WCDA Current state into Custom. Does not save.",
+      "Load Current into the Lab working preview. This is a recovery/reference operation. It does not publish anything.",
     loadFactory: "Load Factory",
     loadFactoryHint:
-      "Load the immutable Factory configuration into Custom. Does not change Factory or Current until you apply.",
+      "Load the immutable Factory configuration into the Lab working preview. Factory itself is never modified. Later edits become Custom working state.",
     loadInspired: "Load Inspired",
     loadInspiredHint:
       "Load the WCDA Inspired reference into Custom. Does not save.",
     designerNotApplied:
       "WCDA Designer is recorded and not applied. Factory and Current are unchanged.",
-    applyCustom: "Apply Custom as Current",
+    loadedDesigner:
+      "Designer colors loaded into preview. Factory and Current are unchanged.",
+    confirmLoadDesignerTitle: "Load WCDA Designer?",
+    confirmLoadDesignerBody:
+      "Custom preview will use Designer Brand Canon colors. Unsaved Custom work will be discarded. Factory and Current are not modified. Nothing is saved to the public site.",
+    applyCustom: "Publish All Ready",
     applyCustomHint:
-      "Writes Theme and Experience together as WCDA Current. If either part fails, nothing is applied. Factory cannot be overwritten.",
+      "Publishes every Ready change. Unsaved changes are not published. Factory is never overwritten.",
     copyTheme: "Copy theme config",
     copyExperience: "Copy experience config",
     copied: "Copied",
@@ -200,7 +337,7 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
       "Only controls for the selected element are shown. Hidden systems remain available on their own elements.",
     confirmUndoTitle: "Undo unsaved changes?",
     confirmUndoBody:
-      "Custom will return to the state loaded at the start of this session. Nothing is saved. Factory and Current stay unchanged.",
+      "Unsaved section drafts will return to the last Applied-to-Custom snapshot. Staged Custom, Factory, and Current stay unchanged.",
     confirmLoadCurrentTitle: "Load WCDA Current?",
     confirmLoadCurrentBody:
       "Custom will be replaced with the approved public configuration. Unsaved Custom work will be discarded. Nothing is saved.",
@@ -210,13 +347,13 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     confirmLoadInspiredTitle: "Load WCDA Inspired?",
     confirmLoadInspiredBody:
       "Custom will be replaced with the Inspired reference. Unsaved Custom work will be discarded. Nothing is saved.",
-    confirmApplyTitle: "Apply Custom as Current?",
+    confirmApplyTitle: "Promote ALL approved Custom changes to Current?",
     confirmApplyBody:
-      "This writes Custom Theme and Experience together as public WCDA Current. If either write fails, Current stays unchanged. Factory cannot be overwritten.",
+      "This will update Current with every approved Custom change.\nWCDA Factory will remain unchanged.",
     cancel: "Cancel",
-    confirm: "Continue",
+    confirm: "Promote All",
     applied:
-      "WCDA Current updated successfully. Theme and Experience are synchronized.",
+      "All approved Custom changes promoted to Current",
     applyFailed: "Nothing was applied. WCDA Current remains unchanged.",
     loadedFactory: "Factory loaded into Custom",
     loadedCurrent: "Current loaded into Custom",
@@ -227,6 +364,85 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     colorsSurfaces: "Surfaces",
     colorsText: "Text",
     colorsStructure: "Structure",
+    applySection: "Apply Section",
+    resetSection: "Reset Section",
+    applySectionHint:
+      "Section Apply saves this page section (and its elements) to Custom only. It does not change WCDA Current.",
+    applyElement: "Apply",
+    resetElement: "Reset",
+    applyElementHint:
+      "Element Apply saves only the selected element to Custom. It does not change Current, other elements, or Factory.",
+    elementAppliedMessage: "Applied — ready to publish",
+    elementResetMessage: "Working restored from last applied state",
+    elementUnsaved: "Unsaved changes",
+    pageUnsaved: "Page — Unsaved",
+    systemUnsaved: "Unsaved changes",
+    sectionNoChanges: "Current",
+    sectionUnsaved: "Unsaved",
+    sectionAppliedToCustom: "Ready to publish",
+    appliedToCustomNotCurrent: "Ready to publish",
+    promotedToCurrent: "Published",
+    allCustomPromoted: "All ready changes published",
+    scopeLabel: "Scope",
+    pathLabel: "Path",
+    stateLabel: "State",
+    pendingCustomScopes: "Pending changes",
+    noPendingCustom: "No pending changes.",
+    promoteElement: "Publish",
+    promoteSection: "Publish Section",
+    promoteSystem: "Publish",
+    promoteDisabledUnsaved:
+      "Apply these changes before publishing.",
+    restoreCurrent: "Restore",
+    unsavedNavTitle: "Unsaved changes",
+    unsavedNavBody:
+      "These changes have not been applied.",
+    unsavedNavStay: "Stay Here",
+    unsavedNavDiscard: "Discard",
+    unsavedNavApply: "Apply & Continue",
+    pendingChangesTitle: "Pending changes",
+    applyAllUnsaved: "Apply All Unsaved",
+    publishReady: "Publish All Ready",
+    applyAndPublishAll: "Apply & Publish All",
+    publishedStatus: "Published",
+    pendingNone: "No pending changes",
+    pendingReview: "Review",
+    pendingUnsavedHeading: "Unsaved",
+    pendingReadyHeading: "Ready to publish",
+    discardChange: "Discard",
+    appliedUnsavedSummary:
+      "✓ {applied} changes applied. {ready} changes ready to publish.",
+    confirmApplyPublishTitle: "Apply & Publish all changes?",
+    confirmApplyPublishBody:
+      "{unsaved} Unsaved changes will first be Applied.\n{ready} already-applied changes are ready to publish.\n\nTotal after Apply:\n{total} changes will be published.",
+    confirmApplyPublishAction: "Apply & Publish {total} Changes",
+    confirmCopyWarningTitle: "Clinical / professional meaning",
+    confirmCopyWarningBody:
+      "This content may affect clinical/professional meaning.",
+    confirmPromoteElementTitle: "Publish this change?",
+    confirmPromoteElementBody:
+      "Only this change will be published.\nOther ready changes stay unpublished.",
+    confirmPromoteSectionTitle: "Publish this section?",
+    confirmPromoteSectionBody:
+      "Only this section will be published.\nOther ready changes stay unpublished.",
+    confirmPromoteSystemTitle: "Publish this System change?",
+    confirmPromoteSystemBody:
+      "Only this System change will be published.\nOther ready changes stay unpublished.",
+    applyAllAsCurrent: "Publish All Ready",
+    applyAllAsCurrentHint:
+      "Publishes every Ready change. Unsaved changes are not published. Factory is never overwritten.",
+    resetAllToCurrent: "Reset All to Current",
+    resetAllToCurrentHint:
+      "Discards Custom and unsaved drafts and restores the latest WCDA Current. Does not change Current or Factory.",
+    confirmApplyAllTitle: "Publish all ready changes?",
+    confirmApplyAllBody:
+      "Ready changes will become Published.\nUnsaved changes will not be published.\nFactory remains unchanged.",
+    confirmResetAllTitle: "Reset All to Current?",
+    confirmResetAllBody:
+      "All Custom and unsaved changes will be discarded and restored to the latest WCDA Current.",
+    sectionAppliedMessage: "Applied — ready to publish",
+    sectionResetMessage: "Working restored from last applied state",
+    resetAllDone: "Restored to published state",
   },
   es: {
     labTitle: "Laboratorio de experiencia visual WCDA",
@@ -249,6 +465,7 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     editing: "Editando",
     approved: "Aprobado",
     unsaved: "No guardado",
+    unsavedChanges: "Cambios sin guardar",
     saved: "Guardado",
     entireSite: "Todo el sitio",
     globalTheme: "Tema global",
@@ -256,15 +473,41 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     brand: "Marca",
     colors: "Colores",
     typography: "Tipografía",
+    surfaces: "Superficies globales",
+    header: "Cabecera",
+    footer: "Pie de página",
     media: "Imágenes",
+    position: "Posición / recorte",
     containers: "Contenedores",
     motion: "Movimiento",
     effects: "Efectos especiales",
+    content: "Publicación",
+    copy: "Contenido",
+    approval: "Aprobación y publicación",
     recovery: "Recuperación",
+    tools: "Herramientas de color",
     presets: "Preajustes",
     previewPage: "Página de vista previa",
+    previewSection: "Sección",
     selectedElement: "Elemento seleccionado",
     viewport: "Dispositivo",
+    editorMode: "Editor",
+    systemMode: "Sistema",
+    approvalMode: "Aprobación y publicación",
+    recoveryMode: "Recuperación",
+    areaEditorHelp:
+      "Edite una página, sección o elemento. Aplicar guarda el alcance seleccionado. Publicar hace vivos los cambios listos.",
+    areaSystemHelp:
+      "Administre configuraciones globales de diseño y experiencia del sitio.",
+    areaApprovalHelp:
+      "Revise cambios Sin guardar y Listos para publicar. Aplicar todos no publica. Publicar listos publica solo cambios ya aplicados.",
+    areaRecoveryHelp:
+      "Cargue o restaure estados conocidos de Current o Factory. Recovery no publica cambios nuevos.",
+    isolateSection: "Aislar sección",
+    isolateSectionHint:
+      "Solo vista del Editor. Oculta otras secciones en la vista previa del Lab. No cambia publicación, Current ni Factory.",
+    sectionItself: "La sección",
+    context: "Contexto",
     desktop: "Escritorio",
     tablet: "Tablet",
     mobile: "Móvil",
@@ -273,21 +516,26 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     shapeDensity: "Forma y densidad",
     undoUnsaved: "Deshacer cambios no guardados",
     undoUnsavedHint:
-      "Devuelve Custom al estado con el que comenzó esta sesión. No guarda nada.",
+      "Devuelve los borradores de sección al último Aplicado a Custom. No cambia Current ni Factory.",
     loadCurrent: "Cargar versión actual",
     loadCurrentHint:
-      "Carga WCDA Current aprobado en Custom. No guarda nada.",
+      "Carga Current en la vista previa de trabajo del Lab. Es una operación de recuperación/referencia. No publica nada.",
     loadFactory: "Cargar WCDA Factory",
     loadFactoryHint:
-      "Carga Factory inmutable en Custom. No modifica Factory ni Current hasta aplicar.",
+      "Carga Factory inmutable en la vista previa de trabajo del Lab. Factory no se modifica. Los cambios posteriores crean estado Custom.",
     loadInspired: "Cargar Inspired",
     loadInspiredHint:
       "Carga la referencia WCDA Inspired en Custom. No guarda nada.",
     designerNotApplied:
       "WCDA Designer está registrado y no aplicado. Factory y Current no cambian.",
-    applyCustom: "Aplicar Custom como versión actual",
+    loadedDesigner:
+      "Colores de Designer cargados en la vista previa. Factory y Current no cambian.",
+    confirmLoadDesignerTitle: "¿Cargar WCDA Designer?",
+    confirmLoadDesignerBody:
+      "La vista previa Custom usará los colores del Brand Canon del diseñador. Se descartará el trabajo no guardado. Factory y Current no se modifican. No se guarda nada en el sitio público.",
+    applyCustom: "Publicar todos los listos",
     applyCustomHint:
-      "Escribe Tema y Experiencia juntos como WCDA Current. Si una parte falla, no se aplica nada. Factory no se sobrescribe.",
+      "Publica todos los cambios Listos. Los cambios sin guardar no se publican. Factory no se sobrescribe.",
     copyTheme: "Copiar configuración de tema",
     copyExperience: "Copiar configuración de experiencia",
     copied: "Copiado",
@@ -297,7 +545,7 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
       "Solo se muestran controles del elemento seleccionado. Los demás sistemas siguen en sus propios elementos.",
     confirmUndoTitle: "¿Deshacer cambios no guardados?",
     confirmUndoBody:
-      "Custom volverá al estado cargado al inicio de esta sesión. No se guarda nada. Factory y Current no cambian.",
+      "Los borradores de sección sin guardar volverán al último Aplicado a Custom. Custom preparado, Factory y Current no cambian.",
     confirmLoadCurrentTitle: "¿Cargar WCDA Current?",
     confirmLoadCurrentBody:
       "Custom se reemplazará con la configuración pública aprobada. Se descartará el trabajo no guardado. No se guarda nada.",
@@ -307,13 +555,13 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     confirmLoadInspiredTitle: "¿Cargar WCDA Inspired?",
     confirmLoadInspiredBody:
       "Custom se reemplazará con la referencia Inspired. Se descartará el trabajo no guardado. No se guarda nada.",
-    confirmApplyTitle: "¿Aplicar Custom como versión actual?",
+    confirmApplyTitle: "¿Promover TODOS los cambios aprobados en Custom a Current?",
     confirmApplyBody:
-      "Esto escribe Tema y Experiencia Custom juntos como WCDA Current público. Si una parte falla, Current no cambia. Factory no puede sobrescribirse.",
+      "Esto actualizará Current con todos los cambios aprobados en Custom.\nWCDA Factory permanecerá sin cambios.",
     cancel: "Cancelar",
-    confirm: "Continuar",
+    confirm: "Promover todo",
     applied:
-      "WCDA Current se actualizó correctamente. Tema y Experiencia están sincronizados.",
+      "Todos los cambios aprobados en Custom fueron promovidos a Current",
     applyFailed:
       "No se aplicó ningún cambio. WCDA Current permanece sin modificaciones.",
     loadedFactory: "Factory cargado en Custom",
@@ -325,6 +573,85 @@ export const labCopy: Record<LabLanguage, LabCopy> = {
     colorsSurfaces: "Superficies",
     colorsText: "Texto",
     colorsStructure: "Estructura",
+    applySection: "Aplicar sección",
+    resetSection: "Restablecer sección",
+    applySectionHint:
+      "Aplicar sección guarda esta sección de página (y sus elementos) en Custom. No cambia WCDA Current.",
+    applyElement: "Aplicar",
+    resetElement: "Restablecer",
+    applyElementHint:
+      "Aplicar elemento guarda solo el elemento seleccionado en Custom. No cambia WCDA Current, otros elementos ni Factory.",
+    elementAppliedMessage: "Aplicado — listo para publicar",
+    elementResetMessage: "Working restaurado desde el último estado aplicado",
+    elementUnsaved: "Cambios sin guardar",
+    pageUnsaved: "Página — Sin guardar",
+    systemUnsaved: "Cambios sin guardar",
+    sectionNoChanges: "Current",
+    sectionUnsaved: "Sin guardar",
+    sectionAppliedToCustom: "Listo para publicar",
+    appliedToCustomNotCurrent: "Listo para publicar",
+    promotedToCurrent: "Publicado",
+    allCustomPromoted: "Todos los cambios listos fueron publicados",
+    scopeLabel: "Alcance",
+    pathLabel: "Ruta",
+    stateLabel: "Estado",
+    pendingCustomScopes: "Cambios pendientes",
+    noPendingCustom: "No hay cambios pendientes.",
+    promoteElement: "Publicar",
+    promoteSection: "Publicar sección",
+    promoteSystem: "Publicar",
+    promoteDisabledUnsaved:
+      "Aplique estos cambios antes de publicar.",
+    restoreCurrent: "Restaurar",
+    unsavedNavTitle: "Cambios sin guardar",
+    unsavedNavBody:
+      "Estos cambios no se han aplicado.",
+    unsavedNavStay: "Permanecer aquí",
+    unsavedNavDiscard: "Descartar",
+    unsavedNavApply: "Aplicar y continuar",
+    pendingChangesTitle: "Cambios pendientes",
+    applyAllUnsaved: "Aplicar todos los no guardados",
+    publishReady: "Publicar todos los listos",
+    applyAndPublishAll: "Aplicar y publicar todo",
+    publishedStatus: "Publicado",
+    pendingNone: "No hay cambios pendientes",
+    pendingReview: "Revisar",
+    pendingUnsavedHeading: "Sin guardar",
+    pendingReadyHeading: "Listo para publicar",
+    discardChange: "Descartar",
+    appliedUnsavedSummary:
+      "✓ {applied} cambios aplicados. {ready} cambios listos para publicar.",
+    confirmApplyPublishTitle: "¿Aplicar y publicar todos los cambios?",
+    confirmApplyPublishBody:
+      "{unsaved} cambios sin guardar se Aplicarán primero.\n{ready} cambios ya aplicados están listos para publicar.\n\nTotal después de Aplicar:\n{total} cambios se publicarán.",
+    confirmApplyPublishAction: "Aplicar y publicar {total} cambios",
+    confirmCopyWarningTitle: "Significado clínico o profesional",
+    confirmCopyWarningBody:
+      "Este contenido puede afectar el significado clínico o profesional.",
+    confirmPromoteElementTitle: "¿Publicar este cambio?",
+    confirmPromoteElementBody:
+      "Solo se publicará este cambio.\nLos demás cambios listos permanecerán sin publicar.",
+    confirmPromoteSectionTitle: "¿Publicar esta sección?",
+    confirmPromoteSectionBody:
+      "Solo se publicará esta sección.\nLos demás cambios listos permanecerán sin publicar.",
+    confirmPromoteSystemTitle: "¿Publicar este cambio de Sistema?",
+    confirmPromoteSystemBody:
+      "Solo se publicará este cambio de Sistema.\nLos demás cambios listos permanecerán sin publicar.",
+    applyAllAsCurrent: "Publicar todos los listos",
+    applyAllAsCurrentHint:
+      "Publica todos los cambios Listos. Los cambios sin guardar no se publican. Factory no se sobrescribe.",
+    resetAllToCurrent: "Restablecer todo a Current",
+    resetAllToCurrentHint:
+      "Descarta Custom y los borradores sin guardar y restaura la última versión de WCDA Current. No cambia Current ni Factory.",
+    confirmApplyAllTitle: "¿Publicar todos los cambios listos?",
+    confirmApplyAllBody:
+      "Los cambios listos se convertirán en Publicados.\nLos cambios sin guardar no se publicarán.\nFactory permanece sin cambios.",
+    confirmResetAllTitle: "¿Restablecer todo a Current?",
+    confirmResetAllBody:
+      "Todos los cambios de Custom y los cambios sin guardar se descartarán y se restaurará la última versión de WCDA Current.",
+    sectionAppliedMessage: "Aplicado — listo para publicar",
+    sectionResetMessage: "Working restaurado desde el último estado aplicado",
+    resetAllDone: "Restaurado al estado publicado",
   },
 };
 
@@ -350,6 +677,9 @@ export function detectLabSource(
   }
   if (matchesFactory) {
     return "factory";
+  }
+  if (themeValuesEqual(theme, wcdaDesignerTheme)) {
+    return "designer";
   }
   if (
     themeValuesEqual(theme, themePresets["wcda-inspired"]) ||
@@ -395,12 +725,12 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
     carousel: false,
     video: false,
     beforeAfter: false,
-    cursor: false,
+    cursor: true,
   };
 
   switch (target) {
     case "header-logo":
-      return { ...empty, motion: false, cursor: true };
+      return { ...empty, containers: false, motion: false };
     case "home-marquee":
       return {
         media: false,
@@ -412,7 +742,7 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
         carousel: false,
         video: false,
         beforeAfter: false,
-        cursor: false,
+        cursor: true,
       };
     case "home-doctor-media":
     case "about-doctor-media":
@@ -424,8 +754,24 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
       return { ...empty, cornerAction: true, carousel: true };
     case "home-cta":
       return { ...empty, media: false };
+    case "patients-resource-cards":
+    case "editorial-cards":
+      return { ...empty, media: false, motion: false };
     case "home-hero-media":
       return { ...empty, video: true };
+    case "home-hero-content":
+      return {
+        media: false,
+        containers: false,
+        motion: false,
+        marquee: false,
+        badges: false,
+        cornerAction: false,
+        carousel: false,
+        video: false,
+        beforeAfter: false,
+        cursor: false,
+      };
     case "technology-media":
       return { ...empty, video: true, badges: true, beforeAfter: false };
     default:
@@ -440,16 +786,6 @@ export function sectionVisible(
   if (section === "media") return scope.media;
   if (section === "containers") return scope.containers;
   if (section === "motion") return scope.motion;
-  if (section === "effects") {
-    return (
-      scope.marquee ||
-      scope.badges ||
-      scope.cornerAction ||
-      scope.carousel ||
-      scope.video ||
-      scope.beforeAfter ||
-      scope.cursor
-    );
-  }
+  if (section === "tools") return true;
   return true;
 }

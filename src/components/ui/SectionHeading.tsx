@@ -3,9 +3,9 @@ import { cn } from "@/lib/cn";
 import type { HeadingAlign, HeadingLevel } from "@/types/ui";
 
 const headingClasses: Record<HeadingLevel, string> = {
-  h1: "max-w-[18ch] text-[length:calc(var(--theme-h1)*var(--theme-heading-scale,1))] font-semibold tracking-tight text-foreground sm:text-[length:calc(var(--theme-h1-lg)*var(--theme-heading-scale,1))] sm:leading-tight",
-  h2: "max-w-[24ch] text-[length:calc(var(--theme-h2)*var(--theme-heading-scale,1))] font-semibold tracking-tight text-foreground sm:text-[length:calc(var(--theme-h2-lg)*var(--theme-heading-scale,1))] sm:leading-tight",
-  h3: "text-[length:calc(var(--theme-h3)*var(--theme-heading-scale,1))] font-semibold tracking-tight text-foreground",
+  h1: "max-w-[18ch] text-[length:calc(var(--theme-h1)*var(--theme-heading-scale,1))] font-semibold tracking-[var(--theme-h1-tracking)] leading-[var(--theme-h1-leading)] text-heading sm:text-[length:calc(var(--theme-h1-lg)*var(--theme-heading-scale,1))] sm:leading-[var(--theme-h1-leading-lg)]",
+  h2: "max-w-[24ch] text-[length:calc(var(--theme-h2)*var(--theme-heading-scale,1))] font-semibold tracking-[var(--theme-h2-tracking)] leading-[var(--theme-h2-leading)] text-heading sm:text-[length:calc(var(--theme-h2-lg)*var(--theme-heading-scale,1))] sm:leading-[var(--theme-h2-leading-lg)]",
+  h3: "text-[length:calc(var(--theme-h3)*var(--theme-heading-scale,1))] font-semibold tracking-[var(--theme-h3-tracking)] leading-[var(--theme-h3-leading)] text-foreground",
 };
 
 type SectionHeadingProps = {
@@ -15,7 +15,10 @@ type SectionHeadingProps = {
   title: string;
   description?: ReactNode;
   align?: HeadingAlign;
+  measure?: "narrow" | "column";
   className?: string;
+  titleContentTarget?: string;
+  descriptionContentTarget?: string;
 };
 
 export function SectionHeading({
@@ -25,26 +28,35 @@ export function SectionHeading({
   title,
   description,
   align = "start",
+  measure = "narrow",
   className,
+  titleContentTarget,
+  descriptionContentTarget,
 }: SectionHeadingProps) {
   return (
     <header
       className={cn(
-        "flex max-w-narrow flex-col gap-3",
+        "flex flex-col gap-3",
+        measure === "narrow" ? "max-w-narrow" : "max-w-none",
         align === "center" && "mx-auto text-center",
         className,
       )}
     >
       {eyebrow ? (
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-accent">
+        <p className="uppercase text-accent text-[length:var(--theme-eyebrow-size)] font-[var(--theme-eyebrow-weight)] tracking-[var(--theme-eyebrow-tracking)]">
           {eyebrow}
         </p>
       ) : null}
-      <Heading id={id} className={headingClasses[Heading]}>
+      <Heading
+        id={id}
+        className={headingClasses[Heading]}
+        data-content-target={titleContentTarget}
+      >
         {title}
       </Heading>
       {description ? (
         <p
+          data-content-target={descriptionContentTarget}
           className={cn(
             "max-w-prose leading-relaxed text-muted",
             Heading === "h1" ? "text-base sm:text-[1.0625rem]" : "text-base",

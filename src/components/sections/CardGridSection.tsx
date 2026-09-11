@@ -1,9 +1,14 @@
 import Link from "next/link";
+import { EditorialGlyph } from "@/components/editorial/EditorialGlyph";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import {
+  isSurfaceIntensityTarget,
+  type VisualTargetId,
+} from "@/config/experience";
 import { cn } from "@/lib/cn";
 import type { CardSectionContent } from "@/types/content";
 import type { SectionTone } from "@/types/ui";
@@ -14,6 +19,8 @@ type CardGridSectionProps = CardSectionContent & {
   cardClassName?: string;
   columns?: 2 | 3;
   variant?: "cards" | "ruled";
+  visualTarget?: VisualTargetId;
+  surfaceFill?: string;
 };
 
 export function CardGridSection({
@@ -27,7 +34,12 @@ export function CardGridSection({
   cardClassName,
   columns = 3,
   variant = "cards",
+  visualTarget,
+  surfaceFill,
 }: CardGridSectionProps) {
+  const mixSurface = isSurfaceIntensityTarget(visualTarget);
+  const editorialSurface = variant === "cards" && !mixSurface;
+  const cardTarget = visualTarget ?? (editorialSurface ? "editorial-cards" : undefined);
   return (
     <Section tone={tone} aria-labelledby={headingId}>
       <Container>
@@ -49,7 +61,7 @@ export function CardGridSection({
                 ),
           )}
         >
-          {items.map((item) => {
+          {items.map((item, index) => {
             if (variant === "ruled") {
               const body = (
                 <>
@@ -87,13 +99,29 @@ export function CardGridSection({
                   "h-full transition-shadow group-hover:shadow-md",
                   cardClassName,
                 )}
+                data-visual-target={cardTarget}
+                data-surface-mix={mixSurface || editorialSurface ? "" : undefined}
+                style={
+                  mixSurface || editorialSurface
+                    ? {
+                        ["--exp-surface-fill" as string]: mixSurface
+                          ? (surfaceFill ?? "var(--wcda-surface)")
+                          : "var(--wcda-surface)",
+                      }
+                    : undefined
+                }
               >
-                <h3 className="text-lg font-semibold tracking-tight text-foreground">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  {item.description}
-                </p>
+                <div className="flex min-w-0 items-start gap-3">
+                  <EditorialGlyph index={index} />
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-semibold tracking-tight text-foreground">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
               </Card>
             );
 

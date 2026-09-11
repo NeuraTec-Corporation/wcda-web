@@ -1,8 +1,15 @@
 import type { PreviewPagePath } from "@/config/theme";
 import {
+  applyScopedElementFills,
+  clearScopedElementFills,
+  parseScopedColors,
+  type ScopedColors,
+} from "@/config/scoped-colors";
+import {
   LOGO_PADDING_CSS,
   LOGO_WIDTH_CSS,
   MEDIA_PADDING_CSS,
+  isRegisteredAssetId,
   parseComposerAssetId,
   type ComposerAssetId,
   type MediaAlignment,
@@ -88,6 +95,7 @@ export type CornerActionMorph = "none" | "info-arrow" | "emphasize";
 export type VisualTargetId =
   | "header-logo"
   | "home-hero-media"
+  | "home-hero-content"
   | "home-doctor-media"
   | "home-care-areas"
   | "home-cta"
@@ -97,11 +105,14 @@ export type VisualTargetId =
   | "services-care-cards"
   | "services-treatment-media"
   | "contact-media"
-  | "technology-media";
+  | "technology-media"
+  | "patients-resource-cards"
+  | "editorial-cards";
 
 export type ComponentSlotId =
   | "header.logo"
   | "home.hero"
+  | "home.heroContent"
   | "home.services"
   | "home.doctor"
   | "home.cta"
@@ -118,6 +129,15 @@ export type VisualTarget = {
   label: string;
 };
 
+export type ItemMediaOverride = {
+  scale: number;
+  positionX: number;
+  positionY: number;
+  panX?: number;
+  panY?: number;
+  allowFreeOverflow?: boolean;
+};
+
 export type ComponentSlotConfig = {
   containerPreset: ContainerPresetId;
   mediaStyle: MediaContainerStyleId;
@@ -130,7 +150,15 @@ export type ComponentSlotConfig = {
   padding: MediaPaddingPreset;
   previewBackground: PreviewBackgroundId;
   alignment: MediaAlignment;
+  itemAssets?: Partial<Record<string, ComposerAssetId>>;
+  itemMedia?: Partial<Record<string, ItemMediaOverride>>;
+  panX?: number;
+  panY?: number;
+  allowFreeOverflow?: boolean;
   insetBadgeSize?: number;
+  layoutOffsetX?: number;
+  layoutOffsetY?: number;
+  layoutMaxWidth?: number;
 };
 
 export type MediaExperience = {
@@ -206,6 +234,8 @@ export type ExperienceValues = {
   };
   cursorCompanion: CursorCompanionMode;
   components: Record<ComponentSlotId, ComponentSlotConfig>;
+  containerSurfaceIntensity?: Partial<Record<VisualTargetId, number>>;
+  scopedColors?: ScopedColors;
 };
 
 export const containerPresets: Array<{
@@ -285,59 +315,121 @@ const headerLogoTarget: VisualTarget = {
   label: "Header Logo",
 };
 
+const editorialCardsTarget: VisualTarget = {
+  id: "editorial-cards",
+  label: "Editorial Cards",
+};
+
 export const visualTargetsByPage: Partial<
   Record<PreviewPagePath, readonly VisualTarget[]>
 > = {
   "/": [
     headerLogoTarget,
     { id: "home-hero-media", label: "Home Hero Media" },
+    { id: "home-hero-content", label: "Hero Content" },
     { id: "home-doctor-media", label: "Dr. Matute Media" },
     { id: "home-care-areas", label: "Service Card Media" },
     { id: "home-cta", label: "Primary CTA" },
     { id: "home-marquee", label: "Services Marquee" },
+    editorialCardsTarget,
   ],
   "/about": [
     headerLogoTarget,
     { id: "about-content", label: "About Media" },
+    editorialCardsTarget,
   ],
   "/about/dr-jonnathan-matute": [
     headerLogoTarget,
     { id: "about-doctor-media", label: "Dr. Matute Media" },
+    editorialCardsTarget,
   ],
   "/services": [
     headerLogoTarget,
     { id: "services-care-cards", label: "Service Card Media" },
     { id: "services-treatment-media", label: "Treatment Media" },
+    editorialCardsTarget,
   ],
-  "/patients": [headerLogoTarget],
+  "/patients": [
+    headerLogoTarget,
+    { id: "patients-resource-cards", label: "Patient Resource Cards" },
+  ],
+  "/patients/first-visit": [headerLogoTarget],
+  "/patients/financial-options": [headerLogoTarget],
+  "/patients/insurance": [headerLogoTarget],
+  "/patients/forms": [headerLogoTarget],
+  "/about/team": [headerLogoTarget],
   "/technology": [
     headerLogoTarget,
     { id: "technology-media", label: "Technology Media" },
+    editorialCardsTarget,
   ],
   "/contact": [
     headerLogoTarget,
     { id: "contact-media", label: "Contact Media" },
+    editorialCardsTarget,
   ],
 };
 
-export const visualTargetSlots: Record<VisualTargetId, ComponentSlotId> = {
-  "header-logo": "header.logo",
-  "home-hero-media": "home.hero",
-  "home-doctor-media": "home.doctor",
-  "home-care-areas": "home.services",
-  "home-cta": "home.cta",
-  "home-marquee": "home.marquee",
-  "about-doctor-media": "about.doctor",
-  "about-content": "about.content",
-  "services-care-cards": "services.cards",
-  "services-treatment-media": "services.treatments",
-  "contact-media": "contact.media",
-  "technology-media": "technology.media",
-};
+export const visualTargetSlots: Partial<Record<VisualTargetId, ComponentSlotId>> =
+  {
+    "header-logo": "header.logo",
+    "home-hero-media": "home.hero",
+    "home-hero-content": "home.heroContent",
+    "home-doctor-media": "home.doctor",
+    "home-care-areas": "home.services",
+    "home-cta": "home.cta",
+    "home-marquee": "home.marquee",
+    "about-doctor-media": "about.doctor",
+    "about-content": "about.content",
+    "services-care-cards": "services.cards",
+    "services-treatment-media": "services.treatments",
+    "contact-media": "contact.media",
+    "technology-media": "technology.media",
+  };
+
+export const SURFACE_INTENSITY_TARGETS = [
+  "patients-resource-cards",
+  "home-care-areas",
+  "services-care-cards",
+  "editorial-cards",
+] as const;
+
+export type SurfaceIntensityTargetId =
+  (typeof SURFACE_INTENSITY_TARGETS)[number];
+
+export function isSurfaceIntensityTarget(
+  target: string | undefined,
+): target is SurfaceIntensityTargetId {
+  return Boolean(
+    target &&
+      (SURFACE_INTENSITY_TARGETS as readonly string[]).includes(target),
+  );
+}
+
+export const SURFACE_LIGHTNESS_MIN = -0.3;
+export const SURFACE_LIGHTNESS_MAX = 0.3;
+
+export function surfaceLightnessKeepCssVar(target: SurfaceIntensityTargetId) {
+  return `--exp-sl-keep-${target}`;
+}
+
+export function surfaceLightnessTowardCssVar(target: SurfaceIntensityTargetId) {
+  return `--exp-sl-toward-${target}`;
+}
+
+function clampSurfaceLightness(value: number) {
+  return (
+    Math.round(
+      Math.min(SURFACE_LIGHTNESS_MAX, Math.max(SURFACE_LIGHTNESS_MIN, value)) *
+        100,
+    ) / 100
+  );
+}
 
 export const COMPONENT_SLOTS: ComponentSlotId[] = [
   "header.logo",
   "home.hero",
+  "home.heroContent",
   "home.services",
   "home.doctor",
   "home.cta",
@@ -372,8 +464,23 @@ export function isMediaComposerTarget(target: VisualTargetId) {
 
 export const MOTION_UNSUPPORTED_TARGETS: readonly VisualTargetId[] = [
   "header-logo",
+  "home-hero-content",
   "home-marquee",
+  "patients-resource-cards",
+  "editorial-cards",
 ];
+
+export const LAYOUT_ONLY_TARGETS: readonly VisualTargetId[] = [
+  "home-hero-content",
+];
+
+export function isLayoutOnlyTarget(
+  target?: string,
+): target is (typeof LAYOUT_ONLY_TARGETS)[number] {
+  return Boolean(
+    target && LAYOUT_ONLY_TARGETS.includes(target as (typeof LAYOUT_ONLY_TARGETS)[number]),
+  );
+}
 
 export const GENERAL_CONTAINER_PRESET_IDS: readonly ContainerPresetId[] = [
   "clean",
@@ -513,7 +620,13 @@ export function isInsetBadgeTarget(target: VisualTargetId) {
 }
 
 export function containerPresetsForTarget(target: VisualTargetId) {
-  if (target === "header-logo" || target === "home-marquee") {
+  if (
+    target === "header-logo" ||
+    target === "home-marquee" ||
+    target === "home-hero-content" ||
+    target === "patients-resource-cards" ||
+    target === "editorial-cards"
+  ) {
     return [];
   }
 
@@ -545,10 +658,15 @@ export function containerPresetsForTarget(target: VisualTargetId) {
 }
 
 export function mediaStylesForTarget(target: VisualTargetId) {
-  if (target === "header-logo") {
-    return [...headerLogoContainerStyles];
+  if (target === "header-logo" || target === "home-hero-content") {
+    return [];
   }
-  if (target === "home-cta" || target === "home-marquee") {
+  if (
+    target === "home-cta" ||
+    target === "home-marquee" ||
+    target === "patients-resource-cards" ||
+    target === "editorial-cards"
+  ) {
     return [];
   }
 
@@ -598,6 +716,53 @@ export function isInsetBadgeCutoutPreset(preset: ContainerPresetId) {
   return preset === "inset-badge-cutout" || isHiddenBadgePreset(preset);
 }
 
+export function isSurfaceIntensityControlVisible(
+  target: VisualTargetId,
+  preset: ContainerPresetId,
+) {
+  return isSurfaceIntensityTarget(target) && !isInsetBadgeCutoutPreset(preset);
+}
+
+export function getContainerSurfaceIntensity(
+  experience: ExperienceValues,
+  target: VisualTargetId,
+) {
+  if (!isSurfaceIntensityTarget(target)) {
+    return 0;
+  }
+  const value = experience.containerSurfaceIntensity?.[target];
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return 0;
+  }
+  if (value > SURFACE_LIGHTNESS_MAX) {
+    return 0;
+  }
+  return clampSurfaceLightness(value);
+}
+
+export function updateContainerSurfaceIntensity(
+  experience: ExperienceValues,
+  target: VisualTargetId,
+  value: number,
+): ExperienceValues {
+  if (!isSurfaceIntensityTarget(target)) {
+    return experience;
+  }
+  const clamped = clampSurfaceLightness(value);
+  const next: Partial<Record<VisualTargetId, number>> = {
+    ...experience.containerSurfaceIntensity,
+  };
+  if (Math.abs(clamped) < 0.0005) {
+    delete next[target];
+  } else {
+    next[target] = clamped;
+  }
+  return {
+    ...experience,
+    containerSurfaceIntensity: next,
+  };
+}
+
 export function isIntegratedCutoutPreset(preset: ContainerPresetId) {
   return isInsetBadgeCutoutPreset(preset);
 }
@@ -630,6 +795,12 @@ export function insetBadgeSizePx(config: ComponentSlotConfig) {
   );
 }
 
+export const HERO_CONTENT_OFFSET_MIN = -120;
+export const HERO_CONTENT_OFFSET_MAX = 120;
+export const HERO_CONTENT_WIDTH_MIN = 20;
+export const HERO_CONTENT_WIDTH_MAX = 42;
+export const HERO_CONTENT_WIDTH_DEFAULT = 34;
+
 export const defaultSlotConfig: ComponentSlotConfig = {
   containerPreset: "clean",
   mediaStyle: "clean",
@@ -648,6 +819,15 @@ function photographySlot(): ComponentSlotConfig {
   return { ...defaultSlotConfig };
 }
 
+function layoutSlot(): ComponentSlotConfig {
+  return {
+    ...defaultSlotConfig,
+    layoutOffsetX: 0,
+    layoutOffsetY: 0,
+    layoutMaxWidth: HERO_CONTENT_WIDTH_DEFAULT,
+  };
+}
+
 function logoSlot(): ComponentSlotConfig {
   return {
     ...defaultSlotConfig,
@@ -662,6 +842,7 @@ export function defaultComponents(): Record<ComponentSlotId, ComponentSlotConfig
   return {
     "header.logo": logoSlot(),
     "home.hero": photographySlot(),
+    "home.heroContent": layoutSlot(),
     "home.services": photographySlot(),
     "home.doctor": photographySlot(),
     "home.cta": photographySlot(),
@@ -800,6 +981,22 @@ export function createFactoryExperience(): ExperienceValues {
         padding: "none",
         previewBackground: "auto",
         alignment: "left",
+      },
+      "home.heroContent": {
+        containerPreset: "clean",
+        mediaStyle: "clean",
+        assetId: "default",
+        fit: "cover",
+        scale: 1,
+        positionX: 50,
+        positionY: 50,
+        sizePreset: "standard",
+        padding: "none",
+        previewBackground: "auto",
+        alignment: "left",
+        layoutOffsetX: 0,
+        layoutOffsetY: 0,
+        layoutMaxWidth: 34,
       },
       "home.services": {
         containerPreset: "clean",
@@ -975,17 +1172,17 @@ export const approvedExperience: ExperienceValues = {
   },
   floatingBadge: {
     enabled: false,
-    type: "static",
+    type: "rotating",
     position: "bottom-left",
     overlap: 0.22,
   },
   rotatingBadge: {
-    text: "WEST CALDWELL DENTAL ARTS",
+    text: "FREE DENTAL EXAM & X-RAY",
     icon: "tooth",
     diameter: "medium",
-    speed: "slow",
+    speed: "very-slow",
     direction: "left",
-    surface: "primary",
+    surface: "secondary",
     textColor: "inverse",
     position: "bottom-left",
   },
@@ -1014,7 +1211,58 @@ export const approvedExperience: ExperienceValues = {
   beforeAfter: {
     enabled: false,
   },
-  cursorCompanion: "off",
+  cursorCompanion: "subtle",
+  containerSurfaceIntensity: {
+    "patients-resource-cards": 0.05,
+  },
+  scopedColors: {
+    pages: {
+      "home": "#F1F0EF",
+      "contact": "#F1F0EF",
+    },
+    sections: {
+      "home/trust": "#F1F0EF",
+      "home/careAreas": "#F1F0EF",
+      "home/whyChoose": "#F1F0EF",
+      "home/practice": "#F1F0EF",
+      "about/intro": "#F1F0EE",
+      "about/philosophy": "#F1F0EF",
+      "about/independence": "#F1F0EF",
+      "about/whyChoose": "#F1F0EF",
+      "about/links": "#F1F0EF",
+      "about/cta": "#F1F0EF",
+      "doctor/intro": "#F1F0EE",
+      "doctor/biography": "#F1F0EE",
+      "doctor/education": "#F1F0EF",
+      "doctor/cta": "#F1F0EF",
+      "team/intro": "#F1F0EE",
+      "team/members": "#F1F0EE",
+      "services/intro": "#F1F0EE",
+      "services/areas": "#F1F0EE",
+      "services/treatments": "#F1F0EF",
+      "services/cta": "#F1F0EF",
+      "patients/resources": "#F1F0EE",
+      "patients/cta": "#F1F0EF",
+      "patients-first-visit/intro": "#F1F0EE",
+      "patients-first-visit/details": "#F1F0EE",
+      "patients-financial-options/intro": "#F1F0EE",
+      "patients-financial-options/details": "#F1F0EF",
+      "patients-insurance/intro": "#F1F0EE",
+      "patients-insurance/details": "#F1F0EF",
+      "patients-forms/intro": "#F1F0EE",
+      "patients-forms/details": "#F1F0EF",
+      "technology/intro": "#F1F0EE",
+      "technology/details": "#F1F0EF",
+      "technology/tools": "#F1F0EF",
+      "technology/cta": "#F1F0EF",
+      "contact/intro": "#F1F0EE",
+      "contact/details": "#F1F0EE",
+      "contact/form": "#F1F0EE",
+    },
+    elements: {
+      "home-doctor-media": "#F1F0EF",
+    },
+  },
   components: {
     "header.logo": {
       containerPreset: "clean",
@@ -1042,7 +1290,7 @@ export const approvedExperience: ExperienceValues = {
       previewBackground: "auto",
       alignment: "left",
     },
-    "home.services": {
+    "home.heroContent": {
       containerPreset: "clean",
       mediaStyle: "clean",
       assetId: "default",
@@ -1054,11 +1302,39 @@ export const approvedExperience: ExperienceValues = {
       padding: "none",
       previewBackground: "auto",
       alignment: "left",
+      layoutOffsetX: -13,
+      layoutOffsetY: -10,
+      layoutMaxWidth: 34,
+    },
+    "home.services": {
+      containerPreset: "rounded-portrait",
+      mediaStyle: "soft-rounded",
+      assetId: "default",
+      fit: "cover",
+      scale: 1,
+      positionX: 50,
+      positionY: 50,
+      sizePreset: "standard",
+      padding: "none",
+      previewBackground: "auto",
+      alignment: "left",
+      itemAssets: {
+        "preventive-general": "wcda-category-hero-preventive-general",
+      },
+      itemMedia: {
+        "preventive-general": {
+          scale: 1,
+          positionX: 50,
+          positionY: 50,
+          panX: -11.328020962801846,
+          panY: -2.5648377158425073,
+        },
+      },
     },
     "home.doctor": {
-      containerPreset: "clean",
+      containerPreset: "inset-badge-cutout",
       mediaStyle: "clean",
-      assetId: "default",
+      assetId: "wcda-drmatute",
       fit: "cover",
       scale: 1,
       positionX: 50,
@@ -1067,6 +1343,7 @@ export const approvedExperience: ExperienceValues = {
       padding: "none",
       previewBackground: "auto",
       alignment: "left",
+      insetBadgeSize: 113,
     },
     "home.cta": {
       containerPreset: "clean",
@@ -1262,6 +1539,90 @@ function clampNumber(value: unknown, min: number, max: number, fallback: number)
   return Math.min(max, Math.max(min, value));
 }
 
+export const MEDIA_PAN_MIN = -100;
+export const MEDIA_PAN_MAX = 100;
+/** Modest crop allowance so 3:2 in 3:2 at 100% zoom can still pan. */
+export const MEDIA_SAFE_PAN_FLOOR = 24;
+
+export function mediaPanLimit(scale: number, allowFreeOverflow?: boolean) {
+  if (allowFreeOverflow) {
+    return MEDIA_PAN_MAX;
+  }
+  const zoomSlack = Math.max(0, (scale - 1) * 50);
+  return clampNumber(
+    MEDIA_SAFE_PAN_FLOOR + zoomSlack,
+    MEDIA_SAFE_PAN_FLOOR,
+    MEDIA_PAN_MAX,
+    MEDIA_SAFE_PAN_FLOOR,
+  );
+}
+
+export function resolveMediaPan(
+  config: Pick<ComponentSlotConfig, "scale" | "panX" | "panY" | "allowFreeOverflow">,
+) {
+  const allowFreeOverflow = Boolean(config.allowFreeOverflow);
+  const limit = mediaPanLimit(config.scale, allowFreeOverflow);
+  return {
+    panX: clampNumber(config.panX, MEDIA_PAN_MIN, MEDIA_PAN_MAX, 0),
+    panY: clampNumber(config.panY, MEDIA_PAN_MIN, MEDIA_PAN_MAX, 0),
+    allowFreeOverflow,
+    limit,
+    renderPanX: clampNumber(config.panX, -limit, limit, 0),
+    renderPanY: clampNumber(config.panY, -limit, limit, 0),
+  };
+}
+
+function parseItemAssets(input: unknown): {
+  itemAssets?: Partial<Record<string, ComposerAssetId>>;
+} {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    return {};
+  }
+  const next: Partial<Record<string, ComposerAssetId>> = {};
+  for (const [key, value] of Object.entries(input as Record<string, unknown>)) {
+    if (!key || typeof value !== "string") {
+      continue;
+    }
+    if (value === "placeholder") {
+      next[key] = "placeholder";
+      continue;
+    }
+    if (value === "default") {
+      continue;
+    }
+    if (isRegisteredAssetId(value)) {
+      next[key] = value;
+    }
+  }
+  return Object.keys(next).length > 0 ? { itemAssets: next } : {};
+}
+
+function parseItemMedia(input: unknown): {
+  itemMedia?: Partial<Record<string, ItemMediaOverride>>;
+} {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    return {};
+  }
+  const next: Partial<Record<string, ItemMediaOverride>> = {};
+  for (const [key, value] of Object.entries(input as Record<string, unknown>)) {
+    if (!key || !value || typeof value !== "object" || Array.isArray(value)) {
+      continue;
+    }
+    const record = value as Record<string, unknown>;
+    next[key] = {
+      scale: clampNumber(record.scale, 0.5, 2, 1),
+      positionX: clampNumber(record.positionX, 0, 100, 50),
+      positionY: clampNumber(record.positionY, 0, 100, 50),
+      panX: clampNumber(record.panX, MEDIA_PAN_MIN, MEDIA_PAN_MAX, 0),
+      panY: clampNumber(record.panY, MEDIA_PAN_MIN, MEDIA_PAN_MAX, 0),
+      ...(record.allowFreeOverflow === true
+        ? { allowFreeOverflow: true }
+        : {}),
+    };
+  }
+  return Object.keys(next).length > 0 ? { itemMedia: next } : {};
+}
+
 function parseSlotConfig(
   input: unknown,
   fallback: ComponentSlotConfig,
@@ -1294,6 +1655,8 @@ function parseSlotConfig(
     alignment: isInList(record.alignment, ALIGNMENTS)
       ? record.alignment
       : fallback.alignment,
+    ...parseItemAssets(record.itemAssets),
+    ...parseItemMedia(record.itemMedia),
     ...(typeof record.insetBadgeSize === "number" &&
     Number.isFinite(record.insetBadgeSize)
       ? {
@@ -1302,6 +1665,28 @@ function parseSlotConfig(
             INSET_BADGE_SIZE_MIN,
             INSET_BADGE_SIZE_MAX,
             INSET_BADGE_SIZE_DEFAULT,
+          ),
+        }
+      : {}),
+    ...(slot === "home.heroContent"
+      ? {
+          layoutOffsetX: clampNumber(
+            record.layoutOffsetX,
+            HERO_CONTENT_OFFSET_MIN,
+            HERO_CONTENT_OFFSET_MAX,
+            fallback.layoutOffsetX ?? 0,
+          ),
+          layoutOffsetY: clampNumber(
+            record.layoutOffsetY,
+            HERO_CONTENT_OFFSET_MIN,
+            HERO_CONTENT_OFFSET_MAX,
+            fallback.layoutOffsetY ?? 0,
+          ),
+          layoutMaxWidth: clampNumber(
+            record.layoutMaxWidth,
+            HERO_CONTENT_WIDTH_MIN,
+            HERO_CONTENT_WIDTH_MAX,
+            fallback.layoutMaxWidth ?? HERO_CONTENT_WIDTH_DEFAULT,
           ),
         }
       : {}),
@@ -1329,6 +1714,32 @@ function parseBadgeText(value: unknown) {
   }
   const cleaned = value.replace(/\s+/g, " ").trim().slice(0, 48);
   return cleaned.length > 0 ? cleaned.toUpperCase() : approvedExperience.rotatingBadge.text;
+}
+
+function parseContainerSurfaceIntensity(
+  input: unknown,
+): Partial<Record<VisualTargetId, number>> {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    return {};
+  }
+  const record = input as Record<string, unknown>;
+  const next: Partial<Record<VisualTargetId, number>> = {};
+  for (const target of SURFACE_INTENSITY_TARGETS) {
+    if (!(target in record)) {
+      continue;
+    }
+    if (typeof record[target] !== "number" || !Number.isFinite(record[target])) {
+      continue;
+    }
+    if (record[target] > SURFACE_LIGHTNESS_MAX) {
+      continue;
+    }
+    const value = clampSurfaceLightness(record[target]);
+    if (Math.abs(value) > 0.0005) {
+      next[target] = value;
+    }
+  }
+  return next;
 }
 
 export function parseExperienceValues(input: unknown): ExperienceValues | null {
@@ -1505,6 +1916,10 @@ export function parseExperienceValues(input: unknown): ExperienceValues | null {
     },
     cursorCompanion: record.cursorCompanion,
     components: parseComponents(record.components),
+    containerSurfaceIntensity: parseContainerSurfaceIntensity(
+      record.containerSurfaceIntensity,
+    ),
+    scopedColors: parseScopedColors(record.scopedColors),
   };
 }
 
@@ -1521,6 +1936,61 @@ function formatLiteral(value: unknown): string {
     return JSON.stringify(value);
   }
   return String(value);
+}
+
+function formatSurfaceIntensitySource(
+  map: Partial<Record<VisualTargetId, number>> | undefined,
+) {
+  const entries = SURFACE_INTENSITY_TARGETS.filter((target) => {
+    const value = map?.[target];
+    return typeof value === "number" && Math.abs(value) > 0.0005;
+  }).map((target) => {
+    const value = map?.[target] ?? 0;
+    return `    ${JSON.stringify(target)}: ${formatLiteral(value)},`;
+  });
+  if (entries.length === 0) {
+    return [];
+  }
+  return [
+    "  containerSurfaceIntensity: {",
+    ...entries,
+    "  },",
+  ];
+}
+
+function formatScopedColorsSource(map: ScopedColors | undefined) {
+  if (!map) {
+    return [];
+  }
+  const pages = Object.entries(map.pages ?? {}).filter(
+    (entry): entry is [string, string] => typeof entry[1] === "string",
+  );
+  const sections = Object.entries(map.sections ?? {}).filter(
+    (entry): entry is [string, string] => typeof entry[1] === "string",
+  );
+  const elements = Object.entries(map.elements ?? {}).filter(
+    (entry): entry is [string, string] => typeof entry[1] === "string",
+  );
+  if (pages.length === 0 && sections.length === 0 && elements.length === 0) {
+    return [];
+  }
+  const block = (label: string, entries: Array<[string, string]>) =>
+    entries.length === 0
+      ? []
+      : [
+          `    ${label}: {`,
+          ...entries.map(
+            ([key, value]) => `      ${JSON.stringify(key)}: ${formatLiteral(value)},`,
+          ),
+          "    },",
+        ];
+  return [
+    "  scopedColors: {",
+    ...block("pages", pages),
+    ...block("sections", sections),
+    ...block("elements", elements),
+    "  },",
+  ];
 }
 
 export function formatApprovedExperienceSource(experience: ExperienceValues) {
@@ -1540,8 +2010,55 @@ export function formatApprovedExperienceSource(experience: ExperienceValues) {
       `      padding: ${formatLiteral(item.padding)},`,
       `      previewBackground: ${formatLiteral(item.previewBackground)},`,
       `      alignment: ${formatLiteral(item.alignment)},`,
+      ...(item.itemAssets && Object.keys(item.itemAssets).length > 0
+        ? [
+            `      itemAssets: {`,
+            ...Object.entries(item.itemAssets)
+              .filter((entry): entry is [string, string] => Boolean(entry[1]))
+              .map(
+                ([key, value]) =>
+                  `        ${JSON.stringify(key)}: ${formatLiteral(value)},`,
+              ),
+            `      },`,
+          ]
+        : []),
+      ...(item.itemMedia && Object.keys(item.itemMedia).length > 0
+        ? [
+            `      itemMedia: {`,
+            ...Object.entries(item.itemMedia)
+              .filter((entry): entry is [string, ItemMediaOverride] =>
+                Boolean(entry[1]),
+              )
+              .flatMap(([key, value]) => [
+                `        ${JSON.stringify(key)}: {`,
+                `          scale: ${formatLiteral(value.scale)},`,
+                `          positionX: ${formatLiteral(value.positionX)},`,
+                `          positionY: ${formatLiteral(value.positionY)},`,
+                ...(value.panX
+                  ? [`          panX: ${formatLiteral(value.panX)},`]
+                  : []),
+                ...(value.panY
+                  ? [`          panY: ${formatLiteral(value.panY)},`]
+                  : []),
+                ...(value.allowFreeOverflow
+                  ? [`          allowFreeOverflow: true,`]
+                  : []),
+                `        },`,
+              ]),
+            `      },`,
+          ]
+        : []),
       ...(item.insetBadgeSize != null
         ? [`      insetBadgeSize: ${formatLiteral(item.insetBadgeSize)},`]
+        : []),
+      ...(item.layoutOffsetX != null
+        ? [`      layoutOffsetX: ${formatLiteral(item.layoutOffsetX)},`]
+        : []),
+      ...(item.layoutOffsetY != null
+        ? [`      layoutOffsetY: ${formatLiteral(item.layoutOffsetY)},`]
+        : []),
+      ...(item.layoutMaxWidth != null
+        ? [`      layoutMaxWidth: ${formatLiteral(item.layoutMaxWidth)},`]
         : []),
       "    },",
     ];
@@ -1619,6 +2136,8 @@ export function formatApprovedExperienceSource(experience: ExperienceValues) {
     `    enabled: ${formatLiteral(value.beforeAfter.enabled)},`,
     "  },",
     `  cursorCompanion: ${formatLiteral(value.cursorCompanion)},`,
+    ...formatSurfaceIntensitySource(value.containerSurfaceIntensity),
+    ...formatScopedColorsSource(value.scopedColors),
     "  components: {",
     ...componentLines,
     "  },",
@@ -1644,7 +2163,7 @@ const MOTION_DISTANCE: Record<MotionIntensity, string> = {
   normal: "18px",
 };
 
-export function slotForTarget(target: VisualTargetId): ComponentSlotId {
+export function slotForTarget(target: VisualTargetId): ComponentSlotId | undefined {
   return visualTargetSlots[target];
 }
 
@@ -1655,7 +2174,11 @@ export function getComponentConfig(
   if (!target) {
     return defaultSlotConfig;
   }
-  return experience.components[slotForTarget(target)] ?? defaultSlotConfig;
+  const slot = visualTargetSlots[target];
+  if (!slot) {
+    return defaultSlotConfig;
+  }
+  return experience.components[slot] ?? defaultSlotConfig;
 }
 
 export function updateComponentConfig(
@@ -1663,12 +2186,27 @@ export function updateComponentConfig(
   target: VisualTargetId,
   patch: Partial<ComponentSlotConfig>,
 ): ExperienceValues {
-  const slot = slotForTarget(target);
+  const slot = visualTargetSlots[target];
+  if (!slot) {
+    return experience;
+  }
   const current = experience.components[slot] ?? defaultSlotConfig;
   const next = { ...current, ...patch };
+  if (patch.itemAssets === undefined && !("itemAssets" in patch)) {
+    /* keep current itemAssets */
+  }
+  if (patch.itemAssets && Object.keys(patch.itemAssets).length === 0) {
+    delete next.itemAssets;
+  }
+  if (patch.itemMedia === undefined && !("itemMedia" in patch)) {
+    /* keep current itemMedia */
+  }
+  if (patch.itemMedia && Object.keys(patch.itemMedia).length === 0) {
+    delete next.itemMedia;
+  }
   return {
     ...experience,
-    containerPreset: next.containerPreset,
+    ...(isLayoutOnlyTarget(target) ? {} : { containerPreset: next.containerPreset }),
     components: {
       ...experience.components,
       [slot]: next,
@@ -1676,7 +2214,145 @@ export function updateComponentConfig(
   };
 }
 
+export function resolveSlotAssetId(
+  config: ComponentSlotConfig,
+  itemKey?: string,
+): ComposerAssetId {
+  if (itemKey) {
+    const item = config.itemAssets?.[itemKey];
+    if (item) {
+      return item;
+    }
+  }
+  return config.assetId;
+}
+
+export function updateItemAsset(
+  experience: ExperienceValues,
+  target: VisualTargetId,
+  itemKey: string,
+  assetId: ComposerAssetId,
+): ExperienceValues {
+  const current = getComponentConfig(experience, target);
+  const itemAssets = { ...(current.itemAssets ?? {}) };
+  if (assetId === "default") {
+    delete itemAssets[itemKey];
+  } else {
+    itemAssets[itemKey] = assetId;
+  }
+  return updateComponentConfig(experience, target, {
+    itemAssets: Object.keys(itemAssets).length > 0 ? itemAssets : undefined,
+  });
+}
+
+export function isPerItemMediaTarget(
+  target?: string,
+): target is "home-care-areas" | "services-care-cards" {
+  return target === "home-care-areas" || target === "services-care-cards";
+}
+
+export function isPerItemMediaSlot(slot: ComponentSlotId) {
+  return slot === "home.services" || slot === "services.cards";
+}
+
+export function resolveItemMedia(
+  config: ComponentSlotConfig,
+  itemKey?: string,
+): ComponentSlotConfig {
+  if (!itemKey) {
+    return config;
+  }
+  const override = config.itemMedia?.[itemKey];
+  if (!override) {
+    return config;
+  }
+  return {
+    ...config,
+    scale: override.scale,
+    positionX: override.positionX,
+    positionY: override.positionY,
+    panX: override.panX ?? 0,
+    panY: override.panY ?? 0,
+    allowFreeOverflow: Boolean(override.allowFreeOverflow),
+  };
+}
+
+export function updateItemMedia(
+  experience: ExperienceValues,
+  target: VisualTargetId,
+  itemKey: string,
+  patch: Partial<ItemMediaOverride>,
+): ExperienceValues {
+  const current = getComponentConfig(experience, target);
+  const existing = current.itemMedia?.[itemKey];
+  const nextValue: ItemMediaOverride = {
+    scale: clampNumber(
+      patch.scale ?? existing?.scale ?? current.scale,
+      0.5,
+      2,
+      current.scale,
+    ),
+    positionX: clampNumber(
+      patch.positionX ?? existing?.positionX ?? current.positionX,
+      0,
+      100,
+      current.positionX,
+    ),
+    positionY: clampNumber(
+      patch.positionY ?? existing?.positionY ?? current.positionY,
+      0,
+      100,
+      current.positionY,
+    ),
+    panX: clampNumber(
+      patch.panX ?? existing?.panX ?? current.panX ?? 0,
+      MEDIA_PAN_MIN,
+      MEDIA_PAN_MAX,
+      0,
+    ),
+    panY: clampNumber(
+      patch.panY ?? existing?.panY ?? current.panY ?? 0,
+      MEDIA_PAN_MIN,
+      MEDIA_PAN_MAX,
+      0,
+    ),
+    allowFreeOverflow: Boolean(
+      patch.allowFreeOverflow ??
+        existing?.allowFreeOverflow ??
+        current.allowFreeOverflow,
+    ),
+  };
+  const itemMedia = { ...(current.itemMedia ?? {}) };
+  const matchesSlot =
+    nextValue.scale === current.scale &&
+    nextValue.positionX === current.positionX &&
+    nextValue.positionY === current.positionY &&
+    (nextValue.panX ?? 0) === 0 &&
+    (nextValue.panY ?? 0) === 0 &&
+    !nextValue.allowFreeOverflow;
+  if (matchesSlot) {
+    delete itemMedia[itemKey];
+  } else {
+    itemMedia[itemKey] = nextValue;
+  }
+  return updateComponentConfig(experience, target, {
+    itemMedia: Object.keys(itemMedia).length > 0 ? itemMedia : undefined,
+  });
+}
+
 export function experienceToCssVars(experience: ExperienceValues) {
+  const intensityVars = Object.fromEntries(
+    SURFACE_INTENSITY_TARGETS.flatMap((target) => {
+      const value = getContainerSurfaceIntensity(experience, target);
+      const keep = `${100 - Math.round(Math.abs(value) * 100)}%`;
+      const toward = value < 0 ? "#5C4E43" : "#F2EDE8";
+      return [
+        [surfaceLightnessKeepCssVar(target), keep],
+        [surfaceLightnessTowardCssVar(target), toward],
+      ];
+    }),
+  );
+
   return {
     "--exp-media-fit": experience.media.fit,
     "--exp-media-x": `${experience.media.positionX}%`,
@@ -1694,15 +2370,19 @@ export function experienceToCssVars(experience: ExperienceValues) {
     "--exp-badge-overlap": `${Math.round(experience.floatingBadge.overlap * 100)}%`,
     "--exp-badge-spin":
       experience.rotatingBadge.speed === "very-slow" ? "48s" : "28s",
+    ...intensityVars,
   };
 }
 
 export function composerCssVars(config: ComponentSlotConfig) {
+  const pan = resolveMediaPan(config);
   return {
     ["--exp-media-fit" as string]: config.fit,
     ["--exp-media-scale" as string]: String(config.scale),
     ["--exp-media-x" as string]: `${config.positionX}%`,
     ["--exp-media-y" as string]: `${config.positionY}%`,
+    ["--exp-media-pan-x" as string]: String(pan.renderPanX),
+    ["--exp-media-pan-y" as string]: String(pan.renderPanY),
     ["--exp-media-pad" as string]: MEDIA_PADDING_CSS[config.padding],
     ["--exp-logo-scale" as string]: String(config.scale),
     ["--exp-logo-x" as string]: `${config.positionX}%`,
@@ -1713,10 +2393,42 @@ export function composerCssVars(config: ComponentSlotConfig) {
   };
 }
 
+export function heroContentLayout(config: ComponentSlotConfig) {
+  return {
+    offsetX: clampNumber(
+      config.layoutOffsetX,
+      HERO_CONTENT_OFFSET_MIN,
+      HERO_CONTENT_OFFSET_MAX,
+      0,
+    ),
+    offsetY: clampNumber(
+      config.layoutOffsetY,
+      HERO_CONTENT_OFFSET_MIN,
+      HERO_CONTENT_OFFSET_MAX,
+      0,
+    ),
+    maxWidth: clampNumber(
+      config.layoutMaxWidth,
+      HERO_CONTENT_WIDTH_MIN,
+      HERO_CONTENT_WIDTH_MAX,
+      HERO_CONTENT_WIDTH_DEFAULT,
+    ),
+  };
+}
+
+export function heroContentCssVars(config: ComponentSlotConfig) {
+  const layout = heroContentLayout(config);
+  return {
+    ["--hero-content-offset-x" as string]: `${layout.offsetX}px`,
+    ["--hero-content-offset-y" as string]: `${layout.offsetY}px`,
+    ["--hero-content-max-width" as string]: `${layout.maxWidth}rem`,
+  };
+}
+
 export function isMotionTarget(target?: string) {
   return Boolean(
-    target &&
-      target in visualTargetSlots &&
+      target &&
+      visualTargetSlots[target as VisualTargetId] &&
       !MOTION_UNSUPPORTED_TARGETS.includes(target as VisualTargetId),
   );
 }
@@ -1736,6 +2448,19 @@ export function approvedExperienceHtmlAttributes(experience: ExperienceValues) {
   };
 }
 
+function applyLayoutToNode(node: HTMLElement, config: ComponentSlotConfig) {
+  const vars = heroContentCssVars(config);
+  for (const [name, value] of Object.entries(vars)) {
+    node.style.setProperty(name, value);
+  }
+}
+
+function clearLayoutFromNode(node: HTMLElement) {
+  node.style.removeProperty("--hero-content-offset-x");
+  node.style.removeProperty("--hero-content-offset-y");
+  node.style.removeProperty("--hero-content-max-width");
+}
+
 function applyComposerToNode(node: HTMLElement, config: ComponentSlotConfig) {
   const vars = composerCssVars(config);
   for (const [name, value] of Object.entries(vars)) {
@@ -1747,6 +2472,13 @@ function applyComposerToNode(node: HTMLElement, config: ComponentSlotConfig) {
   node.dataset.expPad = config.padding;
   node.dataset.expAlign = config.alignment;
   node.dataset.expFit = config.fit;
+  node.dataset.expX = String(config.positionX);
+  node.dataset.expY = String(config.positionY);
+  node.dataset.expScale = String(config.scale);
+  const pan = resolveMediaPan(config);
+  node.dataset.expPanX = String(pan.panX);
+  node.dataset.expPanY = String(pan.panY);
+  node.dataset.expPanFree = pan.allowFreeOverflow ? "1" : "0";
 }
 
 function clearComposerFromNode(node: HTMLElement) {
@@ -1754,6 +2486,8 @@ function clearComposerFromNode(node: HTMLElement) {
   node.style.removeProperty("--exp-media-scale");
   node.style.removeProperty("--exp-media-x");
   node.style.removeProperty("--exp-media-y");
+  node.style.removeProperty("--exp-media-pan-x");
+  node.style.removeProperty("--exp-media-pan-y");
   node.style.removeProperty("--exp-media-pad");
   node.style.removeProperty("--exp-logo-scale");
   node.style.removeProperty("--exp-logo-x");
@@ -1768,6 +2502,12 @@ function clearComposerFromNode(node: HTMLElement) {
   delete node.dataset.expBg;
   delete node.dataset.expAlign;
   delete node.dataset.expFit;
+  delete node.dataset.expX;
+  delete node.dataset.expY;
+  delete node.dataset.expScale;
+  delete node.dataset.expPanX;
+  delete node.dataset.expPanY;
+  delete node.dataset.expPanFree;
 }
 
 export function applyExperienceToDocument(
@@ -1778,6 +2518,10 @@ export function applyExperienceToDocument(
   const vars = experienceToCssVars(experience);
   for (const [name, value] of Object.entries(vars)) {
     element.style.setProperty(name, value);
+  }
+
+  for (const target of SURFACE_INTENSITY_TARGETS) {
+    element.style.removeProperty(`--exp-si-${target}`);
   }
 
   if (experience.media.aspectRatio === "auto") {
@@ -1801,14 +2545,22 @@ export function applyExperienceToDocument(
     const target = node.dataset.visualTarget as VisualTargetId | undefined;
     const active = target === selectedTarget;
     node.toggleAttribute("data-exp-active", active);
-    if (target && target in visualTargetSlots) {
-      applyComposerToNode(node, getComponentConfig(experience, target));
+    if (target && isLayoutOnlyTarget(target)) {
+      applyLayoutToNode(node, getComponentConfig(experience, target));
+    } else if (target && visualTargetSlots[target]) {
+      applyComposerToNode(
+        node,
+        resolveItemMedia(getComponentConfig(experience, target), node.dataset.labItemId),
+      );
+    } else if (isSurfaceIntensityTarget(target)) {
+      // Intensity-only card families keep React-owned attributes.
     } else if (active) {
       node.dataset.containerPreset = experience.containerPreset;
     } else {
       clearComposerFromNode(node);
     }
   });
+  applyScopedElementFills(experience.scopedColors);
 }
 
 export function clearExperienceFromDocument(
@@ -1829,12 +2581,17 @@ export function clearExperienceFromDocument(
     if (node instanceof HTMLElement) {
       node.removeAttribute("data-exp-active");
       clearComposerFromNode(node);
+      clearLayoutFromNode(node);
     }
   });
+  clearScopedElementFills();
 }
 
-export function targetsForPage(path: PreviewPagePath) {
-  return visualTargetsByPage[path] ?? [];
+export function targetsForPage(path: string) {
+  if (path.startsWith("/services/")) {
+    return visualTargetsByPage["/services"] ?? [];
+  }
+  return visualTargetsByPage[path as PreviewPagePath] ?? [];
 }
 
 export function usesBadgeStyle(style: MediaContainerStyleId) {

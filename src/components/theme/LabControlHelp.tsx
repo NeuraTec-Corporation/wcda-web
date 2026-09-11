@@ -41,6 +41,9 @@ export function LabControlHelp({
 }) {
   const language = useLabLanguage();
   const item = labControls[id];
+  if (!item) {
+    throw new Error(`Lab control "${id}" is not registered in labControls.`);
+  }
   const help = item.help;
   const term = help.termNote ? labText(help.termNote, language) : "";
 
@@ -50,6 +53,36 @@ export function LabControlHelp({
         {labText(help.what, language)}
         {term ? ` ${term}` : ""}
       </p>
+    );
+  }
+
+  if (item.layer === "content") {
+    const heading = (en: string, es: string) => (
+      <span className="font-semibold uppercase tracking-[0.12em] text-zinc-400">
+        {language === "es" ? es : en}
+      </span>
+    );
+    return (
+      <div className="mt-1.5 space-y-1.5 text-[0.7rem] leading-relaxed text-zinc-500">
+        {term ? <p>{term}</p> : null}
+        <p>
+          {heading("What it does", "Qué hace")}
+          {` — ${labText(help.what, language)}`}
+        </p>
+        <p>
+          {heading("What it affects", "Qué afecta")}
+          {` — ${labText(help.where, language)}`}
+        </p>
+        <p>
+          {heading("What it does not affect", "Qué no afecta")}
+          {` — ${labText(help.incompatible, language)}`}
+        </p>
+        <p>
+          {heading("Publication consequence", "Consecuencia de publicación")}
+          {` — ${labText(help.see, language)}`}
+        </p>
+        <p>{labText(help.persist, language)}</p>
+      </div>
     );
   }
 
@@ -103,7 +136,15 @@ const sectionToCategory: Record<LabSectionId, LabControlId[] | "all"> = {
     "color-foreground",
     "color-muted",
     "color-border",
+    "color-pick",
+    "color-hex",
+    "color-apply",
   ],
+  surfaces: [
+    "slider-chromeWarmth",
+  ],
+  header: ["slider-headerBackground", "media-logo-width", "media-asset"],
+  footer: ["slider-footerBackground"],
   typography: [
     "font-heading",
     "font-body",
@@ -126,7 +167,21 @@ const sectionToCategory: Record<LabSectionId, LabControlId[] | "all"> = {
     "media-radius",
     "media-overlay",
   ],
-  containers: ["container-preset", "container-circle-size"],
+  position: [
+    "hero-content-offset-y",
+    "hero-content-offset-x",
+    "hero-content-max-width",
+    "hero-content-reset",
+    "media-position-x",
+    "media-position-y",
+    "media-position-zoom",
+    "media-position-reset",
+    "media-pan-x",
+    "media-pan-y",
+    "media-pan-reset",
+    "media-pan-overflow",
+  ],
+  containers: ["container-preset", "container-circle-size", "container-surface-intensity"],
   motion: [
     "motion-entrance",
     "motion-duration",
@@ -141,10 +196,21 @@ const sectionToCategory: Record<LabSectionId, LabControlId[] | "all"> = {
     "recovery-load-current",
     "recovery-load-factory",
     "recovery-load-inspired",
-    "recovery-apply",
+    "recovery-reset-all",
     "recovery-copy-theme",
     "recovery-copy-experience",
   ],
+  approval: ["recovery-apply"],
+  content: [
+    "content-page-active",
+    "content-page-status",
+    "content-section-active",
+    "content-category-active",
+    "content-treatment-active",
+    "content-treatment-section-active",
+  ],
+  copy: [],
+  tools: ["color-pick", "color-hex", "color-apply"],
 };
 
 export function LabGuidePanel({
@@ -209,6 +275,11 @@ export function LabGuidePanel({
           ))
         : list.map((id) => {
             const item = labControls[id];
+            if (!item) {
+              throw new Error(
+                `Lab control "${id}" is not registered in labControls.`,
+              );
+            }
             return (
               <div key={id} className="rounded-md border border-zinc-800 px-3 py-2">
                 <p className="text-xs font-semibold text-zinc-200">
@@ -223,9 +294,13 @@ export function LabGuidePanel({
                       ? language === "es"
                         ? "Experiencia"
                         : "Experience"
-                      : language === "es"
-                        ? "Laboratorio"
-                        : "Lab"}
+                      : item.layer === "content"
+                        ? language === "es"
+                          ? "Contenido"
+                          : "Content"
+                        : language === "es"
+                          ? "Laboratorio"
+                          : "Lab"}
                 </p>
                 <LabControlHelp id={id} />
               </div>

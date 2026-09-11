@@ -16,7 +16,13 @@ export function AppointmentShell() {
 
   return (
     <>
-      <PageIntro {...appointmentPage} />
+      <PageIntro
+        {...appointmentPage}
+        breadcrumb={[
+          { href: "/", label: "Home" },
+          { label: appointmentPage.title },
+        ]}
+      />
       <ContentBlockSection
         headingId="appointment-details-heading"
         title={

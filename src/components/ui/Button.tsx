@@ -6,11 +6,11 @@ import type { ButtonSize, ButtonVariant } from "@/types/ui";
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-primary-foreground hover:bg-primary-hover",
+    "bg-cta text-cta-foreground hover:bg-cta-hover active:bg-cta-active",
   secondary:
     "bg-secondary text-secondary-foreground hover:bg-secondary-hover",
   outline:
-    "border border-border bg-surface text-foreground hover:bg-surface-muted",
+    "border border-border bg-outline text-outline-foreground hover:bg-outline-hover",
   ghost: "bg-transparent text-foreground hover:bg-surface-muted",
 };
 
@@ -21,7 +21,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-md font-medium tracking-tight transition-colors motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center rounded-md font-[var(--theme-weight-button)] tracking-tight transition-colors motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50";
 
 type ButtonSharedProps = {
   variant?: ButtonVariant;

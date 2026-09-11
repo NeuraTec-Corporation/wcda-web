@@ -104,9 +104,9 @@ export function CareAreaCollection({
   }
 
   return (
-    <ul className="mt-stack-lg grid min-w-0 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="mt-stack-lg grid min-w-0 gap-x-6 gap-y-8 sm:grid-cols-2 lg:gap-x-8 lg:gap-y-10">
       {cards.map((card, index) => (
-        <li key={categories[index]?.slug ?? index} className="min-w-0 overflow-visible p-2">
+        <li key={categories[index]?.slug ?? index} className="min-w-0">
           {card}
         </li>
       ))}

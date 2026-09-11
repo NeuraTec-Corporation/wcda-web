@@ -5,18 +5,58 @@
   z-index: 1;
 }
 
+.exp-media-transform {
+  position: absolute;
+  inset: 0;
+  transform: translate(
+      calc(var(--exp-media-pan-x, 0) * 1%),
+      calc(var(--exp-media-pan-y, 0) * 1%)
+    )
+    scale(var(--exp-media-scale, 1));
+  transform-origin: var(--exp-media-x, 50%) var(--exp-media-y, 50%);
+}
+
 .exp-media-img {
   object-fit: var(--exp-media-fit, cover);
   object-position: var(--exp-media-x, 50%) var(--exp-media-y, 50%);
+}
+
+/* Hero video and other stage-direct media still scale from CSS vars.
+   MediaFrame images sit inside .exp-media-transform, so they are not
+   double-scaled. */
+.exp-media-stage > .exp-media-img {
   transform: scale(var(--exp-media-scale, 1));
-  transform-origin: center;
+  transform-origin: var(--exp-media-x, 50%) var(--exp-media-y, 50%);
+}
+
+html[data-theme-lab] [data-lab-media] img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+html[data-theme-lab] [data-lab-media][data-lab-element-active] {
+  cursor: grab;
+  touch-action: none;
+}
+
+html[data-theme-lab] [data-lab-media][data-lab-element-active][data-exp-panning] {
+  cursor: grabbing;
 }
 
 .exp-logo {
+  --header-logo-gutter: 0.125rem;
+  --header-logo-pad: var(--theme-header-padding, 0.75rem);
+  --header-logo-max-h: calc(
+    2.75rem + 2 * var(--header-logo-pad) - 2 * var(--header-logo-gutter)
+  );
+  display: flex;
   flex-shrink: 0;
-  width: min(var(--exp-logo-width, 16.5rem), calc(100vw - 8.5rem));
-  max-width: 21rem;
-  height: 2.25rem;
+  align-items: center;
+  width: auto;
+  max-width: min(var(--exp-logo-width, 21rem), calc(100vw - 8.5rem));
+  height: auto;
+  margin-block: calc(-1 * var(--header-logo-pad) + var(--header-logo-gutter));
+  overflow: visible;
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -26,49 +66,33 @@
 
 @media (min-width: 40rem) {
   .exp-logo {
-    height: 2.5rem;
+    --header-logo-pad: calc(var(--theme-header-padding, 0.75rem) + 0.125rem);
   }
 }
 
-.exp-logo-frame {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.exp-logo-stage {
-  position: absolute;
-  inset: var(--exp-logo-padding, 0px);
-  display: block;
-  overflow: hidden;
-}
-
 .exp-logo-img {
-  object-fit: var(--exp-logo-fit, contain);
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: var(--header-logo-max-h);
+  object-fit: contain;
   object-position: var(--exp-logo-x, 50%) var(--exp-logo-y, 50%);
-  width: 100%;
-  height: 100%;
   transform: scale(var(--exp-logo-scale, 1));
   transform-origin: center;
 }
 
-[data-visual-target="header-logo"][data-media-style="brand-surface"] {
-  background-color: var(--theme-primary, var(--color-primary));
-}
-
-[data-visual-target="header-logo"][data-media-style="light-surface"] {
-  background-color: var(--theme-surface, var(--color-surface, #f7f3ec));
-}
-
+[data-visual-target="header-logo"],
+[data-visual-target="header-logo"][data-media-style],
+[data-visual-target="header-logo"][data-media-style="brand-surface"],
+[data-visual-target="header-logo"][data-media-style="light-surface"],
 [data-visual-target="header-logo"][data-media-style="transparent-strip"],
 [data-visual-target="header-logo"][data-media-style="clean"] {
   background-color: transparent;
+  background-image: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .exp-media {
@@ -76,9 +100,9 @@
   aspect-ratio: var(--exp-media-aspect, var(--exp-media-aspect-fallback, auto));
 }
 
-html[data-exp-overlay="light"] .exp-media:not([data-visual-target="header-logo"]):not([data-container-preset="media-overlay"])::after,
-html[data-exp-overlay="dark"] .exp-media:not([data-visual-target="header-logo"]):not([data-container-preset="media-overlay"])::after,
-html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]):not([data-container-preset="media-overlay"])::after {
+html[data-exp-overlay="light"] .exp-media:not([data-visual-target="header-logo"]):not([data-visual-target="home-hero-media"]):not([data-container-preset="media-overlay"])::after,
+html[data-exp-overlay="dark"] .exp-media:not([data-visual-target="header-logo"]):not([data-visual-target="home-hero-media"]):not([data-container-preset="media-overlay"])::after,
+html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]):not([data-visual-target="home-hero-media"]):not([data-container-preset="media-overlay"])::after {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -86,15 +110,15 @@ html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]
   z-index: 2;
 }
 
-html[data-exp-overlay="light"] .exp-media:not([data-visual-target="header-logo"]):not([data-container-preset="media-overlay"])::after {
+html[data-exp-overlay="light"] .exp-media:not([data-visual-target="header-logo"]):not([data-visual-target="home-hero-media"]):not([data-container-preset="media-overlay"])::after {
   background: rgb(255 255 255 / 0.22);
 }
 
-html[data-exp-overlay="dark"] .exp-media:not([data-visual-target="header-logo"]):not([data-container-preset="media-overlay"])::after {
+html[data-exp-overlay="dark"] .exp-media:not([data-visual-target="header-logo"]):not([data-visual-target="home-hero-media"]):not([data-container-preset="media-overlay"])::after {
   background: rgb(16 38 61 / 0.28);
 }
 
-html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]):not([data-container-preset="media-overlay"])::after {
+html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]):not([data-visual-target="home-hero-media"]):not([data-container-preset="media-overlay"])::after {
   background: color-mix(in srgb, var(--theme-accent) 28%, transparent);
 }
 
@@ -102,6 +126,7 @@ html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]
 .exp-container {
   --exp-frame-outset: 0px;
   --exp-action-outset: 0px;
+  --exp-surface-fill: var(--color-surface);
   position: relative;
   isolation: isolate;
   z-index: 0;
@@ -867,7 +892,7 @@ html[data-exp-marquee-pause="true"] .exp-marquee:hover .exp-marquee-track,
 }
 
 html[data-theme-lab="1"] [data-exp-bg="light"] {
-  background-color: #ffffff;
+  background-color: #F2EDE8;
   background-image: none;
 }
 
@@ -892,8 +917,8 @@ html[data-theme-lab="1"] [data-exp-bg="accent"] {
 }
 
 html[data-theme-lab="1"] [data-exp-bg="checkerboard"] {
-  background-color: #f4f4f5;
-  background-image: repeating-conic-gradient(#d4d4d8 0% 25%, #fafafa 0% 50%);
+  background-color: #E4D9D1;
+  background-image: repeating-conic-gradient(#DDD1C8 0% 25%, #E8DED5 0% 50%);
   background-size: 1rem 1rem;
 }
 
@@ -912,8 +937,18 @@ html[data-theme-lab="1"] [data-exp-bg="checkerboard"] {
     clip-path: none !important;
   }
 
-  .exp-media-img {
+  .exp-media-transform {
+    transform: translate(
+        calc(var(--exp-media-pan-x, 0) * 1%),
+        calc(var(--exp-media-pan-y, 0) * 1%)
+      )
+      scale(var(--exp-media-scale, 1)) !important;
+    transform-origin: var(--exp-media-x, 50%) var(--exp-media-y, 50%) !important;
+  }
+
+  .exp-media-stage > .exp-media-img {
     transform: scale(var(--exp-media-scale, 1)) !important;
+    transform-origin: var(--exp-media-x, 50%) var(--exp-media-y, 50%) !important;
   }
 
   .exp-logo-img {
@@ -926,5 +961,200 @@ html[data-theme-lab="1"] [data-exp-bg="checkerboard"] {
 
   .exp-cursor {
     display: none !important;
+  }
+}
+
+[data-visual-target="patients-resource-cards"] {
+  --exp-surface-keep: var(--exp-sl-keep-patients-resource-cards, 100%);
+  --exp-surface-toward: var(--exp-sl-toward-patients-resource-cards, var(--wcda-lift, #F2EDE8));
+}
+
+[data-visual-target="home-care-areas"] {
+  --exp-surface-keep: var(--exp-sl-keep-home-care-areas, 100%);
+  --exp-surface-toward: var(--exp-sl-toward-home-care-areas, var(--wcda-lift, #F2EDE8));
+}
+
+[data-visual-target="services-care-cards"] {
+  --exp-surface-keep: var(--exp-sl-keep-services-care-cards, 100%);
+  --exp-surface-toward: var(--exp-sl-toward-services-care-cards, var(--wcda-lift, #F2EDE8));
+}
+
+[data-visual-target="editorial-cards"] {
+  --exp-surface-keep: var(--exp-sl-keep-editorial-cards, 100%);
+  --exp-surface-toward: var(--exp-sl-toward-editorial-cards, var(--wcda-lift, #F2EDE8));
+}
+
+[data-scoped-fill="1"] {
+  background-color: var(--exp-surface-fill);
+}
+
+.exp-container[data-container-preset="clean"],
+.exp-container[data-container-preset="floating-badge"],
+.exp-container[data-container-preset="corner-action"],
+.exp-container[data-container-preset="top-action"],
+.exp-container[data-container-preset="bottom-action"],
+.exp-container[data-container-preset="video-card"] {
+  --exp-surface-fill: var(--wcda-placeholder, var(--color-placeholder, transparent));
+}
+
+.exp-container[data-container-preset="soft-card"],
+.exp-container[data-container-preset="feature-card"],
+.exp-container[data-container-preset="carousel-card"],
+.exp-container[data-container-preset="badge-card"] {
+  --exp-surface-fill: var(--color-surface);
+}
+
+[data-surface-mix]:not(.exp-media):not([data-container-preset="inset-badge-cutout"]):not(
+    [data-container-preset="integrated-cutout"]
+  ) {
+  background-color: var(--exp-surface-fill, var(--color-surface));
+  background-color: color-mix(
+    in srgb,
+    var(--exp-surface-fill, var(--color-surface)) var(--exp-surface-keep, 100%),
+    var(--exp-surface-toward, var(--wcda-lift, #F2EDE8))
+  );
+}
+
+.home-hero-cinematic {
+  --home-hero-chrome: 6.75rem;
+  --home-hero-content-offset: clamp(2.5rem, calc(8svh - 0.5rem), 4rem);
+  min-height: clamp(28rem, calc(100svh - var(--home-hero-chrome)), 56rem);
+}
+
+.home-hero-cinematic__content {
+  padding-top: var(--home-hero-content-offset);
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 48rem) {
+  .home-hero-cinematic {
+    --home-hero-content-offset: clamp(4rem, calc(14svh - 1rem), 7rem);
+  }
+
+  .home-hero-cinematic__content {
+    padding-bottom: 4rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .home-hero-cinematic {
+    --home-hero-content-offset: clamp(6rem, calc(22svh - 1.5rem), 10.5rem);
+  }
+
+  .home-hero-cinematic__content {
+    padding-bottom: 5rem;
+  }
+}
+
+@media (min-width: 90rem) {
+  .home-hero-cinematic {
+    --home-hero-content-offset: clamp(7rem, calc(26svh - 1.5rem), 12.5rem);
+  }
+}
+
+/* ComposerStage always adds .exp-shell { position: relative }, which is loaded
+   after Tailwind and overrides the Hero's `absolute inset-0` fill. Without this
+   override the media layer has 0 height (absolute children do not expand it). */
+.home-hero-cinematic > .exp-shell {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  height: auto;
+  max-width: none;
+}
+
+.home-hero-cinematic [data-visual-target="home-hero-media"].exp-media {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+}
+
+/* SectionHeading uses <header>, which canvas-experiment.css paints with the
+   WCDA header beige. Keep SiteHeader; clear only Home Hero Content. */
+.home-hero-cinematic [data-hero-module="content"],
+.home-hero-cinematic [data-hero-module="content"] header {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.home-hero-cinematic [data-hero-module="content"] h1 {
+  max-width: 24ch;
+}
+
+.home-hero-cinematic__group {
+  --hero-content-offset-x: 0px;
+  --hero-content-offset-y: 0px;
+  --hero-content-max-width: 34rem;
+  --hero-content-offset-scale: 1;
+  width: 100%;
+  max-width: min(var(--hero-content-max-width), 100%);
+  transform: translate3d(
+    calc(var(--hero-content-offset-x) * var(--hero-content-offset-scale)),
+    calc(var(--hero-content-offset-y) * var(--hero-content-offset-scale)),
+    0
+  );
+}
+
+@media (max-width: 64rem) {
+  .home-hero-cinematic__group {
+    --hero-content-offset-scale: 0.6;
+  }
+}
+
+@media (max-width: 40rem) {
+  .home-hero-cinematic__group {
+    --hero-content-offset-scale: 0.35;
+  }
+}
+
+.home-hero-media {
+  --home-hero-focus-x: 72%;
+  --home-hero-focus-y: 44%;
+}
+
+.home-hero-media .exp-media-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.home-hero-cinematic__veil {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-background) 86%, transparent) 0%,
+    color-mix(in srgb, var(--color-background) 38%, transparent) 34%,
+    transparent 56%
+  );
+}
+
+@media (max-width: 64rem) {
+  .home-hero-media {
+    --home-hero-focus-x: 78%;
+    --home-hero-focus-y: 40%;
+  }
+}
+
+@media (max-width: 48rem) {
+  .home-hero-cinematic__veil {
+    background: linear-gradient(
+      105deg,
+      color-mix(in srgb, var(--color-background) 88%, transparent) 0%,
+      color-mix(in srgb, var(--color-background) 55%, transparent) 48%,
+      color-mix(in srgb, var(--color-background) 10%, transparent) 100%
+    );
+  }
+}
+
+@media (max-width: 40rem) {
+  .home-hero-media {
+    --home-hero-focus-x: 84%;
+    --home-hero-focus-y: 38%;
   }
 }

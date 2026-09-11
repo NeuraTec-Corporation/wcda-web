@@ -2,6 +2,7 @@ import { DoctorProfileSection } from "@/components/sections";
 import { doctorProfile } from "@/data/doctor";
 import { doctorPage } from "@/data/pages";
 import { createPageMetadata } from "@/lib/metadata";
+import { assertPagePublic } from "@/lib/publication-access";
 
 export const metadata = createPageMetadata({
   title: "Dr. Jonnathan Matute",
@@ -9,7 +10,12 @@ export const metadata = createPageMetadata({
   path: "/about/dr-jonnathan-matute",
 });
 
-export default function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  assertPagePublic("doctor", await searchParams);
   return (
     <DoctorProfileSection
       profile={doctorProfile}

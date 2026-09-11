@@ -14,19 +14,33 @@ import { Container } from "@/components/ui/Container";
 import { ExperienceMedia } from "@/components/experience/ExperienceMedia";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PublicationGate } from "@/components/content/PublicationGate";
 
 export function TechnologyPage() {
   const records = getConfirmedTechnology();
 
   return (
     <>
-      <PageIntro {...technologyPage} />
-      <ContentBlockSection
-        headingId="technology-details-heading"
-        title="How we use technology"
-        paragraphs={technologyParagraphs}
-        tone="muted"
-      />
+      <PublicationGate page="technology" section="intro">
+        <PageIntro
+          {...technologyPage}
+          breadcrumb={[
+            { href: "/", label: "Home" },
+            { label: technologyPage.title },
+          ]}
+        />
+      </PublicationGate>
+      <PublicationGate page="technology" section="details">
+        <ContentBlockSection
+          headingId="technology-details-heading"
+          title="How we use technology"
+          paragraphs={technologyParagraphs}
+          tone="muted"
+          visualTarget={records.length > 0 ? "technology-media" : undefined}
+          mediaKey={records.length > 0 ? "80" : undefined}
+        />
+      </PublicationGate>
+      <PublicationGate page="technology" section="tools">
       {records.length > 0 ? (
         <CardGridSection
           headingId="technology-records-heading"
@@ -37,7 +51,6 @@ export function TechnologyPage() {
             description: record.summary,
           }))}
           tone="surface"
-          cardClassName="bg-background"
         />
       ) : (
         <Section tone="surface" aria-labelledby="technology-media-heading">
@@ -63,7 +76,9 @@ export function TechnologyPage() {
           </Container>
         </Section>
       )}
-      <PatientCta
+      </PublicationGate>
+      <PublicationGate page="technology" section="cta">
+        <PatientCta
         headingId="technology-appointment-heading"
         eyebrow="Appointments"
         title="Questions about your visit"
@@ -71,6 +86,7 @@ export function TechnologyPage() {
         primaryAction={headerCta}
         secondaryAction={{ href: "/contact", label: "Contact the office" }}
       />
+      </PublicationGate>
     </>
   );
 }

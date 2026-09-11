@@ -38,6 +38,17 @@ function formatApprovedThemeSource(theme: ThemeValues, version: string) {
     return `  ${key}: ${literal},`;
   });
 
+  if (typeof theme.chromeWarmth === "number" && Number.isFinite(theme.chromeWarmth)) {
+    lines.push(`  chromeWarmth: ${Math.round(theme.chromeWarmth)},`);
+  }
+
+  for (const key of ["pageBackground", "headerBackground", "footerBackground"] as const) {
+    const value = theme[key];
+    if (typeof value === "string" && /^#[0-9A-Fa-f]{6}$/.test(value)) {
+      lines.push(`  ${key}: ${JSON.stringify(value.toUpperCase())},`);
+    }
+  }
+
   return [
     "/* WCDA_APPROVED_THEME_START */",
     `export const approvedThemeVersion = ${JSON.stringify(version)};`,

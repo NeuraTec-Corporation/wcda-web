@@ -2,10 +2,13 @@ import { Container } from "@/components/ui/Container";
 import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import type { VisualTargetId } from "@/config/experience";
 import { ComposerMediaWell } from "@/components/experience/ComposerMediaWell";
+import { InfoCard, InfoCardGrid } from "@/components/editorial";
+import { OptionalMediaPanel } from "@/components/editorial/OptionalMediaPanel";
+import type { VisualTargetId } from "@/config/experience";
 import type { StepItem } from "@/types/content";
 import type { SectionTone } from "@/types/ui";
+import { cn } from "@/lib/cn";
 
 type ContentBlockSectionProps = {
   headingId: string;
@@ -15,6 +18,7 @@ type ContentBlockSectionProps = {
   steps?: readonly StepItem[];
   tone?: SectionTone;
   visualTarget?: VisualTargetId;
+  mediaKey?: string;
 };
 
 export function ContentBlockSection({
@@ -25,43 +29,67 @@ export function ContentBlockSection({
   steps,
   tone = "default",
   visualTarget,
+  mediaKey,
 }: ContentBlockSectionProps) {
+  const showMedia = Boolean(visualTarget || mediaKey);
+
   return (
-    <Section
-      tone={tone}
-      aria-labelledby={headingId}
-    >
+    <Section tone={tone} aria-labelledby={headingId}>
       <Container>
-        <SectionHeading as="h2" id={headingId} eyebrow={eyebrow} title={title} />
-        {visualTarget ? (
-          <ComposerMediaWell visualTarget={visualTarget} />
-        ) : null}
-        <Prose className="mt-stack">
-          {paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </Prose>
+        <div
+          className={cn(
+            "grid min-w-0 items-start gap-10",
+            showMedia && "lg:grid-cols-[minmax(0,1.15fr)_minmax(14rem,24rem)] lg:gap-16",
+          )}
+        >
+          <div className="min-w-0">
+            <SectionHeading
+              as="h2"
+              id={headingId}
+              eyebrow={eyebrow}
+              title={title}
+              measure="column"
+            />
+            <Prose className="mt-stack max-w-none">
+              {paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </Prose>
+          </div>
+          {showMedia ? (
+            <div className="min-w-0">
+              {mediaKey && visualTarget ? (
+                <OptionalMediaPanel
+                  mediaKey={mediaKey}
+                  visualTarget={visualTarget}
+                />
+              ) : visualTarget ? (
+                <ComposerMediaWell visualTarget={visualTarget} />
+              ) : (
+                <OptionalMediaPanel mediaKey={mediaKey} />
+              )}
+            </div>
+          ) : null}
+        </div>
         {steps && steps.length > 0 ? (
-          <ol className="mt-stack-lg max-w-narrow">
+          <InfoCardGrid
+            columns={steps.length > 2 ? 3 : 2}
+            className="mt-stack-lg"
+          >
             {steps.map((step, index) => (
-              <li
+              <InfoCard
                 key={step.title}
-                className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] gap-3 border-t border-border py-4"
+                headingId={`${headingId}-step-${index + 1}`}
+                title={step.title}
+                index={index}
+                headingLevel="h3"
               >
-                <p className="text-sm font-medium tabular-nums text-accent">
-                  {index + 1}
+                <p className="text-base leading-relaxed text-muted">
+                  {step.description}
                 </p>
-                <div className="min-w-0">
-                  <h3 className="text-base font-semibold tracking-tight text-foreground">
-                    {step.title}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                    {step.description}
-                  </p>
-                </div>
-              </li>
+              </InfoCard>
             ))}
-          </ol>
+          </InfoCardGrid>
         ) : null}
       </Container>
     </Section>

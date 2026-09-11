@@ -8,6 +8,8 @@ export { ExperienceCarousel } from "./ExperienceCarousel";
 export { ExperienceMedia } from "./ExperienceMedia";
 export { ExperienceSlot } from "./ExperienceSlot";
 export { HeaderLogo } from "./HeaderLogo";
+export { HeroContentStage } from "./HeroContentStage";
+export { HeroMedia } from "./HeroMedia";
 export { IntegratedCutout } from "./IntegratedCutout";
 export { RotatingBadge } from "./RotatingBadge";
 export { ServiceMarquee } from "./ServiceMarquee";

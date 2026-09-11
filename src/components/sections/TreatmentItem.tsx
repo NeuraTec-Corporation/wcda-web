@@ -2,13 +2,13 @@ import Link from "next/link";
 import { MediaFrame } from "@/components/ui/MediaFrame";
 import { cn } from "@/lib/cn";
 import type { VisualTargetId } from "@/config/experience";
-import type { ServiceStatus } from "@/types/navigation";
+import type { PublicationStatus } from "@/types/navigation";
 
 type TreatmentItemProps = {
   title: string;
   mediaKey?: string;
   href?: string;
-  status?: ServiceStatus;
+  status?: PublicationStatus;
   composerTarget?: VisualTargetId;
   visualTarget?: VisualTargetId;
 };

@@ -1,0 +1,54 @@
+.editorial-card {
+  min-width: 0;
+  --color-border: var(--wcda-border);
+  border: 1px solid var(--wcda-border);
+  border-radius: var(--theme-radius);
+  --exp-surface-fill: var(--wcda-surface);
+  --exp-surface-keep: var(--exp-sl-keep-editorial-cards, 100%);
+  --exp-surface-toward: var(--exp-sl-toward-editorial-cards, var(--wcda-lift));
+  background-color: var(--exp-surface-fill);
+  background-color: color-mix(
+    in srgb,
+    var(--exp-surface-fill) var(--exp-surface-keep),
+    var(--exp-surface-toward)
+  );
+  box-shadow: 0 1px 2px
+    color-mix(in srgb, var(--color-foreground) calc(6% * var(--theme-shadow-intensity, 1)), transparent);
+}
+
+.editorial-card-quiet {
+  --exp-surface-fill: var(--wcda-surface-strong);
+}
+
+.editorial-icon {
+  display: flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--color-primary);
+  background-color: var(--wcda-icon-surface);
+}
+
+.editorial-media {
+  --color-border: var(--wcda-border);
+}
+
+.editorial-faq summary {
+  cursor: pointer;
+}
+
+.editorial-faq summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editorial-card,
+  .editorial-media,
+  .editorial-faq summary {
+    transition: none;
+  }
+}

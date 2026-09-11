@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
-import { getConfirmedCategories } from "@/data/services";
+import {
+  getConfirmedCategories,
+  getPublishedTreatments,
+} from "@/data/services";
+import { isPathPublic } from "@/lib/publication-access";
 
 const publicPaths = [
   "/",
@@ -24,8 +28,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const categoryPaths = getConfirmedCategories().map(
     (category) => `/services/${category.slug}`,
   );
+  const treatmentPaths = getPublishedTreatments().map(
+    (treatment) => `/services/${treatment.categorySlug}/${treatment.slug}`,
+  );
 
-  return [...publicPaths, ...categoryPaths].map((path) => ({
-    url: new URL(path, `${siteConfig.url}/`).toString(),
-  }));
+  return [...publicPaths, ...categoryPaths, ...treatmentPaths]
+    .filter(isPathPublic)
+    .map((path) => ({
+      url: new URL(path, `${siteConfig.url}/`).toString(),
+    }));
 }

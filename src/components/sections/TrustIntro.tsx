@@ -25,6 +25,7 @@ export function TrustIntro({
             id={headingId}
             eyebrow={eyebrow}
             title={title}
+            measure="column"
           />
           <div className="min-w-0 max-w-prose">
             <p className="text-base leading-[1.75] text-muted">{description}</p>

@@ -34,6 +34,7 @@ export function PracticeIntroduction({
               eyebrow={eyebrow}
               title={title}
               description={description}
+              measure="column"
             />
             {paragraphs && paragraphs.length > 0 ? (
               <Prose className="mt-stack">
@@ -43,7 +44,14 @@ export function PracticeIntroduction({
               </Prose>
             ) : null}
             {facts && facts.length > 0 ? (
-              <Card className="mt-stack-lg bg-background">
+              <Card
+                className="mt-stack-lg"
+                data-visual-target="editorial-cards"
+                data-surface-mix=""
+                style={{
+                  ["--exp-surface-fill" as string]: "var(--wcda-surface)",
+                }}
+              >
                 <dl className="grid min-w-0 gap-4 sm:grid-cols-2">
                   {facts.map((fact) => (
                     <div key={fact.label} className="min-w-0">

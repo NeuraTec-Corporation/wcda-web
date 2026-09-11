@@ -5,12 +5,16 @@ type ActionRowProps = {
   primary?: NavItem;
   secondary?: NavItem;
   className?: string;
+  primaryContentTarget?: string;
+  secondaryContentTarget?: string;
 };
 
 export function ActionRow({
   primary,
   secondary,
   className = "mt-stack flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap",
+  primaryContentTarget,
+  secondaryContentTarget,
 }: ActionRowProps) {
   if (!primary && !secondary) {
     return null;
@@ -18,11 +22,17 @@ export function ActionRow({
 
   return (
     <div className={className}>
-      {primary ? <Button href={primary.href}>{primary.label}</Button> : null}
+      {primary ? (
+        <span data-content-target={primaryContentTarget}>
+          <Button href={primary.href}>{primary.label}</Button>
+        </span>
+      ) : null}
       {secondary ? (
-        <Button href={secondary.href} variant="outline">
-          {secondary.label}
-        </Button>
+        <span data-content-target={secondaryContentTarget}>
+          <Button href={secondary.href} variant="outline">
+            {secondary.label}
+          </Button>
+        </span>
       ) : null}
     </div>
   );

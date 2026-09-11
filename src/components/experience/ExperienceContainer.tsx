@@ -30,6 +30,18 @@ export function ExperienceContainer({
       data-visual-target={visualTarget}
       data-container-preset={config.containerPreset}
       data-media-style={config.mediaStyle}
+      data-scoped-fill={
+        experience.scopedColors?.elements?.[visualTarget] ? "1" : undefined
+      }
+      style={
+        experience.scopedColors?.elements?.[visualTarget]
+          ? {
+              ["--exp-surface-fill" as string]:
+                experience.scopedColors.elements[visualTarget],
+              ["--exp-surface-keep" as string]: "100%",
+            }
+          : undefined
+      }
     >
       {children}
     </div>

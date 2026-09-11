@@ -1,7 +1,14 @@
+import { mediaManifest } from "@/config/media-manifest";
+import {
+  isApprovedPublicMediaSrc,
+  virtualAssetFromPublicSrc,
+} from "@/config/lab-media-library";
+
 export type MediaAssetCategory =
   | "branding"
   | "home"
   | "doctor"
+  | "about"
   | "services"
   | "contact"
   | "technology";
@@ -37,6 +44,7 @@ export const mediaAssetCategories: Array<{
   { id: "branding", label: "Branding" },
   { id: "home", label: "Home" },
   { id: "doctor", label: "Doctor" },
+  { id: "about", label: "About" },
   { id: "services", label: "Services" },
   { id: "contact", label: "Contact" },
   { id: "technology", label: "Technology" },
@@ -83,6 +91,57 @@ export const mediaAssetRegistry: readonly RegisteredMediaAsset[] = [
     label: "wcda-logo-blue.png",
     tone: "color-mark",
   },
+  {
+    id: "wcda-logo-symbol-blue",
+    category: "branding",
+    fileName: "wcda-logo-symbol-blue.png",
+    src: "/images/wcda/branding/wcda-logo-symbol-blue.png",
+    label: "wcda-logo-symbol-blue.png",
+    tone: "color-mark",
+  },
+  {
+    id: "wcda-drmatute",
+    category: "doctor",
+    fileName: "wcda-drmatute.png",
+    src: "/images/wcda/doctor/wcda-drmatute.png",
+    label: "Dr. Jonnathan Matute — Portrait",
+    tone: "photo",
+  },
+  {
+    id: "wcda-home-hero-master-v01",
+    category: "home",
+    fileName: "wcda-home-hero-master-v01.png",
+    src: "/media/home/hero/wcda-home-hero-master-v01.png",
+    label: "Home Hero — Cinematic master",
+    tone: "photo",
+  },
+  {
+    id: "wcda-category-hero-preventive-general",
+    category: "services",
+    fileName: "wcda-category-hero.png",
+    src: "/media/services/preventive-general/wcda-category-hero.png",
+    label: "Preventive & General — Category photograph",
+    tone: "photo",
+  },
+  ...mediaManifest
+    .filter((entry) => {
+      const src = entry.src;
+      return (
+        src !== "/images/wcda/doctor/wcda-drmatute.png" &&
+        src !== "/media/home/hero/wcda-home-hero-master-v01.png" &&
+        src !== "/media/services/preventive-general/wcda-category-hero.png"
+      );
+    })
+    .map((entry) => ({
+      id: entry.id,
+      category: entry.labCategory,
+      fileName: entry.src.split("/").pop() ?? `${entry.id}.svg`,
+      src: entry.src,
+      label: entry.contentSubject,
+      tone: entry.src.endsWith(".svg")
+        ? ("color-mark" as const)
+        : ("photo" as const),
+    })),
 ];
 
 const assetsById = new Map(
@@ -143,7 +202,7 @@ export const previewBackgrounds: Array<{
 ];
 
 export function isRegisteredAssetId(value: string): boolean {
-  return assetsById.has(value);
+  return assetsById.has(value) || isApprovedPublicMediaSrc(value);
 }
 
 export function getRegisteredAsset(
@@ -152,11 +211,129 @@ export function getRegisteredAsset(
   if (!id) {
     return undefined;
   }
-  return assetsById.get(id);
+  const registered = assetsById.get(id);
+  if (registered) {
+    return registered;
+  }
+  if (isApprovedPublicMediaSrc(id)) {
+    const bySrc = mediaAssetRegistry.find((asset) => asset.src === id);
+    return bySrc ?? virtualAssetFromPublicSrc(id);
+  }
+  return undefined;
 }
 
 export function getAssetsByCategory(category: MediaAssetCategory) {
   return mediaAssetRegistry.filter((asset) => asset.category === category);
+}
+
+export function isDoctorMediaTarget(target?: string) {
+  return target === "home-doctor-media" || target === "about-doctor-media";
+}
+
+export type MediaGalleryGroupId = "priority" | "related" | "all";
+
+export type MediaGalleryGroup = {
+  id: MediaGalleryGroupId;
+  label: { en: string; es: string };
+  assets: readonly RegisteredMediaAsset[];
+};
+
+function assetFolder(src: string) {
+  const parts = src.split("/").filter(Boolean);
+  if (parts.length < 2) {
+    return "";
+  }
+  return parts.slice(0, -1).join("/");
+}
+
+function priorityPrefixForTarget(target?: string, itemKey?: string) {
+  if (itemKey) {
+    return `media/services/${itemKey}`;
+  }
+  if (target === "header-logo") {
+    return "images/wcda/branding";
+  }
+  if (target === "home-hero-media") {
+    return "media/home";
+  }
+  if (isDoctorMediaTarget(target)) {
+    return "images/wcda/doctor";
+  }
+  if (target === "contact-media") {
+    return "media/contact";
+  }
+  if (target === "technology-media") {
+    return "media/technology";
+  }
+  if (target === "about-content") {
+    return "media/practice";
+  }
+  if (target === "home-care-areas" || target === "services-care-cards") {
+    return "media/services";
+  }
+  return "";
+}
+
+export function galleryGroupsForTarget(
+  target?: string,
+  itemKey?: string,
+): MediaGalleryGroup[] {
+  const prefix = priorityPrefixForTarget(target, itemKey);
+  const relatedPrefix =
+    itemKey && prefix.startsWith("media/services/")
+      ? "media/services"
+      : prefix.split("/").slice(0, 2).join("/");
+  const used = new Set<string>();
+  const take = (assets: readonly RegisteredMediaAsset[]) => {
+    const next: RegisteredMediaAsset[] = [];
+    for (const asset of assets) {
+      if (used.has(asset.id)) {
+        continue;
+      }
+      used.add(asset.id);
+      next.push(asset);
+    }
+    return next;
+  };
+
+  const priority = prefix
+    ? take(
+        mediaAssetRegistry.filter((asset) =>
+          assetFolder(asset.src).startsWith(prefix),
+        ),
+      )
+    : [];
+  const related =
+    relatedPrefix && relatedPrefix !== prefix
+      ? take(
+          mediaAssetRegistry.filter((asset) =>
+            assetFolder(asset.src).startsWith(relatedPrefix),
+          ),
+        )
+      : [];
+  const all = take([...mediaAssetRegistry]);
+
+  const groups: MediaGalleryGroup[] = [];
+  if (prefix) {
+    groups.push({
+      id: "priority",
+      label: { en: "This target", es: "Este destino" },
+      assets: priority,
+    });
+  }
+  if (relatedPrefix && relatedPrefix !== prefix) {
+    groups.push({
+      id: "related",
+      label: { en: "Related", es: "Relacionados" },
+      assets: related,
+    });
+  }
+  groups.push({
+    id: "all",
+    label: { en: "All Media", es: "Todo el media" },
+    assets: all,
+  });
+  return groups;
 }
 
 export function parseComposerAssetId(value: unknown): ComposerAssetId {
@@ -227,6 +404,9 @@ export function resolveComposerSource(
     if (asset) {
       return { mode: "image", src: asset.src, asset };
     }
+    if (isApprovedPublicMediaSrc(assetId)) {
+      return { mode: "image", src: assetId };
+    }
   }
 
   if (fallbackSrc) {
@@ -270,7 +450,7 @@ export function sizePresetsForTarget(
 
 export function scaleRangeForTarget(target?: string) {
   if (target === "header-logo") {
-    return { min: 0.5, max: 7, step: 0.01 };
+    return { min: 0.5, max: 2, step: 0.01 };
   }
   return { min: 0.5, max: 2, step: 0.01 };
 }
@@ -289,7 +469,7 @@ export function composerStageClass(
   sizePreset: MediaSizePreset,
 ) {
   if (target === "home-hero-media") {
-    return sizePreset === "wide" ? "max-w-xl" : "max-w-lg";
+    return "absolute inset-0 h-full w-full max-w-none";
   }
 
   if (target === "home-doctor-media" || target === "about-doctor-media") {
