@@ -1,8 +1,13 @@
 "use client";
 
 import type { FormEvent } from "react";
+import { useExperience } from "@/components/experience/useExperience";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import {
+  resolveScopedElementFill,
+  scopedElementFillStyle,
+} from "@/config/scoped-colors";
 import {
   Field,
   SelectControl,
@@ -15,6 +20,10 @@ export function ContactForm() {
   const submissionEnabled = contactFormConfig.acceptsOnlineSubmission;
   const statusId = "contact-form-status";
   const privacyId = "contact-message-hint";
+  const experience = useExperience();
+  const fillStyle = scopedElementFillStyle(
+    resolveScopedElementFill(experience.scopedColors, "editorial-cards"),
+  );
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,7 +35,7 @@ export function ContactForm() {
       data-visual-target="editorial-cards"
       data-surface-mix=""
       style={{
-        ["--exp-surface-fill" as string]: "var(--wcda-surface)",
+        ...(fillStyle ?? {}),
         ["--color-border" as string]: "var(--wcda-border)",
       }}
     >

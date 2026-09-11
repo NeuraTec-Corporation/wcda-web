@@ -20,6 +20,7 @@ import {
   type LabStagedSectionId,
 } from "@/config/lab-section-state";
 import {
+  isGlobalVisualTarget,
   labGlobalElements,
   labPages,
   type LabBi,
@@ -319,7 +320,7 @@ export function listPendingCustomScopes(
         });
       }
       for (const element of section.elements) {
-        if (!element.visualTarget) {
+        if (!element.visualTarget || isGlobalVisualTarget(element.visualTarget)) {
           continue;
         }
         if (

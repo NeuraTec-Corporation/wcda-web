@@ -26,7 +26,6 @@ export function PatientsHub() {
           columns={2}
           tone="muted"
           visualTarget="patients-resource-cards"
-          surfaceFill="var(--wcda-surface)"
         />
       </PublicationGate>
       <PublicationGate page="patients" section="cta">

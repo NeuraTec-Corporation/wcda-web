@@ -32,7 +32,6 @@ export function AppChrome({ children }: AppChromeProps) {
 
   return (
     <>
-      <ScopedColorRuntime />
       <SkipToContent />
       <SiteUtilityBar />
       <SiteHeader />
@@ -43,6 +42,7 @@ export function AppChrome({ children }: AppChromeProps) {
         style={scopedCanvasStyle(pageHex) as CSSProperties | undefined}
       >
         {children}
+        <ScopedColorRuntime />
       </main>
       <SiteFooter />
     </>

@@ -102,11 +102,9 @@ export function CardGridSection({
                 data-visual-target={cardTarget}
                 data-surface-mix={mixSurface || editorialSurface ? "" : undefined}
                 style={
-                  mixSurface || editorialSurface
+                  mixSurface && surfaceFill
                     ? {
-                        ["--exp-surface-fill" as string]: mixSurface
-                          ? (surfaceFill ?? "var(--wcda-surface)")
-                          : "var(--wcda-surface)",
+                        ["--exp-surface-fill" as string]: surfaceFill,
                       }
                     : undefined
                 }

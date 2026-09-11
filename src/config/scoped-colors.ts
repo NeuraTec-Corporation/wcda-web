@@ -188,6 +188,41 @@ export function scopedCanvasStyle(hex: string | undefined) {
   return scopedSurfaceStyle(hex);
 }
 
+export function resolveScopedElementFill(
+  map: ScopedColors | undefined,
+  target: string | undefined,
+) {
+  if (!target) {
+    return undefined;
+  }
+  const hex = map?.elements?.[target];
+  return hex && isHexColor(hex) ? hex : undefined;
+}
+
+export function scopedElementFillStyle(hex: string | undefined) {
+  if (!hex) {
+    return undefined;
+  }
+  return {
+    ["--exp-surface-fill" as string]: hex,
+    ["--exp-surface-keep" as string]: "100%",
+  };
+}
+
+export function scopedElementFillCss(map: ScopedColors | undefined) {
+  const fills = map?.elements ?? {};
+  return Object.entries(fills)
+    .flatMap(([target, hex]) => {
+      if (!hex || !/^[a-zA-Z0-9_-]+$/.test(target) || !isHexColor(hex)) {
+        return [];
+      }
+      return [
+        `html [data-visual-target="${target}"]{--exp-surface-fill:${hex};--exp-surface-keep:100%;}`,
+      ];
+    })
+    .join("");
+}
+
 export function applyScopedElementFills(map: ScopedColors | undefined) {
   if (typeof document === "undefined") {
     return;

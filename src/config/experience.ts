@@ -3,6 +3,7 @@ import {
   applyScopedElementFills,
   clearScopedElementFills,
   parseScopedColors,
+  scopedElementFillCss,
   type ScopedColors,
 } from "@/config/scoped-colors";
 import {
@@ -353,10 +354,10 @@ export const visualTargetsByPage: Partial<
     headerLogoTarget,
     { id: "patients-resource-cards", label: "Patient Resource Cards" },
   ],
-  "/patients/first-visit": [headerLogoTarget],
-  "/patients/financial-options": [headerLogoTarget],
-  "/patients/insurance": [headerLogoTarget],
-  "/patients/forms": [headerLogoTarget],
+  "/patients/first-visit": [headerLogoTarget, editorialCardsTarget],
+  "/patients/financial-options": [headerLogoTarget, editorialCardsTarget],
+  "/patients/insurance": [headerLogoTarget, editorialCardsTarget],
+  "/patients/forms": [headerLogoTarget, editorialCardsTarget],
   "/about/team": [headerLogoTarget],
   "/technology": [
     headerLogoTarget,
@@ -1261,6 +1262,10 @@ export const approvedExperience: ExperienceValues = {
     },
     elements: {
       "home-doctor-media": "#F1F0EF",
+      "home-care-areas": "#F1F0EF",
+      "editorial-cards": "#F1F0EF",
+      "about-content": "#F1F0EF",
+      "patients-resource-cards": "#F1F0EF",
     },
   },
   components: {
@@ -1302,9 +1307,9 @@ export const approvedExperience: ExperienceValues = {
       padding: "none",
       previewBackground: "auto",
       alignment: "left",
-      layoutOffsetX: -13,
-      layoutOffsetY: -10,
-      layoutMaxWidth: 34,
+      layoutOffsetX: -12,
+      layoutOffsetY: -34,
+      layoutMaxWidth: 33,
     },
     "home.services": {
       containerPreset: "rounded-portrait",
@@ -1320,6 +1325,7 @@ export const approvedExperience: ExperienceValues = {
       alignment: "left",
       itemAssets: {
         "preventive-general": "wcda-category-hero-preventive-general",
+        "family-children": "02",
       },
       itemMedia: {
         "preventive-general": {
@@ -2438,7 +2444,8 @@ export function approvedExperienceStyleText(experience: ExperienceValues) {
   const declarations = Object.entries(vars)
     .map(([name, value]) => `  ${name}: ${value};`)
     .join("\n");
-  return `html {\n${declarations}\n}`;
+  const elementFills = scopedElementFillCss(experience.scopedColors);
+  return `html {\n${declarations}\n}${elementFills ? `\n${elementFills}` : ""}`;
 }
 
 export function approvedExperienceHtmlAttributes(experience: ExperienceValues) {

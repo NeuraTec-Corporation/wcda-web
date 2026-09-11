@@ -48,9 +48,6 @@ export function PracticeIntroduction({
                 className="mt-stack-lg"
                 data-visual-target="editorial-cards"
                 data-surface-mix=""
-                style={{
-                  ["--exp-surface-fill" as string]: "var(--wcda-surface)",
-                }}
               >
                 <dl className="grid min-w-0 gap-4 sm:grid-cols-2">
                   {facts.map((fact) => (

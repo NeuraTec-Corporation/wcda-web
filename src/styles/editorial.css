@@ -45,6 +45,16 @@
   outline-offset: 4px;
 }
 
+[data-visual-target="editorial-cards"][data-scoped-fill="1"],
+.editorial-card[data-scoped-fill="1"] {
+  background-color: var(--exp-surface-fill);
+  background-color: color-mix(
+    in srgb,
+    var(--exp-surface-fill) var(--exp-surface-keep, 100%),
+    var(--exp-surface-toward, var(--wcda-lift))
+  );
+}
+
 @media (prefers-reduced-motion: reduce) {
   .editorial-card,
   .editorial-media,
