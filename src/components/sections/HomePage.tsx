@@ -42,6 +42,9 @@ export function HomePage() {
           cta={homeCareAreas.cta}
           tone="default"
           visualTarget="home-care-areas"
+          layoutMode="carousel"
+          itemsPerViewDesktop={2}
+          itemsPerViewMobile={1}
         />
       </PublicationGate>
       <PublicationGate page="home" section="whyChoose">

@@ -10,6 +10,7 @@ type CareAreaCardProps = {
   visualTarget?: VisualTargetId;
   composerTarget?: VisualTargetId;
   containerPreset?: ContainerPresetId;
+  sizes?: string;
 };
 
 function LearnMoreAction({ title }: { title: string }) {
@@ -33,6 +34,7 @@ export function CareAreaCard({
   visualTarget,
   composerTarget,
   containerPreset,
+  sizes = "(min-width: 40rem) 50vw, 100vw",
 }: CareAreaCardProps) {
   const content = (
     <div
@@ -47,7 +49,7 @@ export function CareAreaCard({
         composerTarget={composerTarget}
         itemKey={category.slug}
         aspectRatio="3 / 2"
-        sizes="(min-width: 40rem) 50vw, 100vw"
+        sizes={sizes}
         className="w-full rounded-md"
       />
       <LearnMoreAction title={category.title} />

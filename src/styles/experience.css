@@ -1158,3 +1158,27 @@ html[data-theme-lab="1"] [data-exp-bg="checkerboard"] {
     --home-hero-focus-y: 38%;
   }
 }
+
+.care-area-carousel {
+  --care-carousel-duration: 650ms;
+  --care-carousel-ease: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.care-area-carousel-viewport {
+  overflow: hidden;
+}
+
+.care-area-carousel-track {
+  display: flex;
+  will-change: transform;
+}
+
+.care-area-carousel-slide {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .care-area-carousel-track {
+    transition: none !important;
+  }
+}

@@ -14,16 +14,24 @@ import {
 } from "@/config/experience";
 import type { ServiceCategory } from "@/types/content";
 
+export type CareAreaLayoutMode = "grid" | "carousel";
+
 type CareAreaCollectionProps = {
   categories: readonly ServiceCategory[];
   visualTarget?: VisualTargetId;
   label: string;
+  layoutMode?: CareAreaLayoutMode;
+  itemsPerViewDesktop?: 1 | 2 | 3;
+  itemsPerViewMobile?: 1 | 2;
 };
 
 export function CareAreaCollection({
   categories,
   visualTarget,
   label,
+  layoutMode = "grid",
+  itemsPerViewDesktop = 2,
+  itemsPerViewMobile = 1,
 }: CareAreaCollectionProps) {
   const experience = useExperience();
   const config = getComponentConfig(experience, visualTarget);
@@ -40,6 +48,11 @@ export function CareAreaCollection({
           config.mediaStyle === "bottom-action"
         ? "bottom-left"
         : experience.cornerAction.position;
+
+  const cardSizes =
+    layoutMode === "carousel"
+      ? "(min-width: 768px) 42vw, 100vw"
+      : undefined;
 
   const cards = categories.map((category) =>
     useCutout ? (
@@ -60,6 +73,7 @@ export function CareAreaCollection({
           visualTarget={visualTarget}
           composerTarget={visualTarget}
           containerPreset={config.containerPreset}
+          sizes={cardSizes}
         />
       </IntegratedCutout>
     ) : useCorner ? (
@@ -82,6 +96,7 @@ export function CareAreaCollection({
           visualTarget={visualTarget}
           composerTarget={visualTarget}
           containerPreset={config.containerPreset}
+          sizes={cardSizes}
         />
       </CornerActionCard>
     ) : (
@@ -91,9 +106,32 @@ export function CareAreaCollection({
         visualTarget={visualTarget}
         composerTarget={visualTarget}
         containerPreset={config.containerPreset}
+        sizes={cardSizes}
       />
     ),
   );
+
+  if (layoutMode === "carousel") {
+    return (
+      <div className="mt-stack-lg">
+        <ExperienceCarousel
+          label={label}
+          presentation={{
+            perViewDesktop: itemsPerViewDesktop,
+            perViewMobile: itemsPerViewMobile,
+            step: "page",
+            loop: true,
+            autoplay: false,
+            arrows: true,
+            indicators: true,
+            variant: "premium",
+          }}
+        >
+          {cards}
+        </ExperienceCarousel>
+      </div>
+    );
+  }
 
   if (experience.carousel.enabled) {
     return (
