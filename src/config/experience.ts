@@ -40,6 +40,7 @@ export type ContainerPresetId =
   | "bottom-action"
   | "media-overlay"
   | "carousel-card"
+  | "media-card-modern"
   | "video-card"
   | "badge-card"
   | "integrated-cutout"
@@ -54,6 +55,7 @@ export type MediaContainerStyleId =
   | "rotating-badge"
   | "video"
   | "carousel-media"
+  | "media-card-modern"
   | "full-bleed"
   | "transparent-strip"
   | "brand-surface"
@@ -223,6 +225,7 @@ export type ExperienceValues = {
     cardsPerView: CarouselCardsPerView;
     navigation: CarouselNavigation;
     autoplay: CarouselAutoplay;
+    transitionDuration: number;
   };
   cornerAction: {
     enabled: boolean;
@@ -270,6 +273,7 @@ export const containerPresets: Array<{
   { id: "bottom-action", label: "Bottom Action", number: "11" },
   { id: "media-overlay", label: "Media Overlay Chrome", number: "12" },
   { id: "carousel-card", label: "Carousel Card Chrome", number: "13" },
+  { id: "media-card-modern", label: "Media Card Modern", number: "14" },
   { id: "video-card", label: "Video Card Chrome", number: "14" },
   { id: "badge-card", label: "Badge Card", number: "15", labHidden: true },
   {
@@ -293,6 +297,7 @@ export const mediaContainerStyles: Array<{
   { id: "rotating-badge", label: "Rotating Badge" },
   { id: "video", label: "Video" },
   { id: "carousel-media", label: "Carousel Media" },
+  { id: "media-card-modern", label: "Media Card Modern" },
   { id: "full-bleed", label: "Full Bleed" },
 ];
 
@@ -502,14 +507,10 @@ export const ACTION_CONTAINER_PRESET_IDS: readonly ContainerPresetId[] = [
 export const CARD_CONTAINER_PRESET_IDS: readonly ContainerPresetId[] = [
   "clean",
   "soft-card",
-  "editorial",
-  "offset-frame",
   "rounded-portrait",
   "feature-card",
-  "corner-action",
-  "top-action",
-  "bottom-action",
   "carousel-card",
+  "media-card-modern",
 ];
 
 export const MEDIA_CONTAINER_PRESET_IDS: readonly ContainerPresetId[] = [
@@ -594,6 +595,7 @@ export const containerToMediaStyle: Record<
   "bottom-action": "bottom-action",
   "media-overlay": "clean",
   "carousel-card": "carousel-media",
+  "media-card-modern": "media-card-modern",
   "video-card": "video",
   "badge-card": "rotating-badge",
   "integrated-cutout": "clean",
@@ -684,6 +686,7 @@ export function mediaStylesForTarget(target: VisualTargetId) {
   }
   if (!isCarouselChromeTarget(target)) {
     exclude.add("carousel-media");
+    exclude.add("media-card-modern");
   }
   if (target === "home-care-areas" || target === "services-care-cards") {
     exclude.add("full-bleed");
@@ -703,6 +706,10 @@ export function isCornerContainerPreset(
     preset === "top-action" ||
     preset === "bottom-action"
   );
+}
+
+export function isMediaCardModernPreset(preset: ContainerPresetId) {
+  return preset === "media-card-modern";
 }
 
 export function isHiddenBadgePreset(preset: ContainerPresetId) {
@@ -867,6 +874,7 @@ export const mediaStyleToContainer: Record<MediaContainerStyleId, ContainerPrese
   "rotating-badge": "inset-badge-cutout",
   video: "video-card",
   "carousel-media": "carousel-card",
+  "media-card-modern": "media-card-modern",
   "full-bleed": "full-bleed",
   "transparent-strip": "clean",
   "brand-surface": "clean",
@@ -945,6 +953,7 @@ export function createFactoryExperience(): ExperienceValues {
       cardsPerView: 3,
       navigation: "both",
       autoplay: "off",
+      transitionDuration: 780,
     },
     cornerAction: {
       enabled: false,
@@ -1202,6 +1211,7 @@ export const approvedExperience: ExperienceValues = {
     cardsPerView: 3,
     navigation: "both",
     autoplay: "off",
+    transitionDuration: 2500,
   },
   cornerAction: {
     enabled: false,
@@ -1312,8 +1322,8 @@ export const approvedExperience: ExperienceValues = {
       layoutMaxWidth: 33,
     },
     "home.services": {
-      containerPreset: "rounded-portrait",
-      mediaStyle: "soft-rounded",
+      containerPreset: "media-card-modern",
+      mediaStyle: "media-card-modern",
       assetId: "default",
       fit: "cover",
       scale: 1,
@@ -1443,8 +1453,8 @@ export const approvedExperience: ExperienceValues = {
       alignment: "left",
     },
     "services.cards": {
-      containerPreset: "clean",
-      mediaStyle: "clean",
+      containerPreset: "carousel-card",
+      mediaStyle: "carousel-media",
       assetId: "default",
       fit: "cover",
       scale: 1,
@@ -1454,6 +1464,15 @@ export const approvedExperience: ExperienceValues = {
       padding: "none",
       previewBackground: "auto",
       alignment: "left",
+      itemAssets: {
+        "periodontal": "/media/services/periodontal/ChatGPT-Image-Sep-7-2026-04_33_29-PM.png",
+        "clear-aligners": "/media/services/clear-aligners/ChatGPT Image Sep 7, 2026, 05_04_09 PM.png",
+        "dental-implants": "/media/services/dental-implants/wcda-category-hero.png",
+        "restorative": "/media/services/restorative/wcda-category-hero.png",
+        "cosmetic": "/media/services/cosmetic/wcda-category-hero.png",
+        "family-children": "/media/services/family-children/wcda-category-hero.png",
+        "preventive-general": "wcda-category-hero-preventive-general",
+      },
     },
     "services.treatments": {
       containerPreset: "clean",
@@ -1539,6 +1558,21 @@ const VIDEO_CORNERS: VideoCornerAction[] = ["none", "info", "play"];
 const CAROUSEL_VIEWS: CarouselCardsPerView[] = [1, 2, 3];
 const CAROUSEL_NAV: CarouselNavigation[] = ["dots", "arrows", "both"];
 const CAROUSEL_AUTOPLAY: CarouselAutoplay[] = ["off", "slow"];
+export const CAROUSEL_TRANSITION_DURATION_MIN = 300;
+export const CAROUSEL_TRANSITION_DURATION_MAX = 3500;
+export const CAROUSEL_TRANSITION_DURATION_DEFAULT = 780;
+export const CAROUSEL_TRANSITION_DURATION_STEP = 50;
+
+export function clampCarouselTransitionDuration(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return CAROUSEL_TRANSITION_DURATION_DEFAULT;
+  }
+  return Math.min(
+    CAROUSEL_TRANSITION_DURATION_MAX,
+    Math.max(CAROUSEL_TRANSITION_DURATION_MIN, Math.round(value)),
+  );
+}
+
 const CORNER_POSITIONS: CornerActionPosition[] = [
   "top-right",
   "bottom-right",
@@ -1949,6 +1983,9 @@ export function parseExperienceValues(input: unknown): ExperienceValues | null {
       cardsPerView: carouselInput.cardsPerView,
       navigation: carouselInput.navigation,
       autoplay: carouselInput.autoplay,
+      transitionDuration: clampCarouselTransitionDuration(
+        carouselInput.transitionDuration,
+      ),
     },
     cornerAction: {
       enabled: cornerInput.enabled,
@@ -2170,6 +2207,7 @@ export function formatApprovedExperienceSource(experience: ExperienceValues) {
     `    cardsPerView: ${formatLiteral(value.carousel.cardsPerView)},`,
     `    navigation: ${formatLiteral(value.carousel.navigation)},`,
     `    autoplay: ${formatLiteral(value.carousel.autoplay)},`,
+    `    transitionDuration: ${formatLiteral(value.carousel.transitionDuration)},`,
     "  },",
     "  cornerAction: {",
     `    enabled: ${formatLiteral(value.cornerAction.enabled)},`,

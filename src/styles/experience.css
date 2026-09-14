@@ -199,6 +199,7 @@ html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]
 .exp-shell:has([data-container-preset="bottom-action"]) .exp-composition-offset,
 .exp-shell:has([data-container-preset="media-overlay"]) .exp-composition-offset,
 .exp-shell:has([data-container-preset="carousel-card"]) .exp-composition-offset,
+.exp-shell:has([data-container-preset="media-card-modern"]) .exp-composition-offset,
 .exp-shell:has([data-container-preset="video-card"]) .exp-composition-offset,
 .exp-shell:has([data-container-preset="badge-card"]) .exp-composition-offset {
   visibility: hidden;
@@ -222,6 +223,8 @@ html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]
 .exp-shell:has([data-container-preset="media-overlay"]):has(> .exp-composition-offset-right),
 .exp-shell:has([data-container-preset="carousel-card"]):has(> .exp-composition-offset-left),
 .exp-shell:has([data-container-preset="carousel-card"]):has(> .exp-composition-offset-right),
+.exp-shell:has([data-container-preset="media-card-modern"]):has(> .exp-composition-offset-left),
+.exp-shell:has([data-container-preset="media-card-modern"]):has(> .exp-composition-offset-right),
 .exp-shell:has([data-container-preset="video-card"]):has(> .exp-composition-offset-left),
 .exp-shell:has([data-container-preset="video-card"]):has(> .exp-composition-offset-right),
 .exp-shell:has([data-container-preset="badge-card"]):has(> .exp-composition-offset-left),
@@ -502,6 +505,17 @@ html[data-exp-overlay="brand"] .exp-media:not([data-visual-target="header-logo"]
   border-radius: 1.1rem;
   background-color: var(--color-surface);
   box-shadow: var(--shadow-sm);
+}
+
+.exp-media[data-container-preset="media-card-modern"],
+.exp-container[data-container-preset="media-card-modern"] {
+  overflow: hidden;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+  background-color: transparent;
 }
 
 .exp-media[data-container-preset="video-card"],
@@ -1160,7 +1174,7 @@ html[data-theme-lab="1"] [data-exp-bg="checkerboard"] {
 }
 
 .care-area-carousel {
-  --care-carousel-duration: 650ms;
+  --care-carousel-duration: 780ms;
   --care-carousel-ease: cubic-bezier(0.33, 1, 0.68, 1);
 }
 
@@ -1175,6 +1189,166 @@ html[data-theme-lab="1"] [data-exp-bg="checkerboard"] {
 
 .care-area-carousel-slide {
   min-width: 0;
+}
+
+.care-modern-card {
+  --care-modern-radius: 1.75rem;
+  --care-modern-action: clamp(2.5rem, 9vw, 3.25rem);
+  --care-modern-gap: 0.35rem;
+  --care-modern-notch: calc(var(--care-modern-action) / 2 + var(--care-modern-gap));
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  max-width: 20rem;
+  margin-inline: auto;
+  background: transparent;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.care-modern-card__media {
+  position: relative;
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  color: inherit;
+  text-decoration: none;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  border-radius: var(--care-modern-radius);
+  background: transparent;
+  -webkit-mask-image: radial-gradient(
+    circle var(--care-modern-notch) at
+      calc(100% - var(--care-modern-action) / 2)
+      calc(var(--care-modern-action) / 2),
+    transparent 99%,
+    #fff 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--care-modern-notch) at
+      calc(100% - var(--care-modern-action) / 2)
+      calc(var(--care-modern-action) / 2),
+    transparent 99%,
+    #fff 100%
+  );
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.care-modern-card__photo,
+.care-modern-card__photo.exp-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.care-modern-card__scrim {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  height: 38%;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(0 39 116 / 0.36) 0%,
+    rgb(0 39 116 / 0.12) 45%,
+    transparent 100%
+  );
+}
+
+.care-modern-card__title {
+  position: absolute;
+  z-index: 3;
+  right: calc(var(--care-modern-action) + 0.55rem);
+  bottom: 0.95rem;
+  left: 1rem;
+  margin: 0;
+  pointer-events: none;
+  color: #fff;
+  font-family: var(--font-heading, inherit);
+  font-size: clamp(1.125rem, 1.35vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  text-shadow: 0 1px 10px rgb(0 15 45 / 0.28);
+}
+
+.care-modern-card__action {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 4;
+  display: grid;
+  width: var(--care-modern-action);
+  height: var(--care-modern-action);
+  place-items: center;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-cta-foreground);
+  text-decoration: none;
+  transition:
+    background-color 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.care-modern-card__glyph {
+  width: 42%;
+  height: 42%;
+}
+
+.care-modern-card .exp-media-stage {
+  inset: 0;
+  transition: transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.care-modern-card__action:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.care-modern-card:focus-within .care-modern-card__action {
+  background: #002774;
+  color: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .care-modern-card:hover .exp-media-stage {
+    transform: scale(1.03);
+  }
+
+  .care-modern-card:hover .care-modern-card__action,
+  .care-modern-card:focus-within .care-modern-card__action {
+    background: #002774;
+    color: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .care-modern-card .exp-media-stage,
+  .care-modern-card__action {
+    transition: none;
+  }
+
+  .care-modern-card:hover .exp-media-stage {
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

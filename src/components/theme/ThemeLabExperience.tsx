@@ -41,6 +41,11 @@ import {
   type BadgeRotationSpeed,
   type BadgeTextColor,
   type BadgeType,
+  CAROUSEL_TRANSITION_DURATION_DEFAULT,
+  CAROUSEL_TRANSITION_DURATION_MAX,
+  CAROUSEL_TRANSITION_DURATION_MIN,
+  CAROUSEL_TRANSITION_DURATION_STEP,
+  clampCarouselTransitionDuration,
   type CarouselAutoplay,
   type CarouselCardsPerView,
   type CarouselNavigation,
@@ -178,11 +183,19 @@ export function ThemeLabMediaPanel({
   itemKey,
   onChange,
   openPickerSignal = 0,
-}: ThemeLabExperienceProps & { openPickerSignal?: number }) {
+  baseline,
+}: ThemeLabExperienceProps & {
+  openPickerSignal?: number;
+  baseline?: ExperienceValues;
+}) {
   const w = useWord();
   const language = useLabLanguage();
   const media = experience.media;
   const slot = getComponentConfig(experience, selectedTarget);
+  const currentSlot = getComponentConfig(
+    baseline ?? experience,
+    selectedTarget,
+  );
   const isLogo = selectedTarget === "header-logo";
   const composerEnabled = isMediaComposerTarget(selectedTarget);
   const perItemPosition = Boolean(
@@ -194,6 +207,9 @@ export function ThemeLabMediaPanel({
   const assetValue: ComposerAssetId = itemKey
     ? (slot.itemAssets?.[itemKey] ?? "default")
     : slot.assetId;
+  const currentAssetValue: ComposerAssetId = itemKey
+    ? (currentSlot.itemAssets?.[itemKey] ?? "default")
+    : currentSlot.assetId;
   const contrastWarning = getContrastWarning({
     assetId: assetValue,
     previewBackground: slot.previewBackground,
@@ -247,6 +263,7 @@ export function ThemeLabMediaPanel({
             target={selectedTarget}
             itemKey={itemKey}
             value={assetValue}
+            currentValue={baseline ? currentAssetValue : undefined}
             openSignal={openPickerSignal}
             onSelect={(assetId) => {
               if (itemKey) {
@@ -664,6 +681,7 @@ export function ThemeLabContainersPanel({
       {availablePresets.some(
         (preset) =>
           preset.id === "carousel-card" ||
+          preset.id === "media-card-modern" ||
           preset.id === "video-card" ||
           preset.id === "media-overlay",
       ) ? (
@@ -1343,6 +1361,61 @@ export function ThemeLabEffectsPanel({
             <option value="1 / 1">1:1</option>
           </select>
           </div>
+        </div>
+      </fieldset>
+      ) : null}
+
+      {scope.carouselMotion ? (
+      <fieldset className="min-w-0">
+        <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+          {language === "es" ? "Movimiento del carrusel" : "Carousel Motion"}
+        </legend>
+        <div className="mt-3 flex flex-col gap-3">
+          <label
+            className="flex items-center justify-between text-sm text-zinc-200"
+            htmlFor="exp-carousel-transition"
+          >
+            <span>
+              {controlLabel("carousel-transition", language)}
+              <span className="mt-0.5 block text-[0.7rem] font-normal text-zinc-400">
+                {language === "es"
+                  ? "Duración de la transición"
+                  : "Transition duration"}
+              </span>
+            </span>
+            <span className="font-mono text-xs text-zinc-400">
+              {clampCarouselTransitionDuration(
+                experience.carousel.transitionDuration,
+              )}{" "}
+              ms
+            </span>
+          </label>
+          <input
+            id="exp-carousel-transition"
+            type="range"
+            min={CAROUSEL_TRANSITION_DURATION_MIN}
+            max={CAROUSEL_TRANSITION_DURATION_MAX}
+            step={CAROUSEL_TRANSITION_DURATION_STEP}
+            value={clampCarouselTransitionDuration(
+              experience.carousel.transitionDuration ??
+                CAROUSEL_TRANSITION_DURATION_DEFAULT,
+            )}
+            onChange={(event) =>
+              onChange({
+                ...experience,
+                carousel: {
+                  ...experience.carousel,
+                  transitionDuration: Number(event.target.value),
+                },
+              })
+            }
+          />
+          <p className="text-[0.7rem] leading-relaxed text-zinc-500">
+            {language === "es"
+              ? "Menor = más rápido · Mayor = más lento"
+              : "Lower = faster · Higher = slower"}
+          </p>
+          <LabControlHelp id="carousel-transition" compact />
         </div>
       </fieldset>
       ) : null}

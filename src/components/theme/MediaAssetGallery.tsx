@@ -10,6 +10,7 @@ import {
 import {
   destinationForTarget,
   isAllowedUploadFile,
+  isApprovedPublicMediaSrc,
   LAB_MEDIA_API_PATH,
   operatorMediaError,
   sanitizeMediaFileName,
@@ -24,6 +25,7 @@ type MediaAssetGalleryProps = {
   target?: string;
   itemKey?: string;
   value: ComposerAssetId;
+  currentValue?: ComposerAssetId;
   onSelect: (assetId: ComposerAssetId) => void;
   openSignal?: number;
 };
@@ -64,12 +66,24 @@ function currentPreview(value: ComposerAssetId) {
   return getRegisteredAsset(value);
 }
 
+function composerIdForSelection(asset: RegisteredMediaAsset): ComposerAssetId {
+  const registered = getRegisteredAsset(asset.id);
+  if (registered && registered.src === asset.src) {
+    return registered.id;
+  }
+  if (isApprovedPublicMediaSrc(asset.src)) {
+    return asset.src;
+  }
+  return asset.id;
+}
+
 export function MediaAssetGallery({
   id,
   language,
   target,
   itemKey,
   value,
+  currentValue,
   onSelect,
   openSignal = 0,
 }: MediaAssetGalleryProps) {
@@ -87,6 +101,9 @@ export function MediaAssetGallery({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const selected = currentPreview(value);
+  const current = currentPreview(currentValue ?? value);
+  const workingDiffers =
+    currentValue !== undefined && value !== currentValue;
 
   const groups = useMemo(() => {
     return staticGroups.map((group) => {
@@ -228,7 +245,7 @@ export function MediaAssetGallery({
       setConflict(null);
       setPendingFile(null);
       clearPendingPreview();
-      onSelect(payload.asset.id);
+      onSelect(composerIdForSelection(payload.asset));
       await refreshMedia();
       setOpen(false);
     } catch {
@@ -273,7 +290,13 @@ export function MediaAssetGallery({
   return (
     <div id={id} className="min-w-0">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
-        {language === "es" ? "Imagen actual" : "Current image"}
+        {workingDiffers
+          ? language === "es"
+            ? "Imagen de trabajo"
+            : "Working image"
+          : language === "es"
+            ? "Imagen actual"
+            : "Current image"}
       </p>
       <div className="mt-2 overflow-hidden rounded-md border border-zinc-700">
         {selected ? (
@@ -299,6 +322,13 @@ export function MediaAssetGallery({
             (language === "es" ? "Imagen original" : "Original")}
         </p>
       </div>
+      {workingDiffers ? (
+        <p className="truncate text-[0.7rem] text-zinc-500">
+          {language === "es" ? "Actual: " : "Current: "}
+          {current?.fileName ??
+            (language === "es" ? "Imagen original" : "Original")}
+        </p>
+      ) : null}
       <button
         type="button"
         onClick={() => {
@@ -493,13 +523,16 @@ export function MediaAssetGallery({
                 {language === "es" ? "Original" : "Original"}
               </button>
               {active?.assets.map((asset) => {
-                const selectedCard = value === asset.id || value === asset.src;
+                const selectedCard =
+                  value === composerIdForSelection(asset) ||
+                  value === asset.id ||
+                  value === asset.src;
                 return (
                   <button
                     key={asset.id}
                     type="button"
                     onClick={() => {
-                      onSelect(asset.id);
+                      onSelect(composerIdForSelection(asset));
                       setOpen(false);
                     }}
                     className={`min-w-0 overflow-hidden rounded-md border text-left ${

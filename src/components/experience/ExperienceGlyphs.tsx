@@ -43,6 +43,15 @@ export function ArrowGlyph(props: IconProps) {
   );
 }
 
+export function ArrowUpRightGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M7 17L17 7" />
+      <path d="M8 7h9v9" />
+    </Svg>
+  );
+}
+
 export function PlayGlyph(props: IconProps) {
   return (
     <Svg {...props}>

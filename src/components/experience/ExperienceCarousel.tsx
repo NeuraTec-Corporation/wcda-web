@@ -6,6 +6,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -18,6 +19,7 @@ import {
 import { cn } from "@/lib/cn";
 import { ArrowGlyph } from "@/components/experience/ExperienceGlyphs";
 import { useExperience } from "@/components/experience/useExperience";
+import { clampCarouselTransitionDuration } from "@/config/experience";
 
 export type CarouselPresentation = {
   perViewDesktop?: 1 | 2 | 3;
@@ -28,6 +30,7 @@ export type CarouselPresentation = {
   arrows?: boolean;
   indicators?: boolean;
   variant?: "default" | "premium";
+  transitionDurationMs?: number;
 };
 
 type ExperienceCarouselProps = {
@@ -36,7 +39,6 @@ type ExperienceCarouselProps = {
   presentation?: CarouselPresentation;
 };
 
-const PREMIUM_MOTION_MS = 650;
 const PREMIUM_MOTION_EASE = "cubic-bezier(0.33, 1, 0.68, 1)";
 
 function usePrefersReducedMotion() {
@@ -78,8 +80,9 @@ function PremiumCarouselSlide({
       className="care-area-carousel-slide m-0 grid min-w-0 list-none p-0"
       inert={inert ? true : undefined}
       style={{
-        gridTemplateColumns: `repeat(${perView}, minmax(0, 1fr))`,
+        gridTemplateColumns: `repeat(${perView}, minmax(0, 20rem))`,
         columnGap: gap,
+        justifyContent: "center",
       }}
     >
       {items.map((child, offset) => (
@@ -112,10 +115,14 @@ export function ExperienceCarousel({
   const indexRef = useRef(0);
   const lockTimer = useRef(0);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const id = useId();
   const statusId = `${id}-status`;
   const premium = presentation?.variant === "premium";
+  const premiumMotionMs = clampCarouselTransitionDuration(
+    presentation?.transitionDurationMs ?? experience.carousel.transitionDuration,
+  );
   const step = presentation?.step ?? "item";
   const loop = presentation?.loop ?? false;
   const requestedDesktop =
@@ -160,6 +167,9 @@ export function ExperienceCarousel({
     if (withoutMotion) {
       instantRef.current = true;
       setInstant(true);
+    } else {
+      instantRef.current = false;
+      setInstant(false);
     }
     setTrackIndex(next);
   }, []);
@@ -172,21 +182,28 @@ export function ExperienceCarousel({
     const visual = trackIndexRef.current;
     if (loop && visual === 0) {
       setTrack(pageCount, true);
-    } else if (loop && visual === pageCount + 1) {
-      setTrack(1, true);
+      return;
     }
-    window.requestAnimationFrame(() => {
-      instantRef.current = false;
-      setInstant(false);
-      busyRef.current = false;
-    });
+    if (loop && visual === pageCount + 1) {
+      setTrack(1, true);
+      return;
+    }
+    busyRef.current = false;
   }, [loop, pageCount, setTrack]);
 
   useEffect(() => {
     function update() {
       const width = window.innerWidth;
       if (premium) {
-        setPerView(width < 768 ? requestedMobile : requestedDesktop);
+        if (width < 768) {
+          setPerView(requestedMobile);
+          return;
+        }
+        if (width < 1200) {
+          setPerView(Math.min(requestedDesktop, 2) as 1 | 2 | 3);
+          return;
+        }
+        setPerView(requestedDesktop);
         return;
       }
       if (width < 640) {
@@ -223,8 +240,34 @@ export function ExperienceCarousel({
     return () => observer.disconnect();
   }, [premium]);
 
+  useLayoutEffect(() => {
+    if (!premium || !instant) {
+      return;
+    }
+    const node = trackRef.current;
+    if (node) {
+      node.style.transition = "none";
+      if (viewportWidth > 0) {
+        node.style.transform = `translate3d(${-trackIndex * viewportWidth}px, 0, 0)`;
+      }
+      void node.getBoundingClientRect();
+    }
+    busyRef.current = false;
+    let second = 0;
+    const first = window.requestAnimationFrame(() => {
+      second = window.requestAnimationFrame(() => {
+        instantRef.current = false;
+        setInstant(false);
+      });
+    });
+    return () => {
+      window.cancelAnimationFrame(first);
+      window.cancelAnimationFrame(second);
+    };
+  }, [instant, premium, trackIndex, viewportWidth]);
+
   useEffect(() => {
-    if (!premium) {
+    if (!premium || busyRef.current) {
       return;
     }
     const logical = Math.min(
@@ -232,12 +275,10 @@ export function ExperienceCarousel({
       Math.max(0, pageCount - 1),
     );
     const nextTrack = loop ? logical + 1 : logical;
+    if (trackIndexRef.current === nextTrack) {
+      return;
+    }
     setTrack(nextTrack, true);
-    const frame = window.requestAnimationFrame(() => {
-      instantRef.current = false;
-      setInstant(false);
-    });
-    return () => window.cancelAnimationFrame(frame);
   }, [loop, pageCount, pageStep, perView, premium, setTrack]);
 
   const goToStart = useCallback(
@@ -252,20 +293,18 @@ export function ExperienceCarousel({
 
       if (premium && bounded !== safeIndex) {
         const destLogical = Math.floor(bounded / pageStep);
+        const wrappingForward = Boolean(wraps && dir === 1);
+        const wrappingBack = Boolean(wraps && dir === -1);
         let nextVisual = loop ? destLogical + 1 : destLogical;
-        if (wraps && dir === 1) {
+        if (wrappingForward) {
           nextVisual = trackIndexRef.current + 1;
-        } else if (wraps && dir === -1) {
+        } else if (wrappingBack) {
           nextVisual = trackIndexRef.current - 1;
         }
         if (reduceMotion) {
           busyRef.current = false;
           setIndex(bounded);
           setTrack(loop ? destLogical + 1 : destLogical, true);
-          window.requestAnimationFrame(() => {
-            instantRef.current = false;
-            setInstant(false);
-          });
           return;
         }
         busyRef.current = true;
@@ -274,7 +313,7 @@ export function ExperienceCarousel({
         setTrack(nextVisual);
         lockTimer.current = window.setTimeout(
           finishPremiumMotion,
-          PREMIUM_MOTION_MS + 100,
+          premiumMotionMs + 120,
         );
         return;
       }
@@ -289,7 +328,7 @@ export function ExperienceCarousel({
       }
       setIndex(bounded);
     },
-    [finishPremiumMotion, loop, maxIndex, pageCount, pageStep, premium, reduceMotion, safeIndex, setTrack],
+    [finishPremiumMotion, loop, maxIndex, pageCount, pageStep, premium, premiumMotionMs, reduceMotion, safeIndex, setTrack],
   );
 
   const goBy = useCallback(
@@ -410,9 +449,19 @@ export function ExperienceCarousel({
           transition:
             instant || reduceMotion
               ? "none"
-              : `transform ${PREMIUM_MOTION_MS}ms ${PREMIUM_MOTION_EASE}`,
+              : `transform ${premiumMotionMs}ms ${PREMIUM_MOTION_EASE}`,
         }
       : undefined;
+
+  function onPremiumArrowPointerDown(
+    event: ReactPointerEvent<HTMLButtonElement>,
+    delta: 1 | -1,
+  ) {
+    if (event.button !== 0) {
+      return;
+    }
+    goBy(delta);
+  }
 
   const prevDisabled = !loop && safeIndex === 0;
   const nextDisabled = !loop && safeIndex >= maxIndex;
@@ -428,6 +477,11 @@ export function ExperienceCarousel({
     <button
       type="button"
       className={arrowClass}
+      onPointerDown={
+        premium
+          ? (event) => onPremiumArrowPointerDown(event, -1)
+          : undefined
+      }
       onClick={() => goBy(-1)}
       aria-label={prevLabel}
       disabled={prevDisabled}
@@ -441,6 +495,11 @@ export function ExperienceCarousel({
     <button
       type="button"
       className={arrowClass}
+      onPointerDown={
+        premium
+          ? (event) => onPremiumArrowPointerDown(event, 1)
+          : undefined
+      }
       onClick={() => goBy(1)}
       aria-label={nextLabel}
       disabled={nextDisabled}
@@ -545,6 +604,7 @@ export function ExperienceCarousel({
       style={{ touchAction: "pan-y" }}
     >
       <div
+        ref={trackRef}
         className="care-area-carousel-track"
         data-instant={instant || reduceMotion ? "1" : "0"}
         style={premiumTrackStyle}
@@ -567,6 +627,13 @@ export function ExperienceCarousel({
         "min-w-0 overflow-x-clip",
         premium ? "care-area-carousel" : "exp-carousel",
       )}
+      style={
+        premium
+          ? ({
+              ["--care-carousel-duration" as string]: `${premiumMotionMs}ms`,
+            } satisfies CSSProperties)
+          : undefined
+      }
       role="region"
       aria-roledescription="carousel"
       aria-label={label}

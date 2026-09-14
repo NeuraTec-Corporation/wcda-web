@@ -122,6 +122,7 @@ export type LabControlId =
   | "carousel-view"
   | "carousel-nav"
   | "carousel-auto"
+  | "carousel-transition"
   | "rotating-text"
   | "rotating-icon"
   | "rotating-size"
@@ -2009,6 +2010,32 @@ add("carousel-auto", "effects", "experience", {
   persist: persistExperience(),
 });
 
+add("carousel-transition", "effects", "experience", {
+  label: { en: "Carousel Transition Speed", es: "Velocidad de transición del carrusel" },
+  termNote: { en: "Transition duration", es: "Duración de la transición" },
+  what: {
+    en: "Sets how long one Home Areas of Dental Care page movement lasts, in milliseconds. Lower is faster. Higher is slower.",
+    es: "Define cuánto dura un movimiento de página del carrusel de Áreas de cuidado dental en Inicio, en milisegundos. Menor es más rápido. Mayor es más lento.",
+  },
+  see: {
+    en: "Only the visible slide duration changes. Loop, clones, easing, and layout stay the same.",
+    es: "Solo cambia la duración visible del deslizamiento. El bucle, los clones, la curva y el diseño no cambian.",
+  },
+  where: {
+    en: "Home → Areas of dental care carousel.",
+    es: "Inicio → Carrusel de Áreas de cuidado dental.",
+  },
+  compatible: {
+    en: "Home Care carousel only. Working updates immediately. Apply stores Custom. Publish writes Current.",
+    es: "Solo el carrusel de cuidado en Inicio. Working se actualiza de inmediato. Aplicar guarda Custom. Publicar escribe Current.",
+  },
+  incompatible: {
+    en: "Does not change easing, loop mechanics, /services grid, or other site animations. Reduced-motion still skips the animation.",
+    es: "No cambia la curva, la mecánica del bucle, la grilla de /services ni otras animaciones. Reduced-motion sigue omitiendo la animación.",
+  },
+  persist: persistExperience(),
+});
+
 add("rotating-text", "effects", "experience", {
   label: { en: "Rotating badge text", es: "Texto de insignia rotatoria" },
   what: { en: "Circular caption around the rotating badge.", es: "Leyenda circular de la insignia rotatoria." },
@@ -3194,6 +3221,21 @@ export const containerGuides: ContainerGuide[] = [
     externalSpace: { en: "No hanging chrome. No carousel controls.", es: "Sin cromado colgante. Sin controles de carrusel." },
     motion: { en: "Compatible with Motion.", es: "Compatible con Motion." },
     effects: { en: "Enable Carousel in Special Effects to paginate service cards. This preset does not do that.", es: "Active Carrusel en Efectos especiales para paginar tarjetas. Este preajuste no lo hace." },
+  },
+  {
+    id: "media-card-modern",
+    purpose: { en: "Near-square photographic service card with a bottom title overlay and an independent top-right action.", es: "Tarjeta fotográfica casi cuadrada con título inferior y una acción independiente en la esquina superior derecha." },
+    shape: { en: "Rounded media body with a transparent top-right recess. The circular arrow is a separate element, not part of the photograph.", es: "Cuerpo de media redondeado con un receso transparente superior derecho. La flecha circular es un elemento aparte, no parte de la fotografía." },
+    compatible: { en: "Home and Services care-area cards.", es: "Tarjetas de áreas de cuidado en Inicio y Servicios." },
+    incompatible: { en: "Header logo, marquee, doctor portraits, treatments, CTA blocks.", es: "Logo, marquee, retratos, tratamientos, bloques CTA." },
+    badge: { en: "Does not use the badge system. The action arrow is an independent control.", es: "No usa el sistema de insignia. La flecha de acción es un control independiente." },
+    clip: { en: "Media clips to the rounded, notched silhouette. Image zoom stays inside the card.", es: "La media se recorta a la silueta redondeada con receso. El zoom de imagen permanece dentro de la tarjeta." },
+    radius: { en: "Card owns 28px corners. Overrides Global Media Radius.", es: "La tarjeta posee esquinas de 28px. Anula el Radio de media global." },
+    globalRadius: { en: "Media Card Modern owns radius. Global Media Radius is ignored.", es: "Media Card Modern posee el radio. Se ignora el Radio de media global." },
+    overlay: { en: "A modest navy readability wash at the bottom is presentation chrome, not part of the media file. It should recede into the photo. Global Overlay still tints the photo only.", es: "Un velo navy modesto en la parte inferior es cromado de presentación, no parte del archivo. Debe fundirse con la foto. Overlay global tiñe solo la foto." },
+    externalSpace: { en: "Top-right recess lets page background show around the independent action button.", es: "El receso superior derecho deja ver el fondo de página alrededor del botón de acción independiente." },
+    motion: { en: "Pointer hover zooms only the image layer (~1.03). The card size does not change.", es: "Hover de puntero hace zoom solo de la imagen (~1.03). El tamaño de la tarjeta no cambia." },
+    effects: { en: "Independent circular action. Learn more under the card is not used with this preset.", es: "Acción circular independiente. Learn more bajo la tarjeta no se usa con este preajuste." },
   },
   {
     id: "video-card",

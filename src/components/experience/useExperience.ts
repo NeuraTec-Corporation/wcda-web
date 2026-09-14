@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import {
   approvedExperience,
   type ExperienceValues,
@@ -25,16 +25,25 @@ export function subscribePreviewExperience(listener: Listener) {
   };
 }
 
+function subscribe(onStoreChange: () => void) {
+  if (!isThemeLabPreview()) {
+    return () => {};
+  }
+  return subscribePreviewExperience(() => onStoreChange());
+}
+
+function getPreviewSnapshot() {
+  return isThemeLabPreview() ? previewExperience : approvedExperience;
+}
+
+function getServerSnapshot() {
+  return approvedExperience;
+}
+
 export function useExperience() {
-  const [experience, setExperience] = useState(approvedExperience);
-
-  useEffect(() => {
-    if (!isThemeLabPreview()) {
-      return;
-    }
-
-    return subscribePreviewExperience(setExperience);
-  }, []);
-
-  return experience;
+  return useSyncExternalStore(
+    subscribe,
+    getPreviewSnapshot,
+    getServerSnapshot,
+  );
 }

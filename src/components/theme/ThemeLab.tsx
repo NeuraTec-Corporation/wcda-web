@@ -4431,6 +4431,7 @@ export function ThemeLab() {
               experience={experience}
               selectedTarget={panelTarget}
               itemKey={resolvedElement?.itemKey}
+              baseline={approvedExperienceBaseline}
               onChange={updateExperience}
               openPickerSignal={changeImageSignal}
             />
@@ -4448,6 +4449,7 @@ export function ThemeLab() {
               <ThemeLabMediaPanel
                 experience={experience}
                 selectedTarget="header-logo"
+                baseline={approvedExperienceBaseline}
                 onChange={updateExperience}
               />
             </>

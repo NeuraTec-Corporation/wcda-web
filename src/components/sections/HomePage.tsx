@@ -43,7 +43,7 @@ export function HomePage() {
           tone="default"
           visualTarget="home-care-areas"
           layoutMode="carousel"
-          itemsPerViewDesktop={2}
+          itemsPerViewDesktop={3}
           itemsPerViewMobile={1}
         />
       </PublicationGate>

@@ -10,6 +10,7 @@ import {
   insetBadgeSizePx,
   isCornerContainerPreset,
   isInsetBadgeCutoutPreset,
+  isMediaCardModernPreset,
   type VisualTargetId,
 } from "@/config/experience";
 import type { ServiceCategory } from "@/types/content";
@@ -35,12 +36,17 @@ export function CareAreaCollection({
 }: CareAreaCollectionProps) {
   const experience = useExperience();
   const config = getComponentConfig(experience, visualTarget);
+  const modernPreset = isMediaCardModernPreset(config.containerPreset);
   const cornerPreset =
     isCornerContainerPreset(config.containerPreset) ||
     config.mediaStyle === "corner-action" ||
     config.mediaStyle === "bottom-action";
-  const useCutout = isInsetBadgeCutoutPreset(config.containerPreset);
-  const useCorner = !useCutout && (experience.cornerAction.enabled || cornerPreset);
+  const useCutout =
+    !modernPreset && isInsetBadgeCutoutPreset(config.containerPreset);
+  const useCorner =
+    !modernPreset &&
+    !useCutout &&
+    (experience.cornerAction.enabled || cornerPreset);
   const position =
     config.containerPreset === "top-action"
       ? "top-right"
@@ -51,7 +57,7 @@ export function CareAreaCollection({
 
   const cardSizes =
     layoutMode === "carousel"
-      ? "(min-width: 768px) 42vw, 100vw"
+      ? "(min-width: 1200px) 20rem, (min-width: 768px) 36vw, 100vw"
       : undefined;
 
   const cards = categories.map((category) =>
@@ -125,6 +131,7 @@ export function CareAreaCollection({
             arrows: true,
             indicators: true,
             variant: "premium",
+            transitionDurationMs: experience.carousel.transitionDuration,
           }}
         >
           {cards}

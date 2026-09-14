@@ -18,6 +18,7 @@ export const labControlOwnership: readonly LabControlOwnership[] = [
   { id: "media-element", group: "editor", family: "media", scope: "element", domain: "experience", apply: "element", reset: "element", promote: "element" },
   { id: "containers-element", group: "editor", family: "containers", scope: "element", domain: "experience", apply: "element", reset: "element", promote: "element" },
   { id: "effects-marquee", group: "editor", family: "effects", scope: "element", domain: "experience", apply: "element", reset: "element", promote: "element" },
+  { id: "effects-carousel-transition", group: "editor", family: "effects", scope: "element", domain: "experience", apply: "element", reset: "element", promote: "element" },
   { id: "brand", group: "system", family: "brand", scope: "global", domain: "theme", apply: "system-family", reset: "system-family", promote: "system-family" },
   { id: "colors", group: "system", family: "colors", scope: "global", domain: "theme", apply: "system-family", reset: "system-family", promote: "system-family" },
   { id: "typography", group: "system", family: "typography", scope: "global", domain: "theme", apply: "system-family", reset: "system-family", promote: "system-family" },

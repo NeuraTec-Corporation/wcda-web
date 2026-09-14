@@ -123,6 +123,7 @@ export function ThemePreviewBridge() {
       const node = event.target;
       if (node instanceof Element && node.closest("a")) {
         event.preventDefault();
+        event.stopImmediatePropagation();
       }
       postSelect("click", event, target);
     }

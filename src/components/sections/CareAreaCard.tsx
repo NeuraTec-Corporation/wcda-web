@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { ArrowGlyph } from "@/components/experience/ExperienceGlyphs";
+import { ArrowGlyph, ArrowUpRightGlyph } from "@/components/experience/ExperienceGlyphs";
 import { MediaFrame } from "@/components/ui/MediaFrame";
-import type { ContainerPresetId, VisualTargetId } from "@/config/experience";
+import {
+  isMediaCardModernPreset,
+  type ContainerPresetId,
+  type VisualTargetId,
+} from "@/config/experience";
 import type { ServiceCategory } from "@/types/content";
 
 type CareAreaCardProps = {
@@ -28,6 +32,68 @@ function LearnMoreAction({ title }: { title: string }) {
   );
 }
 
+function MediaCardModern({
+  category,
+  visualTarget,
+  composerTarget,
+  containerPreset,
+  sizes,
+  linked,
+}: CareAreaCardProps) {
+  const href = `/services/${category.slug}`;
+  const viewLabel = `View ${category.title}`;
+  const mediaInner = (
+    <>
+      <MediaFrame
+        mediaKey={category.mediaKey}
+        visualTarget={composerTarget}
+        composerTarget={composerTarget}
+        itemKey={category.slug}
+        aspectRatio="1 / 1"
+        sizes={sizes}
+        className="care-modern-card__photo w-full"
+      />
+      <div className="care-modern-card__scrim" aria-hidden="true" />
+      <p className="care-modern-card__title">{category.title}</p>
+    </>
+  );
+
+  return (
+    <div
+      className="care-modern-card group relative min-w-0"
+      data-visual-target={visualTarget}
+      data-lab-item-id={category.slug}
+      data-container-preset={containerPreset}
+    >
+      {linked ? (
+        <Link
+          href={href}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="care-modern-card__media"
+        >
+          {mediaInner}
+        </Link>
+      ) : (
+        <div className="care-modern-card__media">{mediaInner}</div>
+      )}
+      {linked ? (
+        <Link
+          href={href}
+          className="care-modern-card__action"
+          aria-label={viewLabel}
+        >
+          <ArrowUpRightGlyph className="care-modern-card__glyph" />
+        </Link>
+      ) : (
+        <span className="care-modern-card__action" aria-hidden="true">
+          <ArrowUpRightGlyph className="care-modern-card__glyph" />
+        </span>
+      )}
+    </div>
+  );
+}
+
 export function CareAreaCard({
   category,
   linked = true,
@@ -36,6 +102,19 @@ export function CareAreaCard({
   containerPreset,
   sizes = "(min-width: 40rem) 50vw, 100vw",
 }: CareAreaCardProps) {
+  if (containerPreset && isMediaCardModernPreset(containerPreset)) {
+    return (
+      <MediaCardModern
+        category={category}
+        linked={linked}
+        visualTarget={visualTarget}
+        composerTarget={composerTarget}
+        containerPreset={containerPreset}
+        sizes={sizes}
+      />
+    );
+  }
+
   const content = (
     <div
       className="flex min-w-0 flex-col bg-transparent p-0 shadow-none"

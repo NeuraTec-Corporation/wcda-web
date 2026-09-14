@@ -156,11 +156,12 @@ function careCardElements(
 ): LabElementDef[] {
   const prefix =
     visualTarget === "home-care-areas" ? "home-care" : "services-care";
+  const isHomeCarousel = visualTarget === "home-care-areas";
   const nodes: LabElementDef[] = [
     visual(
       visualTarget,
       { en: "Service Cards", es: "Tarjetas de servicio" },
-      CONTAINER_ONLY,
+      isHomeCarousel ? ["effects", "containers"] : CONTAINER_ONLY,
     ),
   ];
   for (const category of categories) {
@@ -179,7 +180,9 @@ function careCardElements(
       parentId: cardId,
       itemKey: category.slug,
       label: { en: "Service Card Media", es: "Media de tarjetas de servicio" },
-      families: ["media", "position"],
+      families: isHomeCarousel
+        ? ["media", "position", "effects"]
+        : ["media", "position"],
       publication: false,
       scope: "element",
     });
@@ -339,10 +342,21 @@ export function editorFamiliesForSelection(
   if (!element || element.id === "section") {
     return section.publication ? ["publication", "tools"] : ["tools"];
   }
-  return [
-    ...EDITOR_FAMILIES.filter((family) => element.families.includes(family)),
-    "tools",
-  ];
+  const families = EDITOR_FAMILIES.filter((family) =>
+    element.families.includes(family),
+  );
+  if (
+    element.visualTarget === "home-care-areas" &&
+    !element.itemKey &&
+    families.includes("effects")
+  ) {
+    return [
+      "effects",
+      ...families.filter((family) => family !== "effects"),
+      "tools",
+    ];
+  }
+  return [...families, "tools"];
 }
 
 export function visualTargetForElement(

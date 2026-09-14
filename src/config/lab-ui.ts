@@ -709,6 +709,7 @@ export type LabControlScope = {
   badges: boolean;
   cornerAction: boolean;
   carousel: boolean;
+  carouselMotion: boolean;
   video: boolean;
   beforeAfter: boolean;
   cursor: boolean;
@@ -723,6 +724,7 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
     badges: false,
     cornerAction: false,
     carousel: false,
+    carouselMotion: false,
     video: false,
     beforeAfter: false,
     cursor: true,
@@ -740,6 +742,7 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
         badges: false,
         cornerAction: false,
         carousel: false,
+        carouselMotion: false,
         video: false,
         beforeAfter: false,
         cursor: true,
@@ -750,6 +753,12 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
     case "about-content":
       return { ...empty, badges: true };
     case "home-care-areas":
+      return {
+        ...empty,
+        cornerAction: true,
+        carousel: true,
+        carouselMotion: true,
+      };
     case "services-care-cards":
       return { ...empty, cornerAction: true, carousel: true };
     case "home-cta":
@@ -768,6 +777,7 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
         badges: false,
         cornerAction: false,
         carousel: false,
+        carouselMotion: false,
         video: false,
         beforeAfter: false,
         cursor: false,

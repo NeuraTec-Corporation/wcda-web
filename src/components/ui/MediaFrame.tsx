@@ -89,12 +89,12 @@ export function MediaFrame({
         <div className="exp-media-stage">
           <div className="exp-media-transform">
             <Image
-              key={source.src}
+              key={`${itemKey ?? target ?? "media"}:${source.src}`}
               src={source.src}
               alt={alt}
               fill
               sizes={sizes}
-              unoptimized={source.src.endsWith(".svg")}
+              unoptimized={labPreview || source.src.endsWith(".svg")}
               className="exp-media-img"
               style={{
                 objectPosition:

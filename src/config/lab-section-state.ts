@@ -146,6 +146,7 @@ function elementEffectPatch(
   const scope = labControlScope(target);
   const extra: Partial<ExperienceValues> = {};
   if (scope.marquee) extra.marquee = source.marquee;
+  if (scope.carouselMotion) extra.carousel = source.carousel;
   return extra;
 }
 
@@ -249,7 +250,9 @@ export function applyElementSlice(
           targetExperience.scopedColors,
           sourceExperience.scopedColors,
         ),
-    ...(itemKey ? {} : elementEffectPatch(target, sourceExperience)),
+    ...(itemKey && !labControlScope(target).carouselMotion
+      ? {}
+      : elementEffectPatch(target, sourceExperience)),
   });
 }
 
