@@ -6,6 +6,8 @@ import type { PreviewPagePath } from "@/config/theme";
 import {
   CONTENT_ELEMENT_FIELDS,
   HOME_HERO_FIELD_IDS,
+  HOME_WHY_CHOOSE_FIELDS,
+  isHomeWhyChooseItemKey,
   type ContentElementId,
   type ContentFieldId,
 } from "@/config/site-content";
@@ -13,6 +15,7 @@ import {
   getConfirmedCategories,
   getFeaturedCareAreas,
 } from "@/data/services";
+import { homeWhyChoose } from "@/data/home";
 
 export type LabMode = "editor" | "system" | "approval" | "recovery";
 export type LabEditorElementId = VisualTargetId | ContentElementId | "section";
@@ -150,6 +153,27 @@ const EDITORIAL_CARDS_ELEMENT = visual(
   CONTAINER_ONLY,
 );
 
+function whyChooseCardElements(): LabElementDef[] {
+  const nodes: LabElementDef[] = [EDITORIAL_CARDS_ELEMENT];
+  for (const item of homeWhyChoose.items) {
+    if (!isHomeWhyChooseItemKey(item.id)) {
+      continue;
+    }
+    nodes.push({
+      id: `home-why-card/${item.id}` as LabEditorElementId,
+      visualTarget: "editorial-cards",
+      parentId: "editorial-cards",
+      itemKey: item.id,
+      contentFields: HOME_WHY_CHOOSE_FIELDS[item.id],
+      label: { en: item.title, es: item.title },
+      families: ["copy", "effects"],
+      publication: false,
+      scope: "element",
+    });
+  }
+  return nodes;
+}
+
 function careCardElements(
   visualTarget: "home-care-areas" | "services-care-cards",
   categories: readonly { slug: string; title: string }[],
@@ -211,7 +235,7 @@ export const labPages: readonly LabPageDef[] = [
     ],
     marquee: [visual("home-marquee", { en: "Services Marquee", es: "Marquee de servicios" }, MARQUEE_EFFECTS)],
     careAreas: careCardElements("home-care-areas", getFeaturedCareAreas()),
-    whyChoose: [EDITORIAL_CARDS_ELEMENT],
+    whyChoose: whyChooseCardElements(),
     practice: [visual("home-doctor-media", { en: "Dr. Matute Media", es: "Media del Dr. Matute" }, MEDIA_CONTAINER)],
     patientCta: [visual("home-cta", { en: "Primary CTA", es: "CTA primario" }, CTA_CONTAINER)],
   }),
@@ -345,6 +369,9 @@ export function editorFamiliesForSelection(
   const families = EDITOR_FAMILIES.filter((family) =>
     element.families.includes(family),
   );
+  if (isEditorialCardItem(element)) {
+    return ["copy", "tools"];
+  }
   if (
     element.visualTarget === "home-care-areas" &&
     !element.itemKey &&
@@ -425,6 +452,14 @@ export function findElement(
 
 export function contentFieldsForElement(element?: LabElementDef) {
   return element?.contentFields ?? [];
+}
+
+export function isEditorialCardItem(element?: LabElementDef) {
+  return Boolean(
+    element?.visualTarget === "editorial-cards" &&
+      element.itemKey &&
+      (element.contentFields?.length ?? 0) > 0,
+  );
 }
 
 export function rootElementsForSection(section: LabPageSectionDef) {

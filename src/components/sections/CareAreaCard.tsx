@@ -83,11 +83,13 @@ function MediaCardModern({
           className="care-modern-card__action"
           aria-label={viewLabel}
         >
-          <ArrowUpRightGlyph className="care-modern-card__glyph" />
+          <ArrowUpRightGlyph className="care-modern-card__glyph care-modern-card__glyph--out" />
+          <ArrowUpRightGlyph className="care-modern-card__glyph care-modern-card__glyph--in" />
         </Link>
       ) : (
         <span className="care-modern-card__action" aria-hidden="true">
-          <ArrowUpRightGlyph className="care-modern-card__glyph" />
+          <ArrowUpRightGlyph className="care-modern-card__glyph care-modern-card__glyph--out" />
+          <ArrowUpRightGlyph className="care-modern-card__glyph care-modern-card__glyph--in" />
         </span>
       )}
     </div>

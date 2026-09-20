@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, type CSSProperties } from "react";
 import {
   containerPresetsForTarget,
   containerToMediaStyle,
@@ -46,6 +47,19 @@ import {
   CAROUSEL_TRANSITION_DURATION_MIN,
   CAROUSEL_TRANSITION_DURATION_STEP,
   clampCarouselTransitionDuration,
+  clampEditorialGraphicSize,
+  clampEditorialIconSize,
+  EDITORIAL_GRAPHIC_ALIGNS,
+  EDITORIAL_GRAPHIC_SIZE_MAX,
+  EDITORIAL_GRAPHIC_SIZE_MIN,
+  EDITORIAL_ICON_BACKGROUNDS,
+  EDITORIAL_ICON_COLORS,
+  EDITORIAL_ICON_SIZE_MAX,
+  EDITORIAL_ICON_SIZE_MIN,
+  EDITORIAL_PRESENTATION_MODES,
+  editorialIconCssVars,
+  resolveEditorialIcon,
+  updateEditorialIconItem,
   type CarouselAutoplay,
   type CarouselCardsPerView,
   type CarouselNavigation,
@@ -55,6 +69,10 @@ import {
   type CornerActionMorph,
   type CornerActionPosition,
   type CursorCompanionMode,
+  type EditorialGraphicAlign,
+  type EditorialIconBackground,
+  type EditorialIconColor,
+  type EditorialPresentationMode,
   type ExperienceValues,
   type MarqueeDirection,
   type MarqueeHeight,
@@ -103,6 +121,10 @@ import {
   type PreviewBackgroundId,
 } from "@/config/media-assets";
 import { MediaAssetGallery } from "@/components/theme/MediaAssetGallery";
+import { IconAssetGallery } from "@/components/theme/IconAssetGallery";
+import { EditorialIconAsset } from "@/components/editorial/EditorialIconAsset";
+import { EditorialIconMark } from "@/components/editorial/EditorialGlyph";
+import { editorialIconColorEnabled, isApprovedIconSrc } from "@/config/lab-icon-library";
 
 type LabTab = "theme" | "media" | "containers" | "motion" | "effects";
 
@@ -124,6 +146,271 @@ function useWord() {
 function wordOrLabel(w: (key: string) => string, id: string, fallback: string) {
   const translated = w(id);
   return translated === id ? fallback : translated;
+}
+
+export function ThemeLabEditorialIconPanel({
+  experience,
+  itemKey,
+  itemLabel,
+  onChange,
+  openSignal = 0,
+}: {
+  experience: ExperienceValues;
+  itemKey: string;
+  itemLabel?: string;
+  onChange: (experience: ExperienceValues) => void;
+  openSignal?: number;
+}) {
+  const w = useWord();
+  const language = useLabLanguage();
+  const editorialIcon = resolveEditorialIcon(experience, itemKey);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [seenOpenSignal, setSeenOpenSignal] = useState(openSignal);
+  if (openSignal !== seenOpenSignal) {
+    setSeenOpenSignal(openSignal);
+    if (openSignal > 0) {
+      setLibraryOpen(true);
+    }
+  }
+  const assetSrc =
+    editorialIcon.assetSrc && isApprovedIconSrc(editorialIcon.assetSrc)
+      ? editorialIcon.assetSrc
+      : undefined;
+  const glyphId = editorialIcon.icon;
+  const colorEnabled = editorialIconColorEnabled(
+    assetSrc,
+    editorialIcon.assetColorMode,
+  );
+  const pngAsset = Boolean(assetSrc?.toLowerCase().endsWith(".png"));
+  const featureMode = editorialIcon.presentationMode === "feature-graphic";
+
+  return (
+    <fieldset className="min-w-0">
+      <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-300">
+        {language === "es" ? "Icono" : "Icon"}
+      </legend>
+      <div className="mt-3 flex flex-col gap-3">
+        <FieldLabel htmlFor="exp-editorial-presentation" helpId="editorial-presentation">
+          {controlLabel("editorial-presentation", language)}
+        </FieldLabel>
+        <select
+          id="exp-editorial-presentation"
+          className={selectClass}
+          value={editorialIcon.presentationMode}
+          onChange={(event) =>
+            onChange(
+              updateEditorialIconItem(experience, itemKey, {
+                presentationMode: event.target.value as EditorialPresentationMode,
+              }),
+            )
+          }
+        >
+          {EDITORIAL_PRESENTATION_MODES.map((id) => (
+            <option key={id} value={id}>
+              {id === "compact-icon" ? w("compactIcon") : w("featureGraphic")}
+            </option>
+          ))}
+        </select>
+        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-zinc-400">
+          {language === "es" ? "Icono actual" : "Current Icon"}
+        </p>
+        <div
+          className={`flex items-center justify-center rounded-md border border-zinc-700 bg-zinc-900 ${
+            featureMode ? "min-h-28" : "min-h-16"
+          }`}
+        >
+          <span
+            className="editorial-icon"
+            data-icon-background={editorialIcon.background}
+            data-presentation={editorialIcon.presentationMode}
+            data-graphic-align={editorialIcon.graphicAlign}
+            style={
+              editorialIconCssVars(
+                editorialIcon.color,
+                editorialIcon.size,
+                editorialIcon.graphicSize,
+              ) as CSSProperties
+            }
+          >
+            {assetSrc ? (
+              <EditorialIconAsset
+                src={assetSrc}
+                colorMode={editorialIcon.assetColorMode}
+              />
+            ) : glyphId ? (
+              <EditorialIconMark id={glyphId} />
+            ) : (
+              <span className="text-[0.7rem] text-zinc-500">
+                {language === "es" ? "Sin icono" : "No icon"}
+              </span>
+            )}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setLibraryOpen(true)}
+          className="min-h-11 w-full rounded-md border border-cyan-400/50 bg-cyan-400/10 px-3 text-sm text-white hover:bg-cyan-400/20"
+        >
+          {language === "es" ? "Cambiar icono / gráfico" : "Change Icon / Graphic"}
+        </button>
+        {pngAsset ? (
+          <p className="text-[0.7rem] leading-relaxed text-amber-200/90">
+            {language === "es"
+              ? "Este PNG conserva sus colores incrustados. Icon Color no se aplica."
+              : "This PNG keeps its embedded colors. Icon Color is not applied."}
+          </p>
+        ) : assetSrc && editorialIcon.assetColorMode === "fixed" ? (
+          <p className="text-[0.7rem] leading-relaxed text-amber-200/90">
+            {language === "es"
+              ? "Este SVG usa colores fijos. Icon Color no lo recolorea."
+              : "This SVG uses fixed colors. Icon Color does not recolor it."}
+          </p>
+        ) : null}
+        <IconAssetGallery
+          language={language}
+          title={itemLabel || itemKey}
+          value={assetSrc}
+          color={editorialIcon.color}
+          size={editorialIcon.size}
+          open={libraryOpen}
+          onClose={() => setLibraryOpen(false)}
+          onSelect={(asset) =>
+            onChange(
+              updateEditorialIconItem(experience, itemKey, {
+                assetSrc: asset.src,
+                assetColorMode:
+                  asset.kind === "png" || asset.src.toLowerCase().endsWith(".png")
+                    ? "fixed"
+                    : asset.colorMode,
+                icon: undefined,
+              }),
+            )
+          }
+        />
+        {featureMode ? (
+          <>
+            <FieldLabel htmlFor="exp-editorial-graphic-size" helpId="editorial-graphic-size">
+              {controlLabel("editorial-graphic-size", language)}
+            </FieldLabel>
+            <div className="mt-1.5 flex items-center gap-3">
+              <input
+                id="exp-editorial-graphic-size"
+                type="range"
+                min={EDITORIAL_GRAPHIC_SIZE_MIN}
+                max={EDITORIAL_GRAPHIC_SIZE_MAX}
+                step={1}
+                value={editorialIcon.graphicSize}
+                onChange={(event) =>
+                  onChange(
+                    updateEditorialIconItem(experience, itemKey, {
+                      graphicSize: clampEditorialGraphicSize(
+                        Number(event.target.value),
+                      ),
+                    }),
+                  )
+                }
+                className="w-full"
+              />
+              <span className="w-16 shrink-0 text-right font-mono text-xs text-zinc-400">
+                {editorialIcon.graphicSize} px
+              </span>
+            </div>
+            <FieldLabel htmlFor="exp-editorial-graphic-align" helpId="editorial-graphic-align">
+              {controlLabel("editorial-graphic-align", language)}
+            </FieldLabel>
+            <select
+              id="exp-editorial-graphic-align"
+              className={selectClass}
+              value={editorialIcon.graphicAlign}
+              onChange={(event) =>
+                onChange(
+                  updateEditorialIconItem(experience, itemKey, {
+                    graphicAlign: event.target.value as EditorialGraphicAlign,
+                  }),
+                )
+              }
+            >
+              {EDITORIAL_GRAPHIC_ALIGNS.map((id) => (
+                <option key={id} value={id}>
+                  {w(id)}
+                </option>
+              ))}
+            </select>
+          </>
+        ) : (
+          <>
+            <FieldLabel htmlFor="exp-editorial-icon-background" helpId="editorial-icon-background">
+              {controlLabel("editorial-icon-background", language)}
+            </FieldLabel>
+            <select
+              id="exp-editorial-icon-background"
+              className={selectClass}
+              value={editorialIcon.background}
+              onChange={(event) =>
+                onChange(
+                  updateEditorialIconItem(experience, itemKey, {
+                    background: event.target.value as EditorialIconBackground,
+                  }),
+                )
+              }
+            >
+              {EDITORIAL_ICON_BACKGROUNDS.map((id) => (
+                <option key={id} value={id}>
+                  {id === "none" ? w("none") : w("circle")}
+                </option>
+              ))}
+            </select>
+            <FieldLabel htmlFor="exp-editorial-icon-size" helpId="editorial-icon-size">
+              {controlLabel("editorial-icon-size", language)}
+            </FieldLabel>
+            <div className="mt-1.5 flex items-center gap-3">
+              <input
+                id="exp-editorial-icon-size"
+                type="range"
+                min={EDITORIAL_ICON_SIZE_MIN}
+                max={EDITORIAL_ICON_SIZE_MAX}
+                step={1}
+                value={editorialIcon.size}
+                onChange={(event) =>
+                  onChange(
+                    updateEditorialIconItem(experience, itemKey, {
+                      size: clampEditorialIconSize(Number(event.target.value)),
+                    }),
+                  )
+                }
+                className="w-full"
+              />
+              <span className="w-16 shrink-0 text-right font-mono text-xs text-zinc-400">
+                {editorialIcon.size} px
+              </span>
+            </div>
+          </>
+        )}
+        <FieldLabel htmlFor="exp-editorial-icon-color" helpId="editorial-icon-color">
+          {controlLabel("editorial-icon-color", language)}
+        </FieldLabel>
+        <select
+          id="exp-editorial-icon-color"
+          className={selectClass}
+          value={editorialIcon.color}
+          disabled={!colorEnabled}
+          onChange={(event) =>
+            onChange(
+              updateEditorialIconItem(experience, itemKey, {
+                color: event.target.value as EditorialIconColor,
+              }),
+            )
+          }
+        >
+          {EDITORIAL_ICON_COLORS.map((id) => (
+            <option key={id} value={id}>
+              {id === "cyan" ? w("cyan") : wordOrLabel(w, id, id)}
+            </option>
+          ))}
+        </select>
+      </div>
+    </fieldset>
+  );
 }
 
 function FieldLabel({
@@ -947,6 +1234,7 @@ export function ThemeLabMotionPanel({
 export function ThemeLabEffectsPanel({
   experience,
   selectedTarget,
+  itemKey,
   onChange,
   variant = "editor",
 }: ThemeLabExperienceProps & { variant?: "editor" | "system" }) {
@@ -975,6 +1263,9 @@ export function ThemeLabEffectsPanel({
           cursor: false,
         };
   const showCursor = variant === "system";
+  const showEditorialIcons = Boolean(
+    variant === "editor" && base.editorialIcons && itemKey,
+  );
   const showElementEffects = true;
   return (
     <div className="flex flex-col gap-5">
@@ -1011,6 +1302,15 @@ export function ThemeLabEffectsPanel({
           </select>
         </div>
       </fieldset>
+      ) : null}
+      {showEditorialIcons && itemKey ? (
+        <ThemeLabEditorialIconPanel
+          experience={experience}
+          itemKey={itemKey}
+          itemLabel={itemKey}
+          openSignal={0}
+          onChange={onChange}
+        />
       ) : null}
       {showElementEffects ? (
       <>

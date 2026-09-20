@@ -5,6 +5,7 @@ import { labText } from "@/config/lab-guide";
 
 export type LabContextMenuAction =
   | "change-image"
+  | "change-icon"
   | "position"
   | "free-pan"
   | "restore-current"
@@ -19,6 +20,7 @@ type LabContextMenuProps = {
   title: string;
   subtitle: string;
   media: boolean;
+  icon?: boolean;
   onAction: (action: LabContextMenuAction) => void;
   onClose: () => void;
 };
@@ -30,6 +32,7 @@ export function LabContextMenu({
   title,
   subtitle,
   media,
+  icon = false,
   onAction,
   onClose,
 }: LabContextMenuProps) {
@@ -51,10 +54,15 @@ export function LabContextMenu({
           },
           { id: "advanced", label: { en: "Advanced", es: "Avanzado" } },
         ]
-      : [
-          { id: "open-inspector", label: { en: "Open Inspector", es: "Abrir Inspector" } },
-          { id: "advanced", label: { en: "Advanced", es: "Avanzado" } },
-        ];
+      : icon
+        ? [
+            { id: "change-icon", label: { en: "Change Icon", es: "Cambiar icono" } },
+            { id: "open-inspector", label: { en: "Open Inspector", es: "Abrir Inspector" } },
+          ]
+        : [
+            { id: "open-inspector", label: { en: "Open Inspector", es: "Abrir Inspector" } },
+            { id: "advanced", label: { en: "Advanced", es: "Avanzado" } },
+          ];
 
   return (
     <div

@@ -35,7 +35,6 @@ import {
 import {
   applyContentSlice,
   listPendingContentScopes,
-  HOME_HERO_FIELD_IDS,
   type ContentFieldId,
   type SiteContentPatch,
 } from "@/config/site-content";
@@ -320,7 +319,10 @@ export function listPendingCustomScopes(
         });
       }
       for (const element of section.elements) {
-        if (!element.visualTarget || isGlobalVisualTarget(element.visualTarget)) {
+        if (!element.visualTarget) {
+          continue;
+        }
+        if (isGlobalVisualTarget(element.visualTarget) && !element.itemKey) {
           continue;
         }
         if (
@@ -393,28 +395,37 @@ export function listPendingCustomScopes(
     contentFallback,
   )) {
     const home = labPages.find((page) => page.id === "home");
+    const section = home?.sections.find((entry) => entry.id === item.sectionId);
+    const element = section?.elements.find((entry) => entry.id === item.elementId);
+    const isHero = item.id === "copy:home.hero";
     pending.push({
       id: item.id,
       kind: "element",
       domain: "copy",
       path: item.path,
-      groups: [
-        { en: "Home", es: "Inicio" },
-        { en: "Hero", es: "Héroe" },
-        { en: "Hero Content", es: "Contenido del héroe" },
-      ],
+      groups: isHero
+        ? [
+            { en: "Home", es: "Inicio" },
+            { en: "Hero", es: "Héroe" },
+            { en: "Hero Content", es: "Contenido del héroe" },
+          ]
+        : [
+            { en: "Home", es: "Inicio" },
+            section?.label ?? { en: "Why this practice", es: "Por qué este consultorio" },
+            element?.label ?? { en: "Editorial Card", es: "Tarjeta editorial" },
+          ],
       property: { en: "Content", es: "Contenido" },
       nav: {
         mode: "editor",
         pagePath: home?.path ?? "/",
-        pageId: "home",
-        sectionId: "hero",
-        elementId: "home-hero-content",
+        pageId: item.pageId,
+        sectionId: item.sectionId,
+        elementId: item.elementId as never,
         labSection: "copy",
       },
-      copyFieldIds: item.id === "copy:home.hero" ? HOME_HERO_FIELD_IDS : undefined,
-      pageId: "home",
-      sectionId: "hero",
+      copyFieldIds: item.ids,
+      pageId: item.pageId,
+      sectionId: item.sectionId,
     });
   }
 

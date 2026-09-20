@@ -40,6 +40,8 @@ type ExperienceCarouselProps = {
 };
 
 const PREMIUM_MOTION_EASE = "cubic-bezier(0.33, 1, 0.68, 1)";
+const PREMIUM_GAP_PX = 24;
+const PREMIUM_CARD_MAX_PX = 320;
 
 function usePrefersReducedMotion() {
   return useSyncExternalStore(
@@ -53,45 +55,26 @@ function usePrefersReducedMotion() {
   );
 }
 
-function groupPages(items: ReactNode[], perView: number) {
-  const pages: ReactNode[][] = [];
-  for (let i = 0; i < items.length; i += perView) {
-    pages.push(items.slice(i, i + perView));
+function gcd(left: number, right: number) {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+  while (b) {
+    const next = a % b;
+    a = b;
+    b = next;
   }
-  return pages;
+  return a || 1;
 }
 
-function PremiumCarouselSlide({
-  items,
-  perView,
-  gap,
-  listId,
-  inert,
-}: {
-  items: ReactNode[];
-  perView: number;
-  gap: string;
-  listId?: string;
-  inert?: boolean;
-}) {
-  return (
-    <ul
-      id={listId}
-      className="care-area-carousel-slide m-0 grid min-w-0 list-none p-0"
-      inert={inert ? true : undefined}
-      style={{
-        gridTemplateColumns: `repeat(${perView}, minmax(0, 20rem))`,
-        columnGap: gap,
-        justifyContent: "center",
-      }}
-    >
-      {items.map((child, offset) => (
-        <li key={offset} className="min-w-0">
-          {isValidElement(child) ? cloneElement(child) : child}
-        </li>
-      ))}
-    </ul>
-  );
+function wrapIndex(value: number, size: number) {
+  if (size <= 0) {
+    return 0;
+  }
+  return ((value % size) + size) % size;
+}
+
+function itemAt(items: ReactNode[], index: number) {
+  return items[wrapIndex(index, items.length)];
 }
 
 export function ExperienceCarousel({
@@ -130,17 +113,32 @@ export function ExperienceCarousel({
   const requestedMobile = presentation?.perViewMobile ?? 1;
   const [perView, setPerView] = useState(requestedDesktop);
   const pageStep = step === "page" ? perView : 1;
+  const cycleGcd = gcd(count, pageStep);
+  const premiumPageCount =
+    count > 0 && loop ? count / cycleGcd : Math.max(1, Math.ceil(count / Math.max(perView, 1)));
+  const cloneCount = premium ? Math.max(perView * 2, perView) : 0;
   const maxIndex =
-    step === "page"
-      ? Math.max(0, (Math.ceil(count / Math.max(perView, 1)) - 1) * perView)
-      : Math.max(0, count - perView);
-  const pageCount = maxIndex / pageStep + 1;
-  const safeIndex =
-    step === "page"
+    premium && loop
+      ? Math.max(0, count - 1)
+      : step === "page"
+        ? Math.max(0, (Math.ceil(count / Math.max(perView, 1)) - 1) * perView)
+        : Math.max(0, count - perView);
+  const pageCount = premium && loop ? premiumPageCount : maxIndex / pageStep + 1;
+  const safeIndex = premium
+    ? wrapIndex(index, Math.max(count, 1))
+    : step === "page"
       ? Math.min(Math.floor(index / pageStep) * pageStep, maxIndex)
       : Math.min(index, maxIndex);
-  const page = Math.floor(safeIndex / pageStep);
-  const pages = groupPages(items, perView);
+  let page = Math.floor(safeIndex / pageStep);
+  if (premium && loop && count > 0) {
+    page = 0;
+    for (let dot = 0; dot < pageCount; dot += 1) {
+      if (wrapIndex(dot * pageStep, count) === safeIndex) {
+        page = dot;
+        break;
+      }
+    }
+  }
   const showArrows =
     presentation?.arrows ??
     (experience.carousel.navigation === "arrows" ||
@@ -180,16 +178,12 @@ export function ExperienceCarousel({
     }
     window.clearTimeout(lockTimer.current);
     const visual = trackIndexRef.current;
-    if (loop && visual === 0) {
-      setTrack(pageCount, true);
-      return;
-    }
-    if (loop && visual === pageCount + 1) {
-      setTrack(1, true);
+    if (loop && count > 0 && (visual < cloneCount || visual >= cloneCount + count)) {
+      setTrack(wrapIndex(visual - cloneCount, count) + cloneCount, true);
       return;
     }
     busyRef.current = false;
-  }, [loop, pageCount, setTrack]);
+  }, [cloneCount, count, loop, setTrack]);
 
   useEffect(() => {
     function update() {
@@ -240,6 +234,25 @@ export function ExperienceCarousel({
     return () => observer.disconnect();
   }, [premium]);
 
+  const premiumCardWidth =
+    viewportWidth <= 0
+      ? PREMIUM_CARD_MAX_PX
+      : Math.min(
+          PREMIUM_CARD_MAX_PX,
+          Math.max(
+            0,
+            (viewportWidth - PREMIUM_GAP_PX * Math.max(perView - 1, 0)) /
+              Math.max(perView, 1),
+          ),
+        );
+  const premiumStride = premiumCardWidth + PREMIUM_GAP_PX;
+  const premiumPad = Math.max(
+    0,
+    (viewportWidth -
+      (premiumCardWidth * perView + PREMIUM_GAP_PX * Math.max(perView - 1, 0))) /
+      2,
+  );
+
   useLayoutEffect(() => {
     if (!premium || !instant) {
       return;
@@ -248,7 +261,7 @@ export function ExperienceCarousel({
     if (node) {
       node.style.transition = "none";
       if (viewportWidth > 0) {
-        node.style.transform = `translate3d(${-trackIndex * viewportWidth}px, 0, 0)`;
+        node.style.transform = `translate3d(${premiumPad - trackIndex * premiumStride}px, 0, 0)`;
       }
       void node.getBoundingClientRect();
     }
@@ -264,52 +277,45 @@ export function ExperienceCarousel({
       window.cancelAnimationFrame(first);
       window.cancelAnimationFrame(second);
     };
-  }, [instant, premium, trackIndex, viewportWidth]);
+  }, [instant, premium, premiumPad, premiumStride, trackIndex, viewportWidth]);
 
   useEffect(() => {
-    if (!premium || busyRef.current) {
+    if (!premium || busyRef.current || count === 0) {
       return;
     }
-    const logical = Math.min(
-      Math.max(0, Math.floor(indexRef.current / pageStep)),
-      Math.max(0, pageCount - 1),
-    );
-    const nextTrack = loop ? logical + 1 : logical;
+    const logical = wrapIndex(indexRef.current, count);
+    const nextTrack = loop ? logical + cloneCount : logical;
     if (trackIndexRef.current === nextTrack) {
       return;
     }
     setTrack(nextTrack, true);
-  }, [loop, pageCount, pageStep, perView, premium, setTrack]);
+  }, [cloneCount, count, loop, perView, premium, setTrack]);
 
   const goToStart = useCallback(
     (nextStart: number, wraps = false, dir?: 1 | -1) => {
       if (premium && busyRef.current) {
         return;
       }
-      const nextPage = Math.round(nextStart / pageStep);
-      const bounded = loop
-        ? (((nextPage % pageCount) + pageCount) % pageCount) * pageStep
-        : Math.min(maxIndex, Math.max(0, nextStart));
-
-      if (premium && bounded !== safeIndex) {
-        const destLogical = Math.floor(bounded / pageStep);
-        const wrappingForward = Boolean(wraps && dir === 1);
-        const wrappingBack = Boolean(wraps && dir === -1);
-        let nextVisual = loop ? destLogical + 1 : destLogical;
-        if (wrappingForward) {
-          nextVisual = trackIndexRef.current + 1;
-        } else if (wrappingBack) {
-          nextVisual = trackIndexRef.current - 1;
+      if (premium && loop && count > 0) {
+        const dest = wrapIndex(nextStart, count);
+        if (dest === safeIndex && !wraps) {
+          return;
+        }
+        let nextVisual = dest + cloneCount;
+        if (wraps && dir === 1) {
+          nextVisual = trackIndexRef.current + pageStep;
+        } else if (wraps && dir === -1) {
+          nextVisual = trackIndexRef.current - pageStep;
         }
         if (reduceMotion) {
           busyRef.current = false;
-          setIndex(bounded);
-          setTrack(loop ? destLogical + 1 : destLogical, true);
+          setIndex(dest);
+          setTrack(dest + cloneCount, true);
           return;
         }
         busyRef.current = true;
         window.clearTimeout(lockTimer.current);
-        setIndex(bounded);
+        setIndex(dest);
         setTrack(nextVisual);
         lockTimer.current = window.setTimeout(
           finishPremiumMotion,
@@ -317,6 +323,11 @@ export function ExperienceCarousel({
         );
         return;
       }
+
+      const nextPage = Math.round(nextStart / pageStep);
+      const bounded = loop
+        ? (((nextPage % pageCount) + pageCount) % pageCount) * pageStep
+        : Math.min(maxIndex, Math.max(0, nextStart));
 
       if (wraps && loop) {
         setInstant(true);
@@ -328,11 +339,18 @@ export function ExperienceCarousel({
       }
       setIndex(bounded);
     },
-    [finishPremiumMotion, loop, maxIndex, pageCount, pageStep, premium, premiumMotionMs, reduceMotion, safeIndex, setTrack],
+    [cloneCount, count, finishPremiumMotion, loop, maxIndex, pageCount, pageStep, premium, premiumMotionMs, reduceMotion, safeIndex, setTrack],
   );
 
   const goBy = useCallback(
     (deltaPages: number) => {
+      if (premium && loop && count > 0) {
+        const nextStart = safeIndex + deltaPages * pageStep;
+        const dest = wrapIndex(nextStart, count);
+        const wraps = dest !== nextStart;
+        goToStart(nextStart, wraps, deltaPages < 0 ? -1 : 1);
+        return;
+      }
       const currentPage = Math.floor(safeIndex / pageStep);
       const nextPage = currentPage + deltaPages;
       const wraps = loop && (nextPage < 0 || nextPage >= pageCount);
@@ -342,7 +360,7 @@ export function ExperienceCarousel({
         deltaPages < 0 ? -1 : 1,
       );
     },
-    [goToStart, loop, pageCount, pageStep, safeIndex],
+    [count, goToStart, loop, pageCount, pageStep, premium, safeIndex],
   );
 
   function onPremiumTransitionEnd(event: TransitionEvent<HTMLDivElement>) {
@@ -371,6 +389,10 @@ export function ExperienceCarousel({
       if (pausedRef.current || document.hidden) {
         return;
       }
+      if (premium && loop) {
+        setIndex((current) => wrapIndex(current + pageStep, count));
+        return;
+      }
       setIndex((current) => (current >= maxIndex ? 0 : current + pageStep));
     }, 6000);
 
@@ -383,7 +405,7 @@ export function ExperienceCarousel({
       window.clearInterval(timer);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [autoplayOn, count, maxIndex, pageStep, perView]);
+  }, [autoplayOn, count, loop, maxIndex, pageStep, perView, premium]);
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "ArrowRight") {
@@ -437,15 +459,14 @@ export function ExperienceCarousel({
     return null;
   }
 
-  const gap = premium ? "1.5rem" : "0px";
   const trackStyle = {
     transform: `translateX(-${(100 / perView) * safeIndex}%)`,
   };
-  const slideWidth = viewportWidth;
   const premiumTrackStyle: CSSProperties | undefined =
-    slideWidth > 0
+    viewportWidth > 0
       ? {
-          transform: `translate3d(${-trackIndex * slideWidth}px, 0, 0)`,
+          transform: `translate3d(${premiumPad - trackIndex * premiumStride}px, 0, 0)`,
+          gap: `${PREMIUM_GAP_PX}px`,
           transition:
             instant || reduceMotion
               ? "none"
@@ -516,31 +537,35 @@ export function ExperienceCarousel({
       role={premium ? "group" : "tablist"}
       aria-label={premium ? "Carousel pages" : "Slides"}
     >
-      {Array.from({ length: pageCount }, (_, dot) => (
-        <button
-          key={dot}
-          type="button"
-          role={premium ? undefined : "tab"}
-          aria-current={dot === page ? "true" : undefined}
-          aria-selected={premium ? undefined : dot === page}
-          aria-controls={id}
-          className={cn(
-            premium
-              ? "size-1.5 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              : "size-2.5 rounded-full border border-border",
-            dot === page
-              ? "bg-primary"
-              : premium
-                ? "bg-primary/25"
-                : "bg-transparent",
-          )}
-          onClick={() => goToStart(dot * pageStep)}
-        >
-          <span className="sr-only">
-            {premium ? `Page ${dot + 1} of ${pageCount}` : `Slide ${dot + 1}`}
-          </span>
-        </button>
-      ))}
+      {Array.from({ length: pageCount }, (_, dot) => {
+        const dest = premium && loop ? wrapIndex(dot * pageStep, count) : dot * pageStep;
+        const active = premium && loop ? dest === safeIndex : dot === page;
+        return (
+          <button
+            key={dot}
+            type="button"
+            role={premium ? undefined : "tab"}
+            aria-current={active ? "true" : undefined}
+            aria-selected={premium ? undefined : active}
+            aria-controls={id}
+            className={cn(
+              premium
+                ? "size-1.5 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                : "size-2.5 rounded-full border border-border",
+              active
+                ? "bg-primary"
+                : premium
+                  ? "bg-primary/25"
+                  : "bg-transparent",
+            )}
+            onClick={() => goToStart(dest)}
+          >
+            <span className="sr-only">
+              {premium ? `Page ${dot + 1} of ${pageCount}` : `Slide ${dot + 1}`}
+            </span>
+          </button>
+        );
+      })}
     </div>
   ) : null;
 
@@ -572,27 +597,26 @@ export function ExperienceCarousel({
     </div>
   );
 
-  const slideStyle: CSSProperties | undefined =
-    slideWidth > 0
-      ? { flex: `0 0 ${slideWidth}px`, width: slideWidth }
-      : { flex: "0 0 100%", width: "100%" };
-
-  function renderSlide(pageItems: ReactNode[], key: string, active: boolean) {
+  function renderPremiumItem(logicalIndex: number, physicalIndex: number, key: string) {
+    const child = itemAt(items, logicalIndex);
+    const visible =
+      physicalIndex >= trackIndex && physicalIndex < trackIndex + perView;
     return (
-      <div key={key} className="min-w-0" style={slideStyle} aria-hidden={!active}>
-        <PremiumCarouselSlide
-          items={pageItems}
-          perView={perView}
-          gap={gap}
-          listId={active ? id : undefined}
-          inert={!active}
-        />
+      <div
+        key={key}
+        className="care-area-carousel-item min-w-0"
+        style={{
+          flex: `0 0 ${premiumCardWidth}px`,
+          width: premiumCardWidth,
+        }}
+        aria-hidden={!visible}
+        inert={visible ? undefined : true}
+      >
+        {isValidElement(child) ? cloneElement(child) : child}
       </div>
     );
   }
 
-  const lastPage = pages[pages.length - 1] ?? [];
-  const firstPage = pages[0] ?? [];
   const premiumTrack = (
     <div
       ref={viewportRef}
@@ -605,16 +629,33 @@ export function ExperienceCarousel({
     >
       <div
         ref={trackRef}
+        id={id}
         className="care-area-carousel-track"
         data-instant={instant || reduceMotion ? "1" : "0"}
         style={premiumTrackStyle}
         onTransitionEnd={onPremiumTransitionEnd}
       >
-        {loop ? renderSlide(lastPage, "clone-last", false) : null}
-        {pages.map((pageItems, pageIndex) =>
-          renderSlide(pageItems, `page-${pageIndex}`, pageIndex === page),
+        {Array.from({ length: cloneCount }, (_, offset) =>
+          renderPremiumItem(
+            count - cloneCount + offset,
+            offset,
+            `clone-pre-${offset}`,
+          ),
         )}
-        {loop ? renderSlide(firstPage, "clone-first", false) : null}
+        {items.map((_, logicalIndex) =>
+          renderPremiumItem(
+            logicalIndex,
+            cloneCount + logicalIndex,
+            `item-${logicalIndex}`,
+          ),
+        )}
+        {Array.from({ length: cloneCount }, (_, offset) =>
+          renderPremiumItem(
+            offset,
+            cloneCount + count + offset,
+            `clone-post-${offset}`,
+          ),
+        )}
       </div>
     </div>
   );

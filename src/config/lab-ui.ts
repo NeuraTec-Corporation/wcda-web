@@ -713,6 +713,7 @@ export type LabControlScope = {
   video: boolean;
   beforeAfter: boolean;
   cursor: boolean;
+  editorialIcons: boolean;
 };
 
 export function labControlScope(target: VisualTargetId): LabControlScope {
@@ -728,6 +729,7 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
     video: false,
     beforeAfter: false,
     cursor: true,
+    editorialIcons: false,
   };
 
   switch (target) {
@@ -746,6 +748,7 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
         video: false,
         beforeAfter: false,
         cursor: true,
+        editorialIcons: false,
       };
     case "home-doctor-media":
     case "about-doctor-media":
@@ -764,8 +767,9 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
     case "home-cta":
       return { ...empty, media: false };
     case "patients-resource-cards":
-    case "editorial-cards":
       return { ...empty, media: false, motion: false };
+    case "editorial-cards":
+      return { ...empty, media: false, motion: false, editorialIcons: true };
     case "home-hero-media":
       return { ...empty, video: true };
     case "home-hero-content":
@@ -781,6 +785,7 @@ export function labControlScope(target: VisualTargetId): LabControlScope {
         video: false,
         beforeAfter: false,
         cursor: false,
+        editorialIcons: false,
       };
     case "technology-media":
       return { ...empty, video: true, badges: true, beforeAfter: false };

@@ -1,5 +1,5 @@
-import { homeHero } from "@/data/home";
-import type { HeroContent } from "@/types/content";
+import { homeHero, homeWhyChoose } from "@/data/home";
+import type { CardSectionContent, HeroContent } from "@/types/content";
 
 type LabBi = { en: string; es: string };
 
@@ -22,11 +22,60 @@ export const CONTENT_FIELD_IDS = [
   "home.hero.pillar1",
   "home.hero.pillar2",
   "home.hero.pillar3",
+  "home.whyChoose.independentOwnership.title",
+  "home.whyChoose.independentOwnership.description",
+  "home.whyChoose.westCaldwellCommunity.title",
+  "home.whyChoose.westCaldwellCommunity.description",
+  "home.whyChoose.clearNextSteps.title",
+  "home.whyChoose.clearNextSteps.description",
 ] as const;
 
 export type ContentFieldId = (typeof CONTENT_FIELD_IDS)[number];
 
-export const HOME_HERO_FIELD_IDS = CONTENT_FIELD_IDS;
+export const HOME_HERO_FIELD_IDS = [
+  "home.hero.heading",
+  "home.hero.description",
+  "home.hero.primaryCta",
+  "home.hero.secondaryCta",
+  "home.hero.pillar1",
+  "home.hero.pillar2",
+  "home.hero.pillar3",
+] as const satisfies readonly ContentFieldId[];
+
+export const HOME_WHY_CHOOSE_ITEM_KEYS = [
+  "independent-ownership",
+  "west-caldwell-community",
+  "clear-next-steps",
+] as const;
+
+export type HomeWhyChooseItemKey = (typeof HOME_WHY_CHOOSE_ITEM_KEYS)[number];
+
+export const HOME_WHY_CHOOSE_FIELDS: Record<
+  HomeWhyChooseItemKey,
+  readonly [ContentFieldId, ContentFieldId]
+> = {
+  "independent-ownership": [
+    "home.whyChoose.independentOwnership.title",
+    "home.whyChoose.independentOwnership.description",
+  ],
+  "west-caldwell-community": [
+    "home.whyChoose.westCaldwellCommunity.title",
+    "home.whyChoose.westCaldwellCommunity.description",
+  ],
+  "clear-next-steps": [
+    "home.whyChoose.clearNextSteps.title",
+    "home.whyChoose.clearNextSteps.description",
+  ],
+};
+
+export function isHomeWhyChooseItemKey(
+  value: string | undefined,
+): value is HomeWhyChooseItemKey {
+  return Boolean(
+    value &&
+      (HOME_WHY_CHOOSE_ITEM_KEYS as readonly string[]).includes(value),
+  );
+}
 
 export const CONTENT_ELEMENT_IDS = [
   "home-hero-heading",
@@ -180,6 +229,78 @@ export const contentFieldSchema: Record<ContentFieldId, ContentFieldSchema> = {
     semanticRole: "label",
     recommendedMax: 16,
   },
+  "home.whyChoose.independentOwnership.title": {
+    id: "home.whyChoose.independentOwnership.title",
+    scope: "element",
+    field: "items.independent-ownership.title",
+    type: "text",
+    label: { en: "Title", es: "Título" },
+    governance: "editable",
+    multiline: false,
+    linkAllowed: false,
+    semanticRole: "heading",
+    recommendedMax: 48,
+  },
+  "home.whyChoose.independentOwnership.description": {
+    id: "home.whyChoose.independentOwnership.description",
+    scope: "element",
+    field: "items.independent-ownership.description",
+    type: "multiline",
+    label: { en: "Description", es: "Descripción" },
+    governance: "editable",
+    multiline: true,
+    linkAllowed: false,
+    semanticRole: "paragraph",
+    recommendedMax: 220,
+  },
+  "home.whyChoose.westCaldwellCommunity.title": {
+    id: "home.whyChoose.westCaldwellCommunity.title",
+    scope: "element",
+    field: "items.west-caldwell-community.title",
+    type: "text",
+    label: { en: "Title", es: "Título" },
+    governance: "editable",
+    multiline: false,
+    linkAllowed: false,
+    semanticRole: "heading",
+    recommendedMax: 48,
+  },
+  "home.whyChoose.westCaldwellCommunity.description": {
+    id: "home.whyChoose.westCaldwellCommunity.description",
+    scope: "element",
+    field: "items.west-caldwell-community.description",
+    type: "multiline",
+    label: { en: "Description", es: "Descripción" },
+    governance: "editable",
+    multiline: true,
+    linkAllowed: false,
+    semanticRole: "paragraph",
+    recommendedMax: 220,
+  },
+  "home.whyChoose.clearNextSteps.title": {
+    id: "home.whyChoose.clearNextSteps.title",
+    scope: "element",
+    field: "items.clear-next-steps.title",
+    type: "text",
+    label: { en: "Title", es: "Título" },
+    governance: "editable",
+    multiline: false,
+    linkAllowed: false,
+    semanticRole: "heading",
+    recommendedMax: 48,
+  },
+  "home.whyChoose.clearNextSteps.description": {
+    id: "home.whyChoose.clearNextSteps.description",
+    scope: "element",
+    field: "items.clear-next-steps.description",
+    type: "multiline",
+    label: { en: "Description", es: "Descripción" },
+    governance: "editable",
+    multiline: true,
+    linkAllowed: false,
+    semanticRole: "paragraph",
+    recommendedMax: 220,
+  },
 };
 
 export const CONTENT_ELEMENT_FIELDS: Record<
@@ -225,6 +346,18 @@ export function defaultContentValue(id: ContentFieldId): string {
       return homeHero.pillars[1] ?? PILLAR_DEFAULTS[1];
     case "home.hero.pillar3":
       return homeHero.pillars[2] ?? PILLAR_DEFAULTS[2];
+    case "home.whyChoose.independentOwnership.title":
+      return homeWhyChoose.items[0]?.title ?? "";
+    case "home.whyChoose.independentOwnership.description":
+      return homeWhyChoose.items[0]?.description ?? "";
+    case "home.whyChoose.westCaldwellCommunity.title":
+      return homeWhyChoose.items[1]?.title ?? "";
+    case "home.whyChoose.westCaldwellCommunity.description":
+      return homeWhyChoose.items[1]?.description ?? "";
+    case "home.whyChoose.clearNextSteps.title":
+      return homeWhyChoose.items[2]?.title ?? "";
+    case "home.whyChoose.clearNextSteps.description":
+      return homeWhyChoose.items[2]?.description ?? "";
   }
 }
 
@@ -456,22 +589,100 @@ export function resolveHomeHero(patch: SiteContentPatch = {}): HeroContent {
   };
 }
 
+export function resolveHomeWhyChoose(
+  patch: SiteContentPatch = {},
+): CardSectionContent {
+  return {
+    ...homeWhyChoose,
+    items: homeWhyChoose.items.map((item) => {
+      if (!isHomeWhyChooseItemKey(item.id)) {
+        return item;
+      }
+      const [titleId, descriptionId] = HOME_WHY_CHOOSE_FIELDS[item.id];
+      const title = resolveContentValue(titleId, patch);
+      const description = resolveContentValue(descriptionId, patch);
+      return {
+        ...item,
+        title: title || item.title,
+        description: description || item.description,
+      };
+    }),
+  };
+}
+
 export function listPendingContentScopes(
   custom: SiteContentPatch,
   current: SiteContentPatch,
   fallback: SiteContentPatch = current,
-): { id: string; path: LabBi }[] {
-  const pending: { id: string; path: LabBi }[] = [];
-  const groups: { id: string; ids: readonly ContentFieldId[]; path: LabBi }[] = [
+): {
+  id: string;
+  path: LabBi;
+  ids: readonly ContentFieldId[];
+  pageId: "home";
+  sectionId: string;
+  elementId: string;
+}[] {
+  const pending: {
+    id: string;
+    path: LabBi;
+    ids: readonly ContentFieldId[];
+    pageId: "home";
+    sectionId: string;
+    elementId: string;
+  }[] = [];
+  const groups: {
+    id: string;
+    ids: readonly ContentFieldId[];
+    path: LabBi;
+    pageId: "home";
+    sectionId: string;
+    elementId: string;
+  }[] = [
     {
       id: "copy:home.hero",
       ids: HOME_HERO_FIELD_IDS,
       path: { en: "Home / Hero / Hero Content", es: "Inicio / Héroe / Contenido del héroe" },
+      pageId: "home",
+      sectionId: "hero",
+      elementId: "home-hero-content",
+    },
+    {
+      id: "copy:home.whyChoose.independent-ownership",
+      ids: HOME_WHY_CHOOSE_FIELDS["independent-ownership"],
+      path: {
+        en: "Home / Why this practice / Independent ownership",
+        es: "Inicio / Por qué este consultorio / Propiedad independiente",
+      },
+      pageId: "home",
+      sectionId: "whyChoose",
+      elementId: "home-why-card/independent-ownership",
+    },
+    {
+      id: "copy:home.whyChoose.west-caldwell-community",
+      ids: HOME_WHY_CHOOSE_FIELDS["west-caldwell-community"],
+      path: {
+        en: "Home / Why this practice / West Caldwell community",
+        es: "Inicio / Por qué este consultorio / Comunidad de West Caldwell",
+      },
+      pageId: "home",
+      sectionId: "whyChoose",
+      elementId: "home-why-card/west-caldwell-community",
+    },
+    {
+      id: "copy:home.whyChoose.clear-next-steps",
+      ids: HOME_WHY_CHOOSE_FIELDS["clear-next-steps"],
+      path: {
+        en: "Home / Why this practice / Clear next steps",
+        es: "Inicio / Por qué este consultorio / Próximos pasos claros",
+      },
+      pageId: "home",
+      sectionId: "whyChoose",
+      elementId: "home-why-card/clear-next-steps",
     },
   ];
   for (const group of groups) {
     if (contentLiveUnsaved(group.ids, custom, current, fallback)) {
-      pending.push({ id: group.id, path: group.path });
+      pending.push(group);
     }
   }
   return pending;

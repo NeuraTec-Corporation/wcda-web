@@ -319,6 +319,10 @@ export function getFeaturedCareAreas(): ServiceCategory[] {
     "restorative",
     "dental-implants",
     "periodontal",
+    "root-canal",
+    "oral-surgery",
+    "oral-appliances",
+    "minimally-invasive-biological",
   ] as const;
 
   return featuredSlugs.flatMap((slug) => {

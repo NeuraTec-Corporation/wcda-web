@@ -12,6 +12,7 @@ export type ContentBlock = {
 };
 
 export type ContentCard = {
+  id?: string;
   title: string;
   description: string;
   href?: string;

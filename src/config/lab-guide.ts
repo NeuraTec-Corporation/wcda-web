@@ -140,6 +140,13 @@ export type LabControlId =
   | "float-overlap"
   | "beforeafter"
   | "cursor"
+  | "editorial-icon"
+  | "editorial-icon-color"
+  | "editorial-icon-size"
+  | "editorial-icon-background"
+  | "editorial-presentation"
+  | "editorial-graphic-size"
+  | "editorial-graphic-align"
   | "hero-content-offset-y"
   | "hero-content-offset-x"
   | "hero-content-max-width"
@@ -2267,6 +2274,181 @@ add("cursor", "effects", "experience", {
   persist: persistExperience(),
 });
 
+add("editorial-icon", "effects", "experience", {
+  label: { en: "Icon Asset", es: "Recurso del icono" },
+  what: {
+    en: "Chooses the SVG or PNG shown on the selected editorial card. The Icon Library lists every file in the icon folder.",
+    es: "Elige el SVG o PNG de la tarjeta editorial seleccionada. La biblioteca de iconos enumera cada archivo de la carpeta de iconos.",
+  },
+  see: {
+    en: "The selected card icon updates immediately. Sibling cards keep their own icons.",
+    es: "El icono de la tarjeta seleccionada se actualiza de inmediato. Las tarjetas vecinas conservan el suyo.",
+  },
+  where: {
+    en: "Editorial cards, Why this practice, InfoCard, BenefitStrip, and other small editorial-icon + title cards.",
+    es: "Tarjetas editoriales, Por qué este consultorio, InfoCard, BenefitStrip y otras tarjetas con icono editorial pequeño + título.",
+  },
+  compatible: {
+    en: "Small editorial icons in the editorial-card family.",
+    es: "Iconos editoriales pequeños de la familia de tarjetas editoriales.",
+  },
+  incompatible: {
+    en: "Does not change CTA arrows, carousel navigation, Pattern 01 action circles, badges, or media controls.",
+    es: "No cambia flechas de CTA, navegación de carrusel, círculos de acción del Patrón 01, insignias ni controles de media.",
+  },
+  persist: persistExperience(),
+});
+
+add("editorial-icon-color", "effects", "experience", {
+  label: { en: "Icon Color", es: "Color del icono" },
+  what: {
+    en: "Sets the glyph color for currentColor-compatible SVG. PNG keeps embedded colors and this control is disabled.",
+    es: "Define el color del glifo para SVG compatible con currentColor. El PNG conserva sus colores incrustados y este control se desactiva.",
+  },
+  see: {
+    en: "Compatible SVG on the selected card changes color. PNG and fixed-color SVG are not recolored.",
+    es: "El SVG compatible de la tarjeta seleccionada cambia de color. El PNG y el SVG de color fijo no se recolorean.",
+  },
+  where: {
+    en: "Selected editorial card icon. Scoped to the selected itemKey.",
+    es: "Icono de la tarjeta editorial seleccionada. Acotado al itemKey seleccionado.",
+  },
+  compatible: {
+    en: "currentColor-compatible SVG editorial icons.",
+    es: "Iconos editoriales SVG compatibles con currentColor.",
+  },
+  incompatible: {
+    en: "Not applied to PNG. Does not fake recoloring with CSS filters. Does not change --color-accent or other site chrome.",
+    es: "No se aplica a PNG. No simula el recolorido con filtros CSS. No cambia --color-accent ni el resto del cromado del sitio.",
+  },
+  persist: persistExperience(),
+});
+
+add("editorial-icon-size", "effects", "experience", {
+  label: { en: "Compact Icon Size", es: "Tamaño del icono compacto" },
+  what: {
+    en: "Sets the compact icon visual size in pixels for the selected editorial card. Family default is 26 px. Does not change Feature Graphic size.",
+    es: "Define el tamaño visual del icono compacto en píxeles para la tarjeta editorial seleccionada. El valor de familia es 26 px. No cambia el tamaño del gráfico destacado.",
+  },
+  see: {
+    en: "The selected compact icon scales. Title alignment stays beside the icon. Other cards keep their own size.",
+    es: "El icono compacto seleccionado escala. El título permanece alineado junto al icono. Las otras tarjetas conservan su tamaño.",
+  },
+  where: {
+    en: "Home > Why this practice > selected editorial card, Compact Icon mode.",
+    es: "Inicio > Por qué este consultorio > tarjeta editorial seleccionada, modo Icono compacto.",
+  },
+  compatible: {
+    en: "Compact Icon mode on Home Why this practice cards.",
+    es: "Modo Icono compacto en las tarjetas de Por qué este consultorio.",
+  },
+  incompatible: {
+    en: "Does not change Feature Graphic size, CTA circles, or other cards unless they have their own override.",
+    es: "No cambia el tamaño del gráfico destacado, los círculos de CTA ni otras tarjetas, salvo que tengan su propio ajuste.",
+  },
+  persist: persistExperience(),
+});
+
+add("editorial-icon-background", "effects", "experience", {
+  label: { en: "Icon Background", es: "Fondo del icono" },
+  what: {
+    en: "Shows the selected editorial icon with no well (None) or inside a circular surface (Circle). Family default is None.",
+    es: "Muestra el icono editorial seleccionado sin pozo (Ninguno) o dentro de una superficie circular (Círculo). El valor de familia es Ninguno.",
+  },
+  see: {
+    en: "Only the selected card well appears or disappears. Circle remains available from Inspector.",
+    es: "Solo aparece o desaparece el pozo de la tarjeta seleccionada. Círculo sigue disponible en el Inspector.",
+  },
+  where: {
+    en: "Selected editorial card icon. Scoped to the selected itemKey.",
+    es: "Icono de la tarjeta editorial seleccionada. Acotado al itemKey seleccionado.",
+  },
+  compatible: {
+    en: "Small editorial icons in the editorial-card family.",
+    es: "Iconos editoriales pequeños de la familia de tarjetas editoriales.",
+  },
+  incompatible: {
+    en: "Does not remove CTA circular arrows, carousel navigation, Pattern 01 action circles, badges, or media controls.",
+    es: "No quita flechas circulares de CTA, navegación de carrusel, círculos de acción del Patrón 01, insignias ni controles de media.",
+  },
+  persist: persistExperience(),
+});
+
+add("editorial-presentation", "effects", "experience", {
+  label: { en: "Presentation", es: "Presentación" },
+  what: {
+    en: "Chooses Compact Icon or Feature Graphic for the selected card. The same asset is used in both modes.",
+    es: "Elige Icono compacto o Gráfico destacado para la tarjeta seleccionada. El mismo recurso se usa en ambos modos.",
+  },
+  see: {
+    en: "The selected Home Why this practice card switches between a small title icon and a left graphic region. Sibling cards keep their own mode.",
+    es: "La tarjeta seleccionada de Por qué este consultorio cambia entre un icono pequeño junto al título y una región gráfica a la izquierda. Las tarjetas vecinas conservan su modo.",
+  },
+  where: {
+    en: "Home > Why this practice > selected editorial card.",
+    es: "Inicio > Por qué este consultorio > tarjeta editorial seleccionada.",
+  },
+  compatible: {
+    en: "Home Why this practice editorial cards.",
+    es: "Tarjetas editoriales de Por qué este consultorio en inicio.",
+  },
+  incompatible: {
+    en: "Does not change About, Patients, Contact, Technology, treatments, carousel arrows, or Pattern 01.",
+    es: "No cambia About, Pacientes, Contacto, Tecnología, tratamientos, flechas de carrusel ni el Patrón 01.",
+  },
+  persist: persistExperience(),
+});
+
+add("editorial-graphic-size", "effects", "experience", {
+  label: { en: "Feature Graphic Size", es: "Tamaño del gráfico destacado" },
+  what: {
+    en: "Sets the desktop reference size of the left graphic region. CSS scales it at tablet and mobile. Does not change Compact Icon Size.",
+    es: "Define el tamaño de referencia de escritorio de la región gráfica izquierda. El CSS lo escala en tablet y móvil. No cambia el tamaño del icono compacto.",
+  },
+  see: {
+    en: "The selected card graphic region scales. The image stays contained and is not cropped.",
+    es: "La región gráfica de la tarjeta seleccionada escala. La imagen permanece contenida y no se recorta.",
+  },
+  where: {
+    en: "Home > Why this practice > selected editorial card, Feature Graphic mode.",
+    es: "Inicio > Por qué este consultorio > tarjeta editorial seleccionada, modo Gráfico destacado.",
+  },
+  compatible: {
+    en: "Feature Graphic mode on Home Why this practice cards.",
+    es: "Modo Gráfico destacado en las tarjetas de Por qué este consultorio.",
+  },
+  incompatible: {
+    en: "Does not change Compact Icon Size or other cards unless they have their own override.",
+    es: "No cambia el tamaño del icono compacto ni otras tarjetas, salvo que tengan su propio ajuste.",
+  },
+  persist: persistExperience(),
+});
+
+add("editorial-graphic-align", "effects", "experience", {
+  label: { en: "Graphic Alignment", es: "Alineación del gráfico" },
+  what: {
+    en: "Aligns the graphic left or center inside its allocated left region. Does not crop.",
+    es: "Alinea el gráfico a la izquierda o al centro dentro de su región izquierda. No recorta.",
+  },
+  see: {
+    en: "Only the selected card graphic shifts inside its box. Sibling cards keep their alignment.",
+    es: "Solo el gráfico de la tarjeta seleccionada se desplaza dentro de su caja. Las tarjetas vecinas conservan su alineación.",
+  },
+  where: {
+    en: "Home > Why this practice > selected editorial card, Feature Graphic mode.",
+    es: "Inicio > Por qué este consultorio > tarjeta editorial seleccionada, modo Gráfico destacado.",
+  },
+  compatible: {
+    en: "Feature Graphic mode on Home Why this practice cards.",
+    es: "Modo Gráfico destacado en las tarjetas de Por qué este consultorio.",
+  },
+  incompatible: {
+    en: "Does not change Compact Icon layout or other cards.",
+    es: "No cambia el diseño de Icono compacto ni otras tarjetas.",
+  },
+  persist: persistExperience(),
+});
+
 add("hero-content-offset-y", "position", "experience", {
   label: { en: "Vertical Position", es: "Posición vertical" },
   what: {
@@ -2775,6 +2957,19 @@ export const labWords: Record<LabLanguage, Record<string, string>> = {
     primary: "Primary",
     secondary: "Secondary",
     accent: "Accent",
+    cyan: "WCDA Cyan",
+    circle: "Circle",
+    compactIcon: "Compact Icon",
+    featureGraphic: "Feature Graphic",
+    independentOwnership: "Independent Ownership",
+    westCaldwellCommunity: "West Caldwell Community",
+    clearNextSteps: "Clear Next Steps",
+    shield: "Shield",
+    heart: "Heart",
+    homeIcon: "Home",
+    check: "Check",
+    target: "Target",
+    calendar: "Calendar",
     dark: "Dark",
     modal: "Modal preview",
     external: "External YouTube link",
@@ -2799,6 +2994,7 @@ export const labWords: Record<LabLanguage, Record<string, string>> = {
     verySlow: "Very slow",
     inverse: "Inverse",
     muted: "Muted",
+    foreground: "Foreground",
     bottomLeft: "Bottom left",
     bottomRight: "Bottom right",
     topRight: "Top right",
@@ -2873,6 +3069,19 @@ export const labWords: Record<LabLanguage, Record<string, string>> = {
     primary: "Primario",
     secondary: "Secundario",
     accent: "Acento",
+    cyan: "WCDA Cyan",
+    circle: "Círculo",
+    compactIcon: "Icono compacto",
+    featureGraphic: "Gráfico destacado",
+    independentOwnership: "Propiedad independiente",
+    westCaldwellCommunity: "Comunidad de West Caldwell",
+    clearNextSteps: "Próximos pasos claros",
+    shield: "Escudo",
+    heart: "Corazón",
+    homeIcon: "Casa",
+    check: "Check",
+    target: "Objetivo",
+    calendar: "Calendario",
     dark: "Oscuro",
     modal: "Vista modal",
     external: "Enlace externo de YouTube",
@@ -2897,6 +3106,7 @@ export const labWords: Record<LabLanguage, Record<string, string>> = {
     verySlow: "Muy lenta",
     inverse: "Inverso",
     muted: "Atenuado",
+    foreground: "Texto",
     bottomLeft: "Abajo izquierda",
     bottomRight: "Abajo derecha",
     topRight: "Arriba derecha",

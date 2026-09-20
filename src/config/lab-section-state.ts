@@ -5,6 +5,7 @@ import {
   parseExperienceValues,
   pickExperienceValues,
   slotForTarget,
+  applyEditorialIconItem,
   type ComponentSlotConfig,
   type ExperienceValues,
   type VisualTargetId,
@@ -141,12 +142,23 @@ function copyOneSlot(
 
 function elementEffectPatch(
   target: VisualTargetId,
-  source: ExperienceValues,
+  targetExperience: ExperienceValues,
+  sourceExperience: ExperienceValues,
+  itemKey?: string,
 ): Partial<ExperienceValues> {
   const scope = labControlScope(target);
   const extra: Partial<ExperienceValues> = {};
-  if (scope.marquee) extra.marquee = source.marquee;
-  if (scope.carouselMotion) extra.carousel = source.carousel;
+  if (!itemKey || scope.carouselMotion) {
+    if (scope.marquee) extra.marquee = sourceExperience.marquee;
+    if (scope.carouselMotion) extra.carousel = sourceExperience.carousel;
+  }
+  if (scope.editorialIcons && itemKey) {
+    extra.editorialIcons = applyEditorialIconItem(
+      targetExperience.editorialIcons,
+      sourceExperience.editorialIcons,
+      itemKey,
+    );
+  }
   return extra;
 }
 
@@ -250,9 +262,7 @@ export function applyElementSlice(
           targetExperience.scopedColors,
           sourceExperience.scopedColors,
         ),
-    ...(itemKey && !labControlScope(target).carouselMotion
-      ? {}
-      : elementEffectPatch(target, sourceExperience)),
+    ...elementEffectPatch(target, targetExperience, sourceExperience, itemKey),
   });
 }
 

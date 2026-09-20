@@ -18,6 +18,10 @@ import {
   type MediaSizePreset,
   type PreviewBackgroundId,
 } from "@/config/media-assets";
+import {
+  iconKindFromSrc,
+  isApprovedIconSrc,
+} from "@/config/lab-icon-library";
 
 export const EXPERIENCE_SAVE_PATH = "/api/internal/experience";
 export const EXPERIENCE_LAB_STORAGE_KEY = "wcda-experience-lab-v3";
@@ -85,6 +89,79 @@ export type BadgeDiameter = "small" | "medium" | "large";
 export type BadgeRotationSpeed = "slow" | "very-slow";
 export type BadgeTextColor = "inverse" | "accent" | "muted";
 export type CursorCompanionMode = "off" | "subtle";
+export const EDITORIAL_ICON_IDS = [
+  "independent-ownership",
+  "west-caldwell-community",
+  "clear-next-steps",
+  "tooth",
+  "shield",
+  "heart",
+  "home",
+  "check",
+  "target",
+  "sparkle",
+  "calendar",
+  "info",
+] as const;
+export type EditorialIconId = (typeof EDITORIAL_ICON_IDS)[number];
+export const EDITORIAL_ICON_COLORS = [
+  "primary",
+  "cyan",
+  "secondary",
+  "accent",
+  "muted",
+  "foreground",
+] as const;
+export type EditorialIconColor = (typeof EDITORIAL_ICON_COLORS)[number];
+export const EDITORIAL_ICON_SIZE_MIN = 12;
+export const EDITORIAL_ICON_SIZE_MAX = 32;
+export const EDITORIAL_ICON_SIZE_DEFAULT = 26;
+export const EDITORIAL_ICON_SIZE_FACTORY = 16;
+export const EDITORIAL_ICON_BACKGROUNDS = ["none", "circle"] as const;
+export type EditorialIconBackground = (typeof EDITORIAL_ICON_BACKGROUNDS)[number];
+export const EDITORIAL_ICON_BACKGROUND_DEFAULT: EditorialIconBackground = "none";
+export const EDITORIAL_PRESENTATION_MODES = [
+  "compact-icon",
+  "feature-graphic",
+] as const;
+export type EditorialPresentationMode = (typeof EDITORIAL_PRESENTATION_MODES)[number];
+export const EDITORIAL_PRESENTATION_DEFAULT: EditorialPresentationMode =
+  "compact-icon";
+export const EDITORIAL_GRAPHIC_ALIGNS = ["left", "center"] as const;
+export type EditorialGraphicAlign = (typeof EDITORIAL_GRAPHIC_ALIGNS)[number];
+export const EDITORIAL_GRAPHIC_ALIGN_DEFAULT: EditorialGraphicAlign = "center";
+export const EDITORIAL_GRAPHIC_SIZE_MIN = 48;
+export const EDITORIAL_GRAPHIC_SIZE_MAX = 96;
+export const EDITORIAL_GRAPHIC_SIZE_DEFAULT = 88;
+export const EDITORIAL_ICON_COLOR_CSS: Record<EditorialIconColor, string> = {
+  primary: "var(--color-primary)",
+  cyan: "var(--wcda-cyan)",
+  secondary: "var(--color-secondary)",
+  accent: "var(--color-accent)",
+  muted: "var(--color-muted)",
+  foreground: "var(--color-foreground)",
+};
+
+export type EditorialIconColorMode = "currentColor" | "fixed";
+
+export type EditorialIconItem = {
+  icon?: EditorialIconId;
+  assetSrc?: string;
+  assetColorMode?: EditorialIconColorMode;
+  color?: EditorialIconColor;
+  size?: number;
+  background?: EditorialIconBackground;
+  presentationMode?: EditorialPresentationMode;
+  graphicSize?: number;
+  graphicAlign?: EditorialGraphicAlign;
+};
+
+export type EditorialIconsExperience = {
+  color: EditorialIconColor;
+  size: number;
+  background?: EditorialIconBackground;
+  items?: Partial<Record<string, EditorialIconItem>>;
+};
 export type VideoMode = "modal" | "external" | "embed";
 export type PlayButtonStyle = "solid" | "outline" | "minimal";
 export type VideoCornerAction = "none" | "info" | "play";
@@ -237,6 +314,7 @@ export type ExperienceValues = {
     enabled: boolean;
   };
   cursorCompanion: CursorCompanionMode;
+  editorialIcons: EditorialIconsExperience;
   components: Record<ComponentSlotId, ComponentSlotConfig>;
   containerSurfaceIntensity?: Partial<Record<VisualTargetId, number>>;
   scopedColors?: ScopedColors;
@@ -965,6 +1043,10 @@ export function createFactoryExperience(): ExperienceValues {
       enabled: false,
     },
     cursorCompanion: "off",
+    editorialIcons: {
+      color: "primary",
+      size: EDITORIAL_ICON_SIZE_FACTORY,
+    },
     components: {
       "header.logo": {
         containerPreset: "clean",
@@ -1223,6 +1305,30 @@ export const approvedExperience: ExperienceValues = {
     enabled: false,
   },
   cursorCompanion: "subtle",
+  editorialIcons: {
+    color: "primary",
+    size: 26,
+    background: "none",
+    items: {
+      "independent-ownership": {
+        assetSrc: "/media/icons/wcda-01-01.png",
+        assetColorMode: "fixed",
+        color: "cyan",
+        size: 20,
+        presentationMode: "feature-graphic",
+      },
+      "west-caldwell-community": {
+        assetSrc: "/media/icons/wcda-01-02-a.png",
+        assetColorMode: "fixed",
+        presentationMode: "feature-graphic",
+      },
+      "clear-next-steps": {
+        assetSrc: "/media/icons/wcda-01-04-a.png",
+        assetColorMode: "fixed",
+        presentationMode: "feature-graphic",
+      },
+    },
+  },
   containerSurfaceIntensity: {
     "patients-resource-cards": 0.05,
   },
@@ -1334,55 +1440,87 @@ export const approvedExperience: ExperienceValues = {
       previewBackground: "auto",
       alignment: "left",
       itemAssets: {
-        "preventive-general": "wcda-category-hero-preventive-general",
-        "family-children": "/media/services/family-children/wcda-category-hero.png",
-        "cosmetic": "/media/services/cosmetic/wcda-category-hero.png",
-        "restorative": "/media/services/restorative/wcda-category-hero.png",
-        "dental-implants": "/media/services/dental-implants/wcda-category-hero.png",
-        "periodontal": "/media/services/periodontal/ChatGPT-Image-Sep-7-2026-04_33_29-PM.png",
+        "preventive-general": "/media/services/preventive-general/wcda-category-hero-02.png",
+        "family-children": "/media/services/family-children/wcda-category-hero-01.png",
+        "cosmetic": "/media/services/cosmetic/wcda-category-hero-03.png",
+        "restorative": "/media/services/restorative/wcda-category-hero-05.png",
+        "dental-implants": "/media/services/dental-implants/wcda-category-hero-08.png",
+        "periodontal": "/media/services/periodontal/wcda-category-hero-09.png",
+        "minimally-invasive-biological": "/media/services/minimally-invasive-biological/wcda-category-hero21.png",
+        "root-canal": "/media/services/root-canal/wcda-category-hero-11.png",
+        "oral-surgery": "/media/services/oral-surgery/wcda-category-hero-12.png",
+        "oral-appliances": "/media/services/oral-appliances/wcda-category-hero-15.png",
       },
       itemMedia: {
         "preventive-general": {
           scale: 1,
           positionX: 50,
           positionY: 50,
-          panX: -11.328020962801846,
-          panY: -2.5648377158425073,
+          panX: 0.3875932267340385,
+          panY: 1.0216945086832645,
         },
         "family-children": {
-          scale: 1,
+          scale: 1.16,
           positionX: 50,
           positionY: 50,
-          panX: -11.969225334398674,
-          panY: -2.88543701171875,
+          panX: -7.185337864331928,
+          panY: 8.154311724078877,
         },
         "cosmetic": {
-          scale: 1,
+          scale: 1.13,
           positionX: 50,
           positionY: 50,
-          panX: -12.18295819831617,
-          panY: -1.9236304543235085,
+          panX: -1.8791913847430308,
+          panY: 4.700216796912034,
         },
         "restorative": {
-          scale: 1,
+          scale: 1.09,
           positionX: 50,
           positionY: 50,
-          panX: -13.037906993519178,
-          panY: -1.603022488680753,
+          panX: 1.3144866743194026,
+          panY: -0.8669931143813542,
         },
         "dental-implants": {
-          scale: 1,
+          scale: 1.19,
           positionX: 50,
           positionY: 50,
-          panX: -11.114270759351326,
-          panY: -6.091481989080256,
+          panX: 3.2374115532792342,
+          panY: -1.6755705533030092,
         },
         "periodontal": {
-          scale: 1,
+          scale: 1.12,
           positionX: 50,
           positionY: 50,
-          panX: -12.610429705995502,
-          panY: -4.1678688742897725,
+          panX: 1.373256669915234,
+          panY: -2.3279090931209745,
+        },
+        "minimally-invasive-biological": {
+          scale: 1.1,
+          positionX: 50,
+          positionY: 50,
+          panX: 1.8400435805818813,
+          panY: 1.4720587485987968,
+        },
+        "root-canal": {
+          scale: 1.11,
+          positionX: 50,
+          positionY: 50,
+          panX: 3.6801070646081726,
+          panY: 2.57607295488128,
+        },
+        "oral-surgery": {
+          scale: 1.17,
+          positionX: 50,
+          positionY: 50,
+          panX: -2.9439276888979466,
+          panY: 6.25586126573088,
+        },
+        "oral-appliances": {
+          scale: 1.13,
+          positionX: 50,
+          positionY: 50,
+          panX: -2.9439276888979466,
+          panY: 2.9439276888979466,
         },
       },
     },
@@ -1552,6 +1690,8 @@ const BADGE_DIAMETERS: BadgeDiameter[] = ["small", "medium", "large"];
 const BADGE_ROTATION: BadgeRotationSpeed[] = ["slow", "very-slow"];
 const BADGE_TEXT_COLORS: BadgeTextColor[] = ["inverse", "accent", "muted"];
 const CURSORS: CursorCompanionMode[] = ["off", "subtle"];
+const EDITORIAL_ICONS: EditorialIconId[] = [...EDITORIAL_ICON_IDS];
+const EDITORIAL_COLORS: EditorialIconColor[] = [...EDITORIAL_ICON_COLORS];
 const VIDEO_MODES: VideoMode[] = ["modal", "external", "embed"];
 const PLAY_BUTTONS: PlayButtonStyle[] = ["solid", "outline", "minimal"];
 const VIDEO_CORNERS: VideoCornerAction[] = ["none", "info", "play"];
@@ -1821,6 +1961,282 @@ function parseContainerSurfaceIntensity(
   return next;
 }
 
+export function defaultEditorialIcons(): EditorialIconsExperience {
+  return {
+    color: "primary",
+    size: EDITORIAL_ICON_SIZE_DEFAULT,
+    background: EDITORIAL_ICON_BACKGROUND_DEFAULT,
+  };
+}
+
+export function clampEditorialIconSize(value: unknown): number {
+  return clampNumber(
+    value,
+    EDITORIAL_ICON_SIZE_MIN,
+    EDITORIAL_ICON_SIZE_MAX,
+    EDITORIAL_ICON_SIZE_DEFAULT,
+  );
+}
+
+export function clampEditorialGraphicSize(value: unknown): number {
+  return clampNumber(
+    value,
+    EDITORIAL_GRAPHIC_SIZE_MIN,
+    EDITORIAL_GRAPHIC_SIZE_MAX,
+    EDITORIAL_GRAPHIC_SIZE_DEFAULT,
+  );
+}
+
+function parseEditorialIconItem(input: unknown): EditorialIconItem | null {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    return null;
+  }
+  const record = input as Record<string, unknown>;
+  const next: EditorialIconItem = {};
+  if (isInList(record.icon, EDITORIAL_ICONS)) {
+    next.icon = record.icon;
+  }
+  if (typeof record.assetSrc === "string" && isApprovedIconSrc(record.assetSrc)) {
+    next.assetSrc = record.assetSrc;
+  }
+  if (record.assetColorMode === "currentColor" || record.assetColorMode === "fixed") {
+    next.assetColorMode = record.assetColorMode;
+  }
+  if (isInList(record.color, EDITORIAL_COLORS)) {
+    next.color = record.color;
+  }
+  if (typeof record.size === "number" && Number.isFinite(record.size)) {
+    next.size = clampEditorialIconSize(record.size);
+  }
+  if (isInList(record.background, EDITORIAL_ICON_BACKGROUNDS)) {
+    next.background = record.background;
+  }
+  if (isInList(record.presentationMode, EDITORIAL_PRESENTATION_MODES)) {
+    next.presentationMode = record.presentationMode;
+  }
+  if (typeof record.graphicSize === "number" && Number.isFinite(record.graphicSize)) {
+    next.graphicSize = clampEditorialGraphicSize(record.graphicSize);
+  }
+  if (isInList(record.graphicAlign, EDITORIAL_GRAPHIC_ALIGNS)) {
+    next.graphicAlign = record.graphicAlign;
+  }
+  return Object.keys(next).length > 0 ? next : null;
+}
+
+function parseEditorialIcons(input: unknown): EditorialIconsExperience {
+  const fallback = defaultEditorialIcons();
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    return fallback;
+  }
+  const record = input as Record<string, unknown>;
+  const next: EditorialIconsExperience = {
+    color: isInList(record.color, EDITORIAL_COLORS) ? record.color : fallback.color,
+    size: clampEditorialIconSize(record.size),
+    background: isInList(record.background, EDITORIAL_ICON_BACKGROUNDS)
+      ? record.background
+      : fallback.background,
+  };
+  if (record.items && typeof record.items === "object" && !Array.isArray(record.items)) {
+    const items: Partial<Record<string, EditorialIconItem>> = {};
+    for (const [key, value] of Object.entries(record.items as Record<string, unknown>)) {
+      if (!key) {
+        continue;
+      }
+      const item = parseEditorialIconItem(value);
+      if (item) {
+        items[key] = item;
+      }
+    }
+    if (Object.keys(items).length > 0) {
+      next.items = items;
+    }
+  }
+  return next;
+}
+
+export function resolveEditorialIcon(
+  experience: ExperienceValues,
+  itemKey?: string,
+): {
+  icon: EditorialIconId | undefined;
+  assetSrc: string | undefined;
+  assetColorMode: EditorialIconColorMode;
+  color: EditorialIconColor;
+  size: number;
+  background: EditorialIconBackground;
+  presentationMode: EditorialPresentationMode;
+  graphicSize: number;
+  graphicAlign: EditorialGraphicAlign;
+} {
+  const defaults = experience.editorialIcons;
+  const item = itemKey ? defaults.items?.[itemKey] : undefined;
+  const assetSrc =
+    item?.assetSrc && isApprovedIconSrc(item.assetSrc) ? item.assetSrc : undefined;
+  const presentationMode =
+    item?.presentationMode ?? EDITORIAL_PRESENTATION_DEFAULT;
+  return {
+    icon: item?.icon,
+    assetSrc,
+    assetColorMode:
+      assetSrc && iconKindFromSrc(assetSrc) === "png"
+        ? "fixed"
+        : (item?.assetColorMode ?? "currentColor"),
+    color: item?.color ?? defaults.color,
+    size: item?.size ?? defaults.size,
+    background:
+      presentationMode === "feature-graphic"
+        ? "none"
+        : (item?.background ??
+          defaults.background ??
+          EDITORIAL_ICON_BACKGROUND_DEFAULT),
+    presentationMode,
+    graphicSize: item?.graphicSize ?? EDITORIAL_GRAPHIC_SIZE_DEFAULT,
+    graphicAlign: item?.graphicAlign ?? EDITORIAL_GRAPHIC_ALIGN_DEFAULT,
+  };
+}
+
+export function updateEditorialIconItem(
+  experience: ExperienceValues,
+  itemKey: string,
+  patch: EditorialIconItem,
+): ExperienceValues {
+  const current = experience.editorialIcons;
+  const existing = current.items?.[itemKey] ?? {};
+  const nextItem: EditorialIconItem = { ...existing, ...patch };
+  if (patch.icon === undefined && "icon" in patch) {
+    delete nextItem.icon;
+  }
+  if (patch.assetSrc === undefined && "assetSrc" in patch) {
+    delete nextItem.assetSrc;
+  }
+  if (patch.assetColorMode === undefined && "assetColorMode" in patch) {
+    delete nextItem.assetColorMode;
+  }
+  if (patch.background === undefined && "background" in patch) {
+    delete nextItem.background;
+  }
+  if (patch.presentationMode === undefined && "presentationMode" in patch) {
+    delete nextItem.presentationMode;
+  }
+  if (patch.graphicSize === undefined && "graphicSize" in patch) {
+    delete nextItem.graphicSize;
+  }
+  if (patch.graphicAlign === undefined && "graphicAlign" in patch) {
+    delete nextItem.graphicAlign;
+  }
+  const items = { ...(current.items ?? {}) };
+  const hasValues = Boolean(
+    nextItem.icon ||
+      nextItem.assetSrc ||
+      nextItem.color ||
+      nextItem.size ||
+      nextItem.background ||
+      nextItem.assetColorMode ||
+      nextItem.presentationMode ||
+      nextItem.graphicSize ||
+      nextItem.graphicAlign,
+  );
+  if (!hasValues) {
+    delete items[itemKey];
+  } else {
+    items[itemKey] = nextItem;
+  }
+  return {
+    ...experience,
+    editorialIcons: {
+      color: current.color,
+      size: current.size,
+      ...(current.background ? { background: current.background } : {}),
+      ...(Object.keys(items).length > 0 ? { items } : {}),
+    },
+  };
+}
+
+export function applyEditorialIconItem(
+  target: EditorialIconsExperience,
+  source: EditorialIconsExperience,
+  itemKey: string,
+): EditorialIconsExperience {
+  const items = { ...(target.items ?? {}) };
+  const nextItem = source.items?.[itemKey];
+  if (!nextItem) {
+    delete items[itemKey];
+  } else {
+    items[itemKey] = { ...nextItem };
+  }
+  return {
+    color: target.color,
+    size: target.size,
+    ...(target.background ? { background: target.background } : {}),
+    ...(Object.keys(items).length > 0 ? { items } : {}),
+  };
+}
+
+export function editorialIconCssVars(
+  color: EditorialIconColor,
+  size: number,
+  graphicSize: number = EDITORIAL_GRAPHIC_SIZE_DEFAULT,
+) {
+  return {
+    "--exp-editorial-icon-color": EDITORIAL_ICON_COLOR_CSS[color],
+    "--exp-editorial-icon-size": `${size}px`,
+    "--exp-editorial-graphic-size": `${graphicSize}px`,
+  };
+}
+
+function formatEditorialIconsSource(value: EditorialIconsExperience) {
+  const items = value.items ?? {};
+  const itemKeys = Object.keys(items);
+  return [
+    "  editorialIcons: {",
+    `    color: ${formatLiteral(value.color)},`,
+    `    size: ${formatLiteral(value.size)},`,
+    ...(value.background
+      ? [`    background: ${formatLiteral(value.background)},`]
+      : []),
+    ...(itemKeys.length > 0
+      ? [
+          "    items: {",
+          ...itemKeys.flatMap((key) => {
+            const item = items[key];
+            if (!item) {
+              return [];
+            }
+            return [
+              `      ${formatLiteral(key)}: {`,
+              ...(item.icon ? [`        icon: ${formatLiteral(item.icon)},`] : []),
+              ...(item.assetSrc
+                ? [`        assetSrc: ${formatLiteral(item.assetSrc)},`]
+                : []),
+              ...(item.assetColorMode
+                ? [`        assetColorMode: ${formatLiteral(item.assetColorMode)},`]
+                : []),
+              ...(item.color ? [`        color: ${formatLiteral(item.color)},`] : []),
+              ...(item.size != null ? [`        size: ${formatLiteral(item.size)},`] : []),
+              ...(item.background
+                ? [`        background: ${formatLiteral(item.background)},`]
+                : []),
+              ...(item.presentationMode
+                ? [
+                    `        presentationMode: ${formatLiteral(item.presentationMode)},`,
+                  ]
+                : []),
+              ...(item.graphicSize != null
+                ? [`        graphicSize: ${formatLiteral(item.graphicSize)},`]
+                : []),
+              ...(item.graphicAlign
+                ? [`        graphicAlign: ${formatLiteral(item.graphicAlign)},`]
+                : []),
+              "      },",
+            ];
+          }),
+          "    },",
+        ]
+      : []),
+    "  },",
+  ];
+}
+
 export function parseExperienceValues(input: unknown): ExperienceValues | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     return null;
@@ -1997,6 +2413,7 @@ export function parseExperienceValues(input: unknown): ExperienceValues | null {
       enabled: beforeInput.enabled,
     },
     cursorCompanion: record.cursorCompanion,
+    editorialIcons: parseEditorialIcons(record.editorialIcons),
     components: parseComponents(record.components),
     containerSurfaceIntensity: parseContainerSurfaceIntensity(
       record.containerSurfaceIntensity,
@@ -2219,6 +2636,7 @@ export function formatApprovedExperienceSource(experience: ExperienceValues) {
     `    enabled: ${formatLiteral(value.beforeAfter.enabled)},`,
     "  },",
     `  cursorCompanion: ${formatLiteral(value.cursorCompanion)},`,
+    ...formatEditorialIconsSource(value.editorialIcons),
     ...formatSurfaceIntensitySource(value.containerSurfaceIntensity),
     ...formatScopedColorsSource(value.scopedColors),
     "  components: {",

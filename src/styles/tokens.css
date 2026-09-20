@@ -121,6 +121,8 @@
   --wcda-border: #D3C5BB;
   /* 4% Brand Blue #002774 into --wcda-bg. Glyphs stay #002774 / --color-primary. */
   --wcda-icon-surface: #E2DAD4;
+  /* WCDA Inspired accent. Named cyan for editorial-icon Lab option. Not --color-accent. */
+  --wcda-cyan: #2cb8c6;
   --wcda-placeholder: var(--wcda-surface-strong);
   --wcda-lift: #F2EDE8;
 

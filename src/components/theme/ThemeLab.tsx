@@ -76,6 +76,7 @@ import {
 } from "@/config/theme";
 import {
   ThemeLabContainersPanel,
+  ThemeLabEditorialIconPanel,
   ThemeLabEffectsPanel,
   ThemeLabMediaPanel,
   ThemeLabMotionPanel,
@@ -120,6 +121,7 @@ import {
   editorFamiliesForSelection,
   findElement,
   findElementForPreview,
+  isEditorialCardItem,
   labLabel,
   LAB_MODE_STORAGE_KEY,
   parseLabMode,
@@ -915,10 +917,12 @@ export function ThemeLab() {
   const [unsavedNavOpen, setUnsavedNavOpen] = useState(false);
   const [galleryNonce, setGalleryNonce] = useState(0);
   const [changeImageSignal, setChangeImageSignal] = useState(0);
+  const [changeIconSignal, setChangeIconSignal] = useState(0);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
     media: boolean;
+    icon?: boolean;
     title: string;
     subtitle: string;
   } | null>(null);
@@ -1043,6 +1047,7 @@ export function ThemeLab() {
   const resolvedElement =
     findElement(resolvedSection, editorElementId) ??
     resolvedSection?.elements[0];
+  const editorialCardItem = isEditorialCardItem(resolvedElement);
   const selectedCopyFields = contentFieldsForElement(resolvedElement);
   const copyUnsaved = contentLiveUnsaved(
     selectedCopyFields,
@@ -1083,18 +1088,6 @@ export function ThemeLab() {
       : labMode === "system" && displayedSection === "containers"
         ? "editorial-cards"
         : (resolvedElement?.visualTarget ?? selectedTarget);
-  const displayedSectionStatus =
-    displayedSection === "content"
-      ? contentStatus
-      : displayedSection === "copy"
-        ? copyUnsaved
-          ? "unsaved"
-          : copyReadyToPublish
-            ? "applied-to-custom"
-            : "no-changes"
-      : isLabStagedSection(displayedSection)
-        ? sectionStatuses[displayedSection]
-        : null;
   const elementUnsaved =
     Boolean(resolvedElement?.visualTarget) &&
     !elementSliceEqual(
@@ -1103,6 +1096,33 @@ export function ThemeLab() {
       customExperience,
       resolvedElement?.itemKey,
     );
+  const elementAppliedNotCurrent =
+    Boolean(resolvedElement?.visualTarget) &&
+    !elementUnsaved &&
+    !promoteElementEqual(
+      resolvedElement!.visualTarget as VisualTargetId,
+      customExperience,
+      approvedExperienceBaseline,
+      resolvedElement?.itemKey,
+    );
+  const copyPanelUnsaved = editorialCardItem
+    ? copyUnsaved || elementUnsaved
+    : copyUnsaved;
+  const copyPanelReady = editorialCardItem
+    ? !copyPanelUnsaved && (copyReadyToPublish || elementAppliedNotCurrent)
+    : copyReadyToPublish;
+  const displayedSectionStatus =
+    displayedSection === "content"
+      ? contentStatus
+      : displayedSection === "copy"
+        ? copyPanelUnsaved
+          ? "unsaved"
+          : copyPanelReady
+            ? "applied-to-custom"
+            : "no-changes"
+      : isLabStagedSection(displayedSection)
+        ? sectionStatuses[displayedSection]
+        : null;
   const sectionPublicationUnsaved =
     Boolean(labPage && resolvedSection) &&
     resolvePageSectionFlag(publication, labPage!.id, resolvedSection!.id) !==
@@ -1274,15 +1294,6 @@ export function ThemeLab() {
           displayedSection === "surfaces" ||
           displayedSection === "header" ||
           displayedSection === "footer")));
-  const elementAppliedNotCurrent =
-    Boolean(resolvedElement?.visualTarget) &&
-    !elementUnsaved &&
-    !promoteElementEqual(
-      resolvedElement!.visualTarget as VisualTargetId,
-      customExperience,
-      approvedExperienceBaseline,
-      resolvedElement?.itemKey,
-    );
   const sectionAppliedNotCurrent =
     Boolean(labPage && resolvedSection) &&
     !editorSectionUnsaved &&
@@ -1367,9 +1378,9 @@ export function ThemeLab() {
   );
   const editorScopeState =
     displayedSection === "copy"
-      ? copyUnsaved
+      ? copyPanelUnsaved
         ? copy.unsavedChanges
-        : copyReadyToPublish
+        : copyPanelReady
           ? copy.appliedToCustomNotCurrent
           : copy.current
       : editorElementScope
@@ -1907,7 +1918,28 @@ export function ThemeLab() {
     setStatusError("");
   }
 
+  function applyEditorialCardItemToCustom() {
+    if (copyUnsaved) {
+      applyCopyToCustom();
+    }
+    if (elementUnsaved) {
+      applyElementToCustom();
+    }
+  }
+
   function requestApplyCopy() {
+    if (editorialCardItem) {
+      if (!copyPanelUnsaved) {
+        return;
+      }
+      if (copyUnsaved && contentFieldsNeedWarning(selectedCopyFields)) {
+        setConfirmPath(editorPath);
+        setPendingConfirm("apply-copy-warning");
+        return;
+      }
+      applyEditorialCardItemToCustom();
+      return;
+    }
     if (selectedCopyFields.length === 0 || !copyUnsaved) {
       return;
     }
@@ -1928,6 +1960,15 @@ export function ThemeLab() {
     setStatusError("");
   }
 
+  function resetEditorialCardItem() {
+    if (copyUnsaved) {
+      resetCopyToCustom();
+    }
+    if (elementUnsaved) {
+      resetElementToCustom();
+    }
+  }
+
   function restoreCopyToCurrent() {
     if (selectedCopyFields.length === 0) {
       return;
@@ -1942,6 +1983,15 @@ export function ThemeLab() {
     setSiteContent(clearContentSlice(siteContent, selectedCopyFields));
     setStatusMessage(copy.elementResetMessage);
     setStatusError("");
+  }
+
+  function restoreEditorialCardItemToCurrent() {
+    if (copyReadyToPublish) {
+      restoreCopyToCurrent();
+    }
+    if (elementAppliedNotCurrent) {
+      restoreElementToCurrent();
+    }
   }
 
   function restoreCopyOriginal(ids: readonly ContentFieldId[]) {
@@ -2056,6 +2106,10 @@ export function ThemeLab() {
   }
 
   function applyCurrentScopeToCustom() {
+    if (labMode === "editor" && editorialCardItem) {
+      applyEditorialCardItemToCustom();
+      return;
+    }
     if (labMode === "editor" && selectedCopyFields.length > 0 && copyUnsaved) {
       applyCopyToCustom();
       return;
@@ -2074,6 +2128,10 @@ export function ThemeLab() {
   }
 
   function discardCurrentScope() {
+    if (labMode === "editor" && editorialCardItem) {
+      resetEditorialCardItem();
+      return;
+    }
     if (labMode === "editor" && selectedCopyFields.length > 0 && copyUnsaved) {
       resetCopyToCustom();
       return;
@@ -2254,11 +2312,8 @@ export function ThemeLab() {
       visualTarget: payload.visualTarget,
       itemKey: payload.itemKey,
     });
-    const parent = match?.element.parentId
-      ? findElement(match.section, match.element.parentId)
-      : null;
     const title = labLabel(
-      (parent ?? match?.element)?.label ?? {
+      match?.element?.label ?? {
         en: payload.visualTarget === "header-logo" ? "Header" : "Target",
         es: payload.visualTarget === "header-logo" ? "Encabezado" : "Destino",
       },
@@ -2274,6 +2329,7 @@ export function ThemeLab() {
         window.innerHeight - 280,
       ),
       media: Boolean(payload.media),
+      icon: isEditorialCardItem(match?.element),
       title,
       subtitle: payload.media
         ? language === "es"
@@ -2773,6 +2829,13 @@ export function ThemeLab() {
       setChangeImageSignal((value) => value + 1);
       return;
     }
+    if (action === "change-icon") {
+      setLabSection("copy");
+      setInspectorCollapsed(false);
+      setInspectorDrawerOpen(true);
+      setChangeIconSignal((value) => value + 1);
+      return;
+    }
     if (action === "position" || action === "free-pan") {
       setLabSection(
         resolvedElement?.families.includes("position") ? "position" : "media",
@@ -2800,6 +2863,9 @@ export function ThemeLab() {
       return;
     }
     if (action === "open-inspector") {
+      if (editorialCardItem) {
+        setLabSection("copy");
+      }
       setInspectorCollapsed(false);
       setInspectorDrawerOpen(true);
       return;
@@ -3456,7 +3522,10 @@ export function ThemeLab() {
     else if (pendingConfirm === "promote-section") void promoteSectionToCurrent();
     else if (pendingConfirm === "promote-system") void promoteSystemFamilyToCurrent();
     else if (pendingConfirm === "promote-copy") void publishCopyToCurrent();
-    else if (pendingConfirm === "apply-copy-warning") applyCopyToCustom();
+    else if (pendingConfirm === "apply-copy-warning") {
+      if (editorialCardItem) applyEditorialCardItemToCustom();
+      else applyCopyToCustom();
+    }
     else if (pendingConfirm === "apply-publish-all") void applyAndPublishAll();
     setPendingConfirm(null);
   }
@@ -4507,6 +4576,7 @@ export function ThemeLab() {
               <ThemeLabEffectsPanel
                 experience={experience}
                 selectedTarget={panelTarget}
+                itemKey={resolvedElement?.itemKey}
                 onChange={updateExperience}
                 variant={labMode === "system" ? "system" : "editor"}
               />
@@ -4529,14 +4599,27 @@ export function ThemeLab() {
           ) : null}
 
           {displayedSection === "copy" ? (
-            <ContentEditor
-              fieldIds={selectedCopyFields}
-              working={siteContent}
-              custom={customSiteContent}
-              current={approvedSiteContentBaseline}
-              onChange={updateCopyField}
-              onRestoreOriginal={restoreCopyOriginal}
-            />
+            <>
+              <ContentEditor
+                fieldIds={selectedCopyFields}
+                working={siteContent}
+                custom={customSiteContent}
+                current={approvedSiteContentBaseline}
+                onChange={updateCopyField}
+                onRestoreOriginal={restoreCopyOriginal}
+              />
+              {editorialCardItem && resolvedElement?.itemKey ? (
+                <div className="mt-6">
+                  <ThemeLabEditorialIconPanel
+                    experience={experience}
+                    itemKey={resolvedElement.itemKey}
+                    itemLabel={labLabel(resolvedElement.label, language)}
+                    openSignal={changeIconSignal}
+                    onChange={updateExperience}
+                  />
+                </div>
+              ) : null}
+            </>
           ) : null}
 
           {displayedSection === "approval" ? (
@@ -4731,11 +4814,13 @@ export function ThemeLab() {
             onApplyPublishAll={() => setPendingConfirm("apply-publish-all")}
           />
         ) : labMode === "editor" && displayedSection === "copy" ? (
-          copyUnsaved ? (
+          copyPanelUnsaved ? (
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={resetCopyToCustom}
+                onClick={
+                  editorialCardItem ? resetEditorialCardItem : resetCopyToCustom
+                }
                 className="min-h-11 rounded-md border border-zinc-700 px-2 text-xs text-zinc-200 hover:border-zinc-500"
               >
                 {copy.resetElement}
@@ -4748,18 +4833,29 @@ export function ThemeLab() {
                 {language === "es" ? "Aplicar" : "Apply"}
               </button>
             </div>
-          ) : copyReadyToPublish ? (
+          ) : copyPanelReady ? (
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={restoreCopyToCurrent}
+                onClick={
+                  editorialCardItem
+                    ? restoreEditorialCardItemToCurrent
+                    : restoreCopyToCurrent
+                }
                 className="min-h-11 rounded-md border border-zinc-700 px-2 text-xs text-zinc-200 hover:border-zinc-500"
               >
                 {copy.restoreCurrent}
               </button>
               <button
                 type="button"
-                onClick={() => requestPromote("promote-copy", editorPath)}
+                onClick={() =>
+                  requestPromote(
+                    editorialCardItem && !copyReadyToPublish
+                      ? "promote-element"
+                      : "promote-copy",
+                    editorPath,
+                  )
+                }
                 disabled={saving}
                 className="min-h-11 rounded-md border border-cyan-400 bg-cyan-400/20 px-2 text-xs text-white hover:bg-cyan-400/30 disabled:opacity-60"
               >
@@ -5056,6 +5152,7 @@ export function ThemeLab() {
           title={contextMenu.title}
           subtitle={contextMenu.subtitle}
           media={contextMenu.media}
+          icon={contextMenu.icon}
           onAction={handleContextMenuAction}
           onClose={() => setContextMenu(null)}
         />

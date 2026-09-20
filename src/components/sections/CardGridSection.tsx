@@ -100,6 +100,7 @@ export function CardGridSection({
                   cardClassName,
                 )}
                 data-visual-target={cardTarget}
+                data-lab-item-id={item.id}
                 data-surface-mix={mixSurface || editorialSurface ? "" : undefined}
                 style={
                   mixSurface && surfaceFill
@@ -110,7 +111,7 @@ export function CardGridSection({
                 }
               >
                 <div className="flex min-w-0 items-start gap-3">
-                  <EditorialGlyph index={index} />
+                  <EditorialGlyph index={index} itemKey={item.id} />
                   <div className="min-w-0">
                     <h3 className="text-lg font-semibold tracking-tight text-foreground">
                       {item.title}
@@ -124,7 +125,7 @@ export function CardGridSection({
             );
 
             return (
-              <li key={item.href ?? item.title} className="min-w-0">
+              <li key={item.id ?? item.href ?? item.title} className="min-w-0">
                 {item.href ? (
                   <Link
                     href={item.href}

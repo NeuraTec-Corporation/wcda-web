@@ -4,17 +4,16 @@ import {
   homePatientCta,
   homePractice,
   homeTrust,
-  homeWhyChoose,
 } from "@/data/home";
 import { ExperienceSlot } from "@/components/experience/ExperienceSlot";
 import { ServiceMarquee } from "@/components/experience/ServiceMarquee";
 import { CareAreaGrid } from "@/components/sections/CareAreaGrid";
 import { ContactPreview } from "@/components/sections/ContactPreview";
 import { HomeHero } from "@/components/content/HomeHero";
+import { HomeWhyChoose } from "@/components/content/HomeWhyChoose";
 import { PatientCta } from "@/components/sections/PatientCta";
 import { PracticeIntroduction } from "@/components/sections/PracticeIntroduction";
 import { TrustIntro } from "@/components/sections/TrustIntro";
-import { WhyChoose } from "@/components/sections/WhyChoose";
 import { PublicationGate } from "@/components/content/PublicationGate";
 import { getFeaturedCareAreas } from "@/data/services";
 
@@ -48,7 +47,7 @@ export function HomePage() {
         />
       </PublicationGate>
       <PublicationGate page="home" section="whyChoose">
-        <WhyChoose {...homeWhyChoose} />
+        <HomeWhyChoose />
       </PublicationGate>
       <PublicationGate page="home" section="practice">
         <PracticeIntroduction {...homePractice} />

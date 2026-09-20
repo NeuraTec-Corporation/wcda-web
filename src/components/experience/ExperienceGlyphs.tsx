@@ -86,6 +86,16 @@ export function ShieldGlyph(props: IconProps) {
   );
 }
 
+export function IndependentOwnershipGlyph(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 20V10l8-5 8 5v10" />
+      <path d="M9 20v-7h6v7" />
+      <path d="M4 20h16" />
+    </Svg>
+  );
+}
+
 export function HeartGlyph(props: IconProps) {
   return (
     <Svg {...props}>

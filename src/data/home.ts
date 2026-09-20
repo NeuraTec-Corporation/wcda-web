@@ -55,14 +55,17 @@ export const homeWhyChoose: CardSectionContent = {
     "West Caldwell Dental Arts is independently owned and focused on clear, patient-centered dental care.",
   items: [
     {
+      id: "independent-ownership",
       title: "Independent ownership",
       description: `The practice is owned by ${doctorProfile.displayName}.`,
     },
     {
+      id: "west-caldwell-community",
       title: "West Caldwell community",
       description: `West Caldwell Dental Arts serves patients in ${siteConfig.identity.label}.`,
     },
     {
+      id: "clear-next-steps",
       title: "Clear next steps",
       description:
         "Exam findings and fees are discussed so you can decide how you would like to proceed.",

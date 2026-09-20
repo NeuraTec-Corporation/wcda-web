@@ -1,6 +1,7 @@
 import {
   existsSync,
   mkdirSync,
+  readFileSync,
   readdirSync,
   writeFileSync,
   type Dirent,
@@ -49,6 +50,24 @@ export function publicDirToFs(relativeDir: string) {
 function toPublicSrc(absFile: string) {
   const rel = path.relative(PUBLIC_ROOT, absFile).replaceAll("\\", "/");
   return `/${rel}`;
+}
+
+export function readPublicMediaText(src: string) {
+  if (!isApprovedPublicMediaSrc(src)) {
+    return null;
+  }
+  const abs = path.join(
+    /* turbopackIgnore: true */ PUBLIC_ROOT,
+    src.replace(/^\//, ""),
+  );
+  if (!isPathInsideApprovedRoot(abs) || !existsSync(/* turbopackIgnore: true */ abs)) {
+    return null;
+  }
+  try {
+    return readFileSync(/* turbopackIgnore: true */ abs, "utf8");
+  } catch {
+    return null;
+  }
 }
 
 function isAllowedFile(fileName: string) {
@@ -109,6 +128,9 @@ export function listPublicMediaFiles(
   for (const abs of files) {
     const src = toPublicSrc(abs);
     if (!isApprovedPublicMediaSrc(src)) {
+      continue;
+    }
+    if (src.startsWith("/media/icons/") && relativeDir !== "media/icons") {
       continue;
     }
     assets.push({
