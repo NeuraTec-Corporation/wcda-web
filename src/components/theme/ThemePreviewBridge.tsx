@@ -74,18 +74,24 @@ export function ThemePreviewBridge() {
       const media = icon ? null : node.closest("[data-lab-media]");
       const item = node.closest("[data-lab-item-id]");
       const visual = node.closest("[data-visual-target]");
+      const contentTarget = node.closest("[data-content-target]");
+      const contentScope = node.closest("[data-content-scope]");
       const section = node.closest("[data-lab-page-id][data-lab-section-id]");
-      if (!visual && !section && !item) {
+      if (!visual && !section && !item && !contentTarget && !contentScope) {
         return null;
       }
       const visualEl = visual as HTMLElement | null;
       const itemEl = item as HTMLElement | null;
       const sectionEl = section as HTMLElement | null;
+      const contentTargetEl = contentTarget as HTMLElement | null;
+      const contentScopeEl = contentScope as HTMLElement | null;
       return {
         visualTarget: visualEl?.dataset.visualTarget,
         itemKey: itemEl?.dataset.labItemId,
         pageId: sectionEl?.dataset.labPageId,
         sectionId: sectionEl?.dataset.labSectionId,
+        contentTarget: contentTargetEl?.dataset.contentTarget,
+        contentScope: contentScopeEl?.dataset.contentScope,
         media: Boolean(!icon && (media || node.closest("img, .exp-media"))),
       };
     }
@@ -105,6 +111,8 @@ export function ThemePreviewBridge() {
           sectionId: target.sectionId,
           visualTarget: target.visualTarget,
           itemKey: target.itemKey,
+          contentTarget: target.contentTarget,
+          contentScope: target.contentScope,
           media: target.media,
         },
         window.location.origin,

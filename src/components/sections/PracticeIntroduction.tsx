@@ -27,7 +27,7 @@ export function PracticeIntroduction({
     <Section tone="muted" aria-labelledby={headingId}>
       <Container>
         <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,24rem)] lg:gap-16">
-          <div className="min-w-0">
+          <div className="min-w-0" data-content-scope="home.practice">
             <SectionHeading
               as="h2"
               id={headingId}
@@ -35,9 +35,11 @@ export function PracticeIntroduction({
               title={title}
               description={description}
               measure="column"
+              eyebrowContentTarget="home.practice.eyebrow"
+              titleContentTarget="home.practice.title"
             />
             {paragraphs && paragraphs.length > 0 ? (
-              <Prose className="mt-stack">
+              <Prose className="mt-stack" contentTarget="home.practice.body">
                 {paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -63,7 +65,12 @@ export function PracticeIntroduction({
                 </dl>
               </Card>
             ) : null}
-            {cta ? <ActionRow primary={cta} /> : null}
+            {cta ? (
+              <ActionRow
+                primary={cta}
+                primaryContentTarget="home.practice.cta"
+              />
+            ) : null}
           </div>
           {mediaKey ? (
             <ComposerStage

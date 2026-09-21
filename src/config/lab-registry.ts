@@ -9,6 +9,7 @@ import type { PreviewPagePath } from "@/config/theme";
 import {
   CONTENT_ELEMENT_FIELDS,
   HOME_HERO_FIELD_IDS,
+  HOME_PRACTICE_FIELD_IDS,
   HOME_WHY_CHOOSE_FIELDS,
   isHomeWhyChooseItemKey,
   type ContentElementId,
@@ -81,11 +82,12 @@ const SECTION_ELEMENT: LabElementDef = {
 function copyTarget(
   id: ContentElementId,
   label: LabBi,
+  parentId: LabEditorElementId = "home-hero-content",
 ): LabElementDef {
   return {
     id,
     contentFields: CONTENT_ELEMENT_FIELDS[id],
-    parentId: "home-hero-content",
+    parentId,
     label,
     families: ["copy"],
     publication: false,
@@ -240,6 +242,21 @@ export const labPages: readonly LabPageDef[] = [
     careAreas: careCardElements("home-care-areas", getFeaturedCareAreas()),
     whyChoose: whyChooseCardElements(),
     practice: [
+      {
+        id: "home-practice-content",
+        contentFields: HOME_PRACTICE_FIELD_IDS,
+        label: {
+          en: "Practice owner copy",
+          es: "Texto del titular",
+        },
+        families: ["copy"],
+        publication: false,
+        scope: "element",
+      },
+      copyTarget("home-practice-eyebrow", { en: "Eyebrow", es: "Antetítulo" }, "home-practice-content"),
+      copyTarget("home-practice-title", { en: "Title", es: "Título" }, "home-practice-content"),
+      copyTarget("home-practice-body", { en: "Body", es: "Cuerpo" }, "home-practice-content"),
+      copyTarget("home-practice-cta", { en: "CTA label", es: "Etiqueta del CTA" }, "home-practice-content"),
       visual("home-doctor-media", { en: "Dr. Matute Media", es: "Media del Dr. Matute" }, MEDIA_CONTAINER),
       {
         id: "home-practice-badge" as LabEditorElementId,
@@ -424,6 +441,8 @@ export function findElementForPreview(args: {
   sectionId?: string;
   visualTarget?: string;
   itemKey?: string;
+  contentTarget?: string;
+  contentScope?: string;
 }) {
   const pages = args.pageId
     ? labPages.filter((page) => page.id === args.pageId)
@@ -433,6 +452,33 @@ export function findElementForPreview(args: {
       ? page.sections.filter((section) => section.id === args.sectionId)
       : page.sections;
     for (const section of sections) {
+      if (args.contentTarget && !args.visualTarget) {
+        const matches = section.elements.filter((element) =>
+          element.contentFields?.includes(args.contentTarget as ContentFieldId),
+        );
+        if (matches.length > 0) {
+          const match = [...matches].sort(
+            (left, right) =>
+              (left.contentFields?.length ?? 99) -
+              (right.contentFields?.length ?? 99),
+          )[0];
+          return { page, section, element: match };
+        }
+      }
+      if (args.contentScope && !args.visualTarget) {
+        const scopeId =
+          args.contentScope === "home.practice"
+            ? "home-practice-content"
+            : args.contentScope === "home.hero"
+              ? "home-hero-content"
+              : undefined;
+        const match = scopeId
+          ? section.elements.find((element) => element.id === scopeId)
+          : undefined;
+        if (match) {
+          return { page, section, element: match };
+        }
+      }
       if (args.itemKey && args.visualTarget) {
         const match = section.elements.find(
           (element) =>
@@ -458,7 +504,7 @@ export function findElementForPreview(args: {
           return { page, section, element: any };
         }
       }
-      if (args.sectionId && !args.visualTarget) {
+      if (args.sectionId && !args.visualTarget && !args.contentTarget && !args.contentScope) {
         const sectionElement = section.elements.find((item) => item.id === "section");
         if (sectionElement) {
           return { page, section, element: sectionElement };

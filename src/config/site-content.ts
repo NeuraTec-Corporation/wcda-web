@@ -1,5 +1,9 @@
-import { homeHero, homeWhyChoose } from "@/data/home";
-import type { CardSectionContent, HeroContent } from "@/types/content";
+import { homeHero, homePractice, homeWhyChoose } from "@/data/home";
+import type {
+  CardSectionContent,
+  HeroContent,
+  ProfileIntroductionContent,
+} from "@/types/content";
 
 type LabBi = { en: string; es: string };
 
@@ -28,6 +32,10 @@ export const CONTENT_FIELD_IDS = [
   "home.whyChoose.westCaldwellCommunity.description",
   "home.whyChoose.clearNextSteps.title",
   "home.whyChoose.clearNextSteps.description",
+  "home.practice.eyebrow",
+  "home.practice.title",
+  "home.practice.body",
+  "home.practice.cta",
 ] as const;
 
 export type ContentFieldId = (typeof CONTENT_FIELD_IDS)[number];
@@ -77,12 +85,24 @@ export function isHomeWhyChooseItemKey(
   );
 }
 
+export const HOME_PRACTICE_FIELD_IDS = [
+  "home.practice.eyebrow",
+  "home.practice.title",
+  "home.practice.body",
+  "home.practice.cta",
+] as const satisfies readonly ContentFieldId[];
+
 export const CONTENT_ELEMENT_IDS = [
   "home-hero-heading",
   "home-hero-description",
   "home-hero-primary-cta",
   "home-hero-secondary-cta",
   "home-hero-pillars",
+  "home-practice-content",
+  "home-practice-eyebrow",
+  "home-practice-title",
+  "home-practice-body",
+  "home-practice-cta",
 ] as const;
 
 export type ContentElementId = (typeof CONTENT_ELEMENT_IDS)[number];
@@ -301,6 +321,70 @@ export const contentFieldSchema: Record<ContentFieldId, ContentFieldSchema> = {
     semanticRole: "paragraph",
     recommendedMax: 220,
   },
+  "home.practice.eyebrow": {
+    id: "home.practice.eyebrow",
+    scope: "element",
+    field: "eyebrow",
+    type: "text",
+    label: { en: "Eyebrow", es: "Antetítulo" },
+    governance: "editable",
+    multiline: false,
+    linkAllowed: false,
+    semanticRole: "label",
+    recommendedMax: 32,
+    guidance: {
+      en: "Short label above the Practice owner heading. Home only.",
+      es: "Etiqueta corta sobre el título del titular. Solo Inicio.",
+    },
+  },
+  "home.practice.title": {
+    id: "home.practice.title",
+    scope: "element",
+    field: "title",
+    type: "text",
+    label: { en: "Title", es: "Título" },
+    governance: "editable",
+    multiline: false,
+    linkAllowed: false,
+    semanticRole: "heading",
+    recommendedMax: 64,
+    guidance: {
+      en: "Practice owner heading on Home only. Other pages keep their own titles.",
+      es: "Título del titular solo en Inicio. Las demás páginas conservan el suyo.",
+    },
+  },
+  "home.practice.body": {
+    id: "home.practice.body",
+    scope: "element",
+    field: "paragraphs",
+    type: "multiline",
+    label: { en: "Body", es: "Cuerpo" },
+    governance: "editable",
+    multiline: true,
+    linkAllowed: false,
+    semanticRole: "paragraph",
+    recommendedMax: 700,
+    guidance: {
+      en: "Home Practice owner body. A blank line keeps the two existing paragraphs separate.",
+      es: "Cuerpo del titular en Inicio. Una línea en blanco mantiene los dos párrafos.",
+    },
+  },
+  "home.practice.cta": {
+    id: "home.practice.cta",
+    scope: "element",
+    field: "cta.label",
+    type: "cta-label",
+    label: { en: "CTA label", es: "Etiqueta del CTA" },
+    governance: "editable",
+    multiline: false,
+    linkAllowed: false,
+    semanticRole: "cta",
+    recommendedMax: 32,
+    guidance: {
+      en: "Button label only. The destination stays the approved Dr. Matute profile route.",
+      es: "Solo la etiqueta del botón. El destino sigue siendo la ficha del Dr. Matute.",
+    },
+  },
 };
 
 export const CONTENT_ELEMENT_FIELDS: Record<
@@ -316,6 +400,11 @@ export const CONTENT_ELEMENT_FIELDS: Record<
     "home.hero.pillar2",
     "home.hero.pillar3",
   ],
+  "home-practice-content": HOME_PRACTICE_FIELD_IDS,
+  "home-practice-eyebrow": ["home.practice.eyebrow"],
+  "home-practice-title": ["home.practice.title"],
+  "home-practice-body": ["home.practice.body"],
+  "home-practice-cta": ["home.practice.cta"],
 };
 
 export function isContentFieldId(value: string): value is ContentFieldId {
@@ -358,6 +447,14 @@ export function defaultContentValue(id: ContentFieldId): string {
       return homeWhyChoose.items[2]?.title ?? "";
     case "home.whyChoose.clearNextSteps.description":
       return homeWhyChoose.items[2]?.description ?? "";
+    case "home.practice.eyebrow":
+      return homePractice.eyebrow ?? "";
+    case "home.practice.title":
+      return homePractice.title;
+    case "home.practice.body":
+      return practiceBodyFromParagraphs(homePractice.paragraphs ?? []);
+    case "home.practice.cta":
+      return homePractice.cta?.label ?? "";
   }
 }
 
@@ -610,6 +707,46 @@ export function resolveHomeWhyChoose(
   };
 }
 
+export function practiceBodyFromParagraphs(paragraphs: readonly string[]) {
+  return paragraphs.join("\n\n");
+}
+
+export function paragraphsFromPracticeBody(body: string) {
+  const parts = body
+    .split(/\n\s*\n/)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0);
+  if (parts.length > 0) {
+    return parts;
+  }
+  const trimmed = body.trim();
+  return trimmed ? [trimmed] : [...(homePractice.paragraphs ?? [])];
+}
+
+export function resolveHomePractice(
+  patch: SiteContentPatch = {},
+): ProfileIntroductionContent {
+  const eyebrow = resolveContentValue("home.practice.eyebrow", patch);
+  const title = resolveContentValue("home.practice.title", patch);
+  const body = resolveContentValue("home.practice.body", patch);
+  const ctaLabel = resolveContentValue("home.practice.cta", patch);
+  const paragraphs = paragraphsFromPracticeBody(body);
+
+  return {
+    ...homePractice,
+    eyebrow: eyebrow || homePractice.eyebrow,
+    title: title || homePractice.title,
+    paragraphs:
+      paragraphs.length > 0 ? paragraphs : homePractice.paragraphs,
+    cta: homePractice.cta
+      ? {
+          ...homePractice.cta,
+          label: ctaLabel || homePractice.cta.label,
+        }
+      : undefined,
+  };
+}
+
 export function listPendingContentScopes(
   custom: SiteContentPatch,
   current: SiteContentPatch,
@@ -679,6 +816,17 @@ export function listPendingContentScopes(
       sectionId: "whyChoose",
       elementId: "home-why-card/clear-next-steps",
     },
+    {
+      id: "copy:home.practice",
+      ids: HOME_PRACTICE_FIELD_IDS,
+      path: {
+        en: "Home / Practice owner / Practice owner copy",
+        es: "Inicio / Titular del consultorio / Texto del titular",
+      },
+      pageId: "home",
+      sectionId: "practice",
+      elementId: "home-practice-content",
+    },
   ];
   for (const group of groups) {
     if (contentLiveUnsaved(group.ids, custom, current, fallback)) {
@@ -695,5 +843,6 @@ export const approvedSiteContent: SiteContentPatch = {
   "home.hero.heading": "Thoughtful dentistry Personal care",
   "home.hero.pillar1": "Prevent •",
   "home.hero.pillar2": "Treat •",
+  "home.practice.body": "Dr. Jonnathan Matute is a dedicated general dentist committed to high-quality, patient-centered care. He earned his Doctor of Dental Medicine from Rutgers School of Dental Medicine in 2020 and completed a General Practice Residency at Mountainside Hospital in Montclair, NJ. Born in Ecuador, he moved to the U.S. in 2010 and earned his Bachelor's in Biology from Kean University. Dr. Matute has advanced training in implant dentistry, clear aligner therapy, and esthetic dentistry, and has served in leadership roles as primary dentist and managing doctor. He gives back through annual dental outreach in the Dominican Republic and serves as a Board Member of World of Smiles and with the New York Academy of Dentistry. His combination of clinical excellence, leadership, and genuine care makes him a trusted provider in the community.",
 };
 /* WCDA_APPROVED_SITE_CONTENT_END */

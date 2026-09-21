@@ -29,8 +29,11 @@ import {
   contentAppliedNotCurrent,
   contentLiveUnsaved,
   dirtyContentFieldIds,
+  HOME_PRACTICE_FIELD_IDS,
   listPendingContentScopes,
   pickSiteContentPatch,
+  resolveHomePractice,
+  resolveHomeWhyChoose,
 } from "@/config/site-content";
 import { applyElementSlice } from "@/config/lab-section-state";
 import {
@@ -652,6 +655,56 @@ function run() {
     JSON.stringify(currentExp.scopedColors)
   ) {
     fail("badge graphicSize apply mutated scopedColors");
+  }
+
+  const practiceBaseline = resolveHomePractice(currentContent);
+  const practiceWorking = { "home.practice.title": "Temp practice title" };
+  const practiceDirty = dirtyContentFieldIds(
+    CONTENT_FIELD_IDS,
+    practiceWorking,
+    currentContent,
+    currentContent,
+  );
+  if (
+    practiceDirty.length !== 1 ||
+    practiceDirty[0] !== "home.practice.title"
+  ) {
+    fail("practice title overlay leaked into other content fields");
+  }
+  if (resolveHomePractice(practiceWorking).title !== "Temp practice title") {
+    fail("practice title overlay was not applied");
+  }
+  if (resolveHomePractice(practiceWorking).eyebrow !== practiceBaseline.eyebrow) {
+    fail("practice title overlay changed eyebrow");
+  }
+  if (
+    JSON.stringify(resolveHomePractice(practiceWorking).paragraphs) !==
+    JSON.stringify(practiceBaseline.paragraphs)
+  ) {
+    fail("practice title overlay changed body paragraphs");
+  }
+  const practiceApplied = applyContentSlice(
+    currentContent,
+    practiceWorking,
+    HOME_PRACTICE_FIELD_IDS,
+    currentContent,
+  );
+  if (practiceApplied["home.hero.heading"] !== currentContent["home.hero.heading"]) {
+    fail("practice apply mutated hero content");
+  }
+  if (
+    resolveHomeWhyChoose(practiceApplied).items[0]?.title !==
+    resolveHomeWhyChoose(currentContent).items[0]?.title
+  ) {
+    fail("practice apply mutated why-choose copy");
+  }
+  const practicePending = listPendingContentScopes(
+    practiceWorking,
+    currentContent,
+    currentContent,
+  );
+  if (!practicePending.some((item) => item.id === "copy:home.practice")) {
+    fail("practice working overlay must report Content unsaved");
   }
 
   console.log("lab scoped merge selftest: pass");

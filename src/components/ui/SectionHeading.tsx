@@ -17,6 +17,7 @@ type SectionHeadingProps = {
   align?: HeadingAlign;
   measure?: "narrow" | "column";
   className?: string;
+  eyebrowContentTarget?: string;
   titleContentTarget?: string;
   descriptionContentTarget?: string;
 };
@@ -30,6 +31,7 @@ export function SectionHeading({
   align = "start",
   measure = "narrow",
   className,
+  eyebrowContentTarget,
   titleContentTarget,
   descriptionContentTarget,
 }: SectionHeadingProps) {
@@ -43,7 +45,10 @@ export function SectionHeading({
       )}
     >
       {eyebrow ? (
-        <p className="uppercase text-accent text-[length:var(--theme-eyebrow-size)] font-[var(--theme-eyebrow-weight)] tracking-[var(--theme-eyebrow-tracking)]">
+        <p
+          className="uppercase text-accent text-[length:var(--theme-eyebrow-size)] font-[var(--theme-eyebrow-weight)] tracking-[var(--theme-eyebrow-tracking)]"
+          data-content-target={eyebrowContentTarget}
+        >
           {eyebrow}
         </p>
       ) : null}

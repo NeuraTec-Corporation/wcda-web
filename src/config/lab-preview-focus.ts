@@ -79,6 +79,9 @@ function contentSelectorFor(elementId: string) {
   if (elementId === "home-hero-content") {
     return '[data-content-scope="home.hero"]';
   }
+  if (elementId === "home-practice-content") {
+    return '[data-content-scope="home.practice"]';
+  }
   if (elementId === "home-hero-pillars") {
     return '[data-content-target="home.hero.pillars"]';
   }

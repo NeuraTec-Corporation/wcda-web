@@ -2303,6 +2303,8 @@ export function ThemeLab() {
     sectionId?: string;
     visualTarget?: string;
     itemKey?: string;
+    contentTarget?: string;
+    contentScope?: string;
   }) {
     if (payload.kind !== "contextmenu") {
       return;
@@ -2314,6 +2316,8 @@ export function ThemeLab() {
       sectionId: payload.sectionId,
       visualTarget: payload.visualTarget,
       itemKey: payload.itemKey,
+      contentTarget: payload.contentTarget,
+      contentScope: payload.contentScope,
     });
     const title = labLabel(
       match?.element?.label ?? {
@@ -2353,6 +2357,8 @@ export function ThemeLab() {
     itemKey?: string;
     pageId?: string;
     sectionId?: string;
+    contentTarget?: string;
+    contentScope?: string;
     media?: boolean;
     kind?: string;
     clientX?: number;
@@ -2382,6 +2388,8 @@ export function ThemeLab() {
       sectionId: payload.sectionId,
       visualTarget: payload.visualTarget,
       itemKey: payload.itemKey,
+      contentTarget: payload.contentTarget,
+      contentScope: payload.contentScope,
     });
     if (!match) {
       if (payload.sectionId && payload.pageId) {
