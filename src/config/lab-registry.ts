@@ -1,7 +1,10 @@
 import type { LabLanguage } from "@/config/lab-ui";
 import type { ContentPageId } from "@/config/content-publication";
 import { contentPages } from "@/config/publication-catalog";
-import type { VisualTargetId } from "@/config/experience";
+import {
+  HOME_PRACTICE_BADGE_CENTER_KEY,
+  type VisualTargetId,
+} from "@/config/experience";
 import type { PreviewPagePath } from "@/config/theme";
 import {
   CONTENT_ELEMENT_FIELDS,
@@ -236,7 +239,30 @@ export const labPages: readonly LabPageDef[] = [
     marquee: [visual("home-marquee", { en: "Services Marquee", es: "Marquee de servicios" }, MARQUEE_EFFECTS)],
     careAreas: careCardElements("home-care-areas", getFeaturedCareAreas()),
     whyChoose: whyChooseCardElements(),
-    practice: [visual("home-doctor-media", { en: "Dr. Matute Media", es: "Media del Dr. Matute" }, MEDIA_CONTAINER)],
+    practice: [
+      visual("home-doctor-media", { en: "Dr. Matute Media", es: "Media del Dr. Matute" }, MEDIA_CONTAINER),
+      {
+        id: "home-practice-badge" as LabEditorElementId,
+        parentId: "home-doctor-media",
+        label: {
+          en: "Free Exam & X-Ray Badge",
+          es: "Insignia de examen y radiografía gratis",
+        },
+        families: [],
+        publication: false,
+        scope: "element",
+      },
+      {
+        id: "home-practice-badge/center" as LabEditorElementId,
+        visualTarget: "editorial-cards",
+        parentId: "home-practice-badge" as LabEditorElementId,
+        itemKey: HOME_PRACTICE_BADGE_CENTER_KEY,
+        label: { en: "Center Graphic", es: "Gráfico central" },
+        families: ["copy", "effects"],
+        publication: false,
+        scope: "element",
+      },
+    ],
     patientCta: [visual("home-cta", { en: "Primary CTA", es: "CTA primario" }, CTA_CONTAINER)],
   }),
   pageDef("about", {
@@ -369,7 +395,7 @@ export function editorFamiliesForSelection(
   const families = EDITOR_FAMILIES.filter((family) =>
     element.families.includes(family),
   );
-  if (isEditorialCardItem(element)) {
+  if (isLabIconItem(element)) {
     return ["copy", "tools"];
   }
   if (
@@ -460,6 +486,17 @@ export function isEditorialCardItem(element?: LabElementDef) {
       element.itemKey &&
       (element.contentFields?.length ?? 0) > 0,
   );
+}
+
+export function isPracticeBadgeCenterItem(element?: LabElementDef) {
+  return (
+    element?.visualTarget === "editorial-cards" &&
+    element.itemKey === HOME_PRACTICE_BADGE_CENTER_KEY
+  );
+}
+
+export function isLabIconItem(element?: LabElementDef) {
+  return isEditorialCardItem(element) || isPracticeBadgeCenterItem(element);
 }
 
 export function rootElementsForSection(section: LabPageSectionDef) {

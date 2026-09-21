@@ -832,6 +832,56 @@ html[data-exp-marquee-pause="true"] .exp-marquee:hover .exp-marquee-track,
 .exp-rotating-badge-ring {
   animation: exp-badge-spin var(--exp-badge-spin, 28s) linear infinite;
   transform-origin: 50% 50%;
+  pointer-events: none;
+}
+
+.exp-rotating-badge [data-lab-icon] {
+  pointer-events: auto;
+}
+
+.exp-badge-center-preview {
+  position: relative;
+  overflow: hidden;
+}
+
+.exp-badge-center-preview-well {
+  width: 42%;
+  height: 42%;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+}
+
+.exp-badge-center-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  display: grid;
+  width: var(--exp-badge-center-graphic-size, 32%);
+  height: var(--exp-badge-center-graphic-size, 32%);
+  transform: translate(-50%, -50%);
+  place-items: center;
+  box-sizing: border-box;
+  background-color: transparent;
+  pointer-events: auto;
+}
+
+.exp-badge-center-overlay[data-scoped-fill="1"] {
+  background-color: transparent;
+}
+
+.exp-rotating-badge .exp-badge-center-overlay .editorial-icon-asset,
+.exp-rotating-badge .exp-badge-center-overlay .editorial-icon-asset-fixed,
+.exp-rotating-badge .exp-badge-center-overlay .exp-badge-center-asset,
+.exp-badge-center-preview .exp-badge-center-overlay .editorial-icon-asset,
+.exp-badge-center-preview .exp-badge-center-overlay .editorial-icon-asset-fixed,
+.exp-badge-center-preview .exp-badge-center-overlay .exp-badge-center-asset {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .exp-rotating-badge[data-badge-dir="right"] .exp-rotating-badge-ring {

@@ -133,6 +133,7 @@ export const EDITORIAL_GRAPHIC_ALIGN_DEFAULT: EditorialGraphicAlign = "center";
 export const EDITORIAL_GRAPHIC_SIZE_MIN = 48;
 export const EDITORIAL_GRAPHIC_SIZE_MAX = 96;
 export const EDITORIAL_GRAPHIC_SIZE_DEFAULT = 88;
+export const HOME_PRACTICE_BADGE_CENTER_KEY = "home-practice-badge-center";
 export const EDITORIAL_ICON_COLOR_CSS: Record<EditorialIconColor, string> = {
   primary: "var(--color-primary)",
   cyan: "var(--wcda-cyan)",
@@ -1245,7 +1246,7 @@ export const approvedExperience: ExperienceValues = {
     radius: 8,
     overlay: "none",
   },
-  containerPreset: "clean",
+  containerPreset: "media-card-modern",
   motion: {
     entrance: "none",
     duration: "medium",
@@ -1307,7 +1308,7 @@ export const approvedExperience: ExperienceValues = {
   cursorCompanion: "subtle",
   editorialIcons: {
     color: "primary",
-    size: 26,
+    size: 16,
     background: "none",
     items: {
       "independent-ownership": {
@@ -1326,6 +1327,11 @@ export const approvedExperience: ExperienceValues = {
         assetSrc: "/media/icons/wcda-01-04-a.png",
         assetColorMode: "fixed",
         presentationMode: "feature-graphic",
+      },
+      "home-practice-badge-center": {
+        assetSrc: "/media/icons/wcda-01-05.png",
+        assetColorMode: "fixed",
+        graphicSize: 77,
       },
     },
   },
@@ -1382,6 +1388,7 @@ export const approvedExperience: ExperienceValues = {
       "editorial-cards": "#F1F0EF",
       "about-content": "#F1F0EF",
       "patients-resource-cards": "#F1F0EF",
+      "editorial-cards__home-practice-badge-center": "#3B568D",
     },
   },
   components: {
@@ -1446,10 +1453,10 @@ export const approvedExperience: ExperienceValues = {
         "restorative": "/media/services/restorative/wcda-category-hero-05.png",
         "dental-implants": "/media/services/dental-implants/wcda-category-hero-08.png",
         "periodontal": "/media/services/periodontal/wcda-category-hero-09.png",
-        "minimally-invasive-biological": "/media/services/minimally-invasive-biological/wcda-category-hero21.png",
         "root-canal": "/media/services/root-canal/wcda-category-hero-11.png",
         "oral-surgery": "/media/services/oral-surgery/wcda-category-hero-12.png",
         "oral-appliances": "/media/services/oral-appliances/wcda-category-hero-15.png",
+        "minimally-invasive-biological": "/media/services/minimally-invasive-biological/wcda-category-hero21.png",
       },
       itemMedia: {
         "preventive-general": {
@@ -1494,13 +1501,6 @@ export const approvedExperience: ExperienceValues = {
           panX: 1.373256669915234,
           panY: -2.3279090931209745,
         },
-        "minimally-invasive-biological": {
-          scale: 1.1,
-          positionX: 50,
-          positionY: 50,
-          panX: 1.8400435805818813,
-          panY: 1.4720587485987968,
-        },
         "root-canal": {
           scale: 1.11,
           positionX: 50,
@@ -1521,6 +1521,13 @@ export const approvedExperience: ExperienceValues = {
           positionY: 50,
           panX: -2.9439276888979466,
           panY: 2.9439276888979466,
+        },
+        "minimally-invasive-biological": {
+          scale: 1.1,
+          positionX: 50,
+          positionY: 50,
+          panX: 1.8400435805818813,
+          panY: 1.4720587485987968,
         },
       },
     },
@@ -1603,13 +1610,13 @@ export const approvedExperience: ExperienceValues = {
       previewBackground: "auto",
       alignment: "left",
       itemAssets: {
-        "periodontal": "/media/services/periodontal/ChatGPT-Image-Sep-7-2026-04_33_29-PM.png",
-        "clear-aligners": "/media/services/clear-aligners/ChatGPT Image Sep 7, 2026, 05_04_09 PM.png",
-        "dental-implants": "/media/services/dental-implants/wcda-category-hero.png",
-        "restorative": "/media/services/restorative/wcda-category-hero.png",
-        "cosmetic": "/media/services/cosmetic/wcda-category-hero.png",
-        "family-children": "/media/services/family-children/wcda-category-hero.png",
         "preventive-general": "wcda-category-hero-preventive-general",
+        "family-children": "/media/services/family-children/wcda-category-hero.png",
+        "cosmetic": "/media/services/cosmetic/wcda-category-hero.png",
+        "restorative": "/media/services/restorative/wcda-category-hero.png",
+        "dental-implants": "/media/services/dental-implants/wcda-category-hero.png",
+        "clear-aligners": "/media/services/clear-aligners/ChatGPT Image Sep 7, 2026, 05_04_09 PM.png",
+        "periodontal": "/media/services/periodontal/ChatGPT-Image-Sep-7-2026-04_33_29-PM.png",
       },
     },
     "services.treatments": {
@@ -1984,6 +1991,42 @@ export function clampEditorialGraphicSize(value: unknown): number {
     EDITORIAL_GRAPHIC_SIZE_MIN,
     EDITORIAL_GRAPHIC_SIZE_MAX,
     EDITORIAL_GRAPHIC_SIZE_DEFAULT,
+  );
+}
+
+export const BADGE_CENTER_GRAPHIC_FILL_MIN = 22;
+export const BADGE_CENTER_GRAPHIC_FILL_MAX = 68;
+export const BADGE_CENTER_GRAPHIC_FILL_UNSET = 32;
+
+export function badgeCenterGraphicFillPercent(graphicSize?: number) {
+  if (typeof graphicSize !== "number" || !Number.isFinite(graphicSize)) {
+    return BADGE_CENTER_GRAPHIC_FILL_UNSET;
+  }
+  const clamped = clampEditorialGraphicSize(graphicSize);
+  const t =
+    (clamped - EDITORIAL_GRAPHIC_SIZE_MIN) /
+    (EDITORIAL_GRAPHIC_SIZE_MAX - EDITORIAL_GRAPHIC_SIZE_MIN);
+  return Math.round(
+    BADGE_CENTER_GRAPHIC_FILL_MIN +
+      t * (BADGE_CENTER_GRAPHIC_FILL_MAX - BADGE_CENTER_GRAPHIC_FILL_MIN),
+  );
+}
+
+export function graphicSizeFromBadgeCenterFillPercent(percent: number) {
+  const clampedPercent = clampNumber(
+    percent,
+    BADGE_CENTER_GRAPHIC_FILL_MIN,
+    BADGE_CENTER_GRAPHIC_FILL_MAX,
+    BADGE_CENTER_GRAPHIC_FILL_MAX,
+  );
+  const t =
+    (clampedPercent - BADGE_CENTER_GRAPHIC_FILL_MIN) /
+    (BADGE_CENTER_GRAPHIC_FILL_MAX - BADGE_CENTER_GRAPHIC_FILL_MIN);
+  return clampEditorialGraphicSize(
+    Math.round(
+      EDITORIAL_GRAPHIC_SIZE_MIN +
+        t * (EDITORIAL_GRAPHIC_SIZE_MAX - EDITORIAL_GRAPHIC_SIZE_MIN),
+    ),
   );
 }
 

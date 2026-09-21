@@ -286,7 +286,7 @@ export const themePresets: Record<
 };
 
 /* WCDA_APPROVED_THEME_START */
-export const approvedThemeVersion = "2026.09.20-05";
+export const approvedThemeVersion = "2026.09.20-20";
 export const approvedTheme: ThemeValues = {
   primary: "#002774",
   secondary: "#3B568D",

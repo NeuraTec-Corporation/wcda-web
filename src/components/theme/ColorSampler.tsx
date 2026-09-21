@@ -102,7 +102,9 @@ export function ColorSampler({
         ? "PAGE"
         : target.kind === "section"
           ? "SECTION"
-          : "ELEMENT / CONTAINER";
+          : target.itemKey
+            ? "ELEMENT INSTANCE"
+            : "FAMILY";
   const statusLabel =
     status === "unsaved"
       ? labText({ en: "Unsaved", es: "Sin guardar" }, language)

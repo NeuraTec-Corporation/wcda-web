@@ -12,7 +12,9 @@ import type {
   BadgeIconId,
   CornerActionPosition,
   ExperienceValues,
+  VisualTargetId,
 } from "@/config/experience";
+import type { LabIconColorMode } from "@/config/lab-icon-library";
 
 type IntegratedCutoutProps = {
   children: ReactNode;
@@ -24,6 +26,11 @@ type IntegratedCutoutProps = {
   icon?: BadgeIconId;
   circleSize?: number;
   className?: string;
+  labItemKey?: string;
+  labVisualTarget?: VisualTargetId;
+  centerAssetSrc?: string;
+  centerAssetColorMode?: LabIconColorMode;
+  centerGraphicSize?: number;
 };
 
 const CutoutAppliedContext = createContext(false);
@@ -38,6 +45,11 @@ export function IntegratedCutout({
   icon,
   circleSize = 96,
   className,
+  labItemKey,
+  labVisualTarget,
+  centerAssetSrc,
+  centerAssetColorMode,
+  centerGraphicSize,
 }: IntegratedCutoutProps) {
   const nested = useContext(CutoutAppliedContext);
   if (nested) {
@@ -57,6 +69,11 @@ export function IntegratedCutout({
           surface={rotating.surface}
           textColor={rotating.textColor}
           fillParent
+          labItemKey={labItemKey}
+          labVisualTarget={labVisualTarget}
+          centerAssetSrc={centerAssetSrc}
+          centerAssetColorMode={centerAssetColorMode}
+          centerGraphicSize={centerGraphicSize}
         />
       ) : (
         <BadgeCenterGlyph name={badgeIcon} className="size-4" />

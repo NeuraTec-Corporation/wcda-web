@@ -7,8 +7,10 @@ import {
   BADGE_COMPATIBLE_TARGETS,
   badgeTypeFromStyle,
   getComponentConfig,
+  HOME_PRACTICE_BADGE_CENTER_KEY,
   insetBadgeSizePx,
   isInsetBadgeCutoutPreset,
+  resolveEditorialIcon,
   usesBadgeStyle,
   type VisualTargetId,
 } from "@/config/experience";
@@ -45,6 +47,11 @@ export function ExperienceMedia({
       ? badgeTypeFromStyle(config.mediaStyle) === "rotating"
       : experience.floatingBadge.type === "rotating");
 
+  const practiceOwnerBadge = visualTarget === "home-doctor-media";
+  const practiceBadgeCenter = practiceOwnerBadge
+    ? resolveEditorialIcon(experience, HOME_PRACTICE_BADGE_CENTER_KEY)
+    : undefined;
+
   const media = (
     <MediaFrame
       mediaKey={mediaKey}
@@ -64,6 +71,18 @@ export function ExperienceMedia({
         showRotating={showRotating}
         icon={experience.rotatingBadge.icon}
         circleSize={insetBadgeSizePx(config)}
+        labItemKey={
+          practiceOwnerBadge ? HOME_PRACTICE_BADGE_CENTER_KEY : undefined
+        }
+        labVisualTarget={practiceOwnerBadge ? "editorial-cards" : undefined}
+        centerAssetSrc={practiceBadgeCenter?.assetSrc}
+        centerAssetColorMode={practiceBadgeCenter?.assetColorMode}
+        centerGraphicSize={
+          practiceOwnerBadge
+            ? experience.editorialIcons.items?.[HOME_PRACTICE_BADGE_CENTER_KEY]
+                ?.graphicSize
+            : undefined
+        }
       >
         {media}
       </IntegratedCutout>

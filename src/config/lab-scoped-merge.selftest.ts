@@ -1,6 +1,10 @@
 import {
   pickExperienceValues,
   wcdaFactoryExperience,
+  HOME_PRACTICE_BADGE_CENTER_KEY,
+  badgeCenterGraphicFillPercent,
+  graphicSizeFromBadgeCenterFillPercent,
+  updateEditorialIconItem,
   type ExperienceValues,
 } from "@/config/experience";
 import { pickThemeValues, wcdaFactoryTheme } from "@/config/theme";
@@ -29,6 +33,11 @@ import {
   pickSiteContentPatch,
 } from "@/config/site-content";
 import { applyElementSlice } from "@/config/lab-section-state";
+import {
+  elementScopedColorKey,
+  resolveScopedElementFill,
+  scopedElementFillCss,
+} from "@/config/scoped-colors";
 
 function cloneExp(value: ExperienceValues) {
   return pickExperienceValues(value);
@@ -486,6 +495,163 @@ function run() {
     servicesCards.scale
   ) {
     fail("slot-wide scale leaked from per-item services apply");
+  }
+
+  const instanceKey = "editorial-cards__west-caldwell-community";
+  const siblingInstanceKey = "editorial-cards__independent-ownership";
+  const customWithInstanceColor = cloneExp({
+    ...currentExp,
+    scopedColors: {
+      elements: {
+        "editorial-cards": "#F1F0EF",
+        [instanceKey]: "#AABBCC",
+        [siblingInstanceKey]: "#112233",
+        "home-care-areas": "#D9CDBF",
+      },
+    },
+  });
+  const appliedInstanceColor = applyElementSlice(
+    "editorial-cards",
+    currentExp,
+    customWithInstanceColor,
+    "west-caldwell-community",
+  );
+  if (appliedInstanceColor.scopedColors?.elements?.[instanceKey] !== "#AABBCC") {
+    fail("instance color was not applied");
+  }
+  if (
+    appliedInstanceColor.scopedColors?.elements?.["editorial-cards"] !==
+    currentExp.scopedColors?.elements?.["editorial-cards"]
+  ) {
+    fail("family color leaked from instance apply");
+  }
+  if (appliedInstanceColor.scopedColors?.elements?.[siblingInstanceKey]) {
+    fail("sibling instance color leaked from instance apply");
+  }
+  if (appliedInstanceColor.scopedColors?.elements?.["home-care-areas"]) {
+    fail("unrelated family color leaked from instance apply");
+  }
+  const restoredInstanceColor = applyElementSlice(
+    "editorial-cards",
+    customWithInstanceColor,
+    currentExp,
+    "west-caldwell-community",
+  );
+  if (restoredInstanceColor.scopedColors?.elements?.[instanceKey]) {
+    fail("instance restore current did not remove missing approved key");
+  }
+  if (
+    restoredInstanceColor.scopedColors?.elements?.["editorial-cards"] !==
+    "#F1F0EF"
+  ) {
+    fail("family color was altered by instance restore current");
+  }
+  if (
+    restoredInstanceColor.scopedColors?.elements?.[siblingInstanceKey] !==
+    "#112233"
+  ) {
+    fail("sibling instance color was altered by instance restore current");
+  }
+  const familyApply = applyElementSlice(
+    "editorial-cards",
+    currentExp,
+    customWithInstanceColor,
+  );
+  if (familyApply.scopedColors?.elements?.["editorial-cards"] !== "#F1F0EF") {
+    fail("family color was not applied");
+  }
+  if (familyApply.scopedColors?.elements?.[instanceKey]) {
+    fail("instance color leaked from family apply");
+  }
+  if (
+    elementScopedColorKey("editorial-cards", "west-caldwell-community") !==
+    instanceKey
+  ) {
+    fail("instance key format is wrong");
+  }
+  if (
+    resolveScopedElementFill(
+      customWithInstanceColor.scopedColors,
+      "editorial-cards",
+      "west-caldwell-community",
+    ) !== "#AABBCC"
+  ) {
+    fail("instance fill did not win over family");
+  }
+  if (
+    resolveScopedElementFill(
+      customWithInstanceColor.scopedColors,
+      "editorial-cards",
+      "clear-next-steps",
+    ) !== "#F1F0EF"
+  ) {
+    fail("missing instance did not fall back to family");
+  }
+  const css = scopedElementFillCss(customWithInstanceColor.scopedColors);
+  const familySelector = 'html [data-visual-target="editorial-cards"]{';
+  const instanceSelector =
+    'html [data-visual-target="editorial-cards"][data-lab-item-id="west-caldwell-community"]{';
+  if (!css.includes(familySelector)) {
+    fail("family CSS selector missing");
+  }
+  if (!css.includes(instanceSelector)) {
+    fail("instance CSS selector missing");
+  }
+  if (css.indexOf(instanceSelector) < css.indexOf(familySelector)) {
+    fail("instance CSS must follow family CSS");
+  }
+
+  if (badgeCenterGraphicFillPercent(undefined) !== 32) {
+    fail("unset badge graphic size must keep the unset badge overlay size");
+  }
+  if (badgeCenterGraphicFillPercent(48) !== 22) {
+    fail("graphicSize 48 must map to 22% of badge");
+  }
+  if (badgeCenterGraphicFillPercent(96) !== 68) {
+    fail("graphicSize 96 must map to 68% of badge");
+  }
+  if (graphicSizeFromBadgeCenterFillPercent(22) !== 48) {
+    fail("22% badge overlay must store graphicSize 48");
+  }
+  if (graphicSizeFromBadgeCenterFillPercent(68) !== 96) {
+    fail("68% badge overlay must store graphicSize 96");
+  }
+  const siblingGraphicSize =
+    currentExp.editorialIcons.items?.["west-caldwell-community"]?.graphicSize;
+  const customBadgeSize = updateEditorialIconItem(
+    currentExp,
+    HOME_PRACTICE_BADGE_CENTER_KEY,
+    { graphicSize: 96 },
+  );
+  if (
+    customBadgeSize.editorialIcons.items?.["west-caldwell-community"]
+      ?.graphicSize !== siblingGraphicSize
+  ) {
+    fail("badge graphicSize mutated a sibling editorial icon");
+  }
+  const appliedBadgeSize = applyElementSlice(
+    "editorial-cards",
+    currentExp,
+    customBadgeSize,
+    HOME_PRACTICE_BADGE_CENTER_KEY,
+  );
+  if (
+    appliedBadgeSize.editorialIcons.items?.[HOME_PRACTICE_BADGE_CENTER_KEY]
+      ?.graphicSize !== 96
+  ) {
+    fail("badge center graphicSize was not applied for this itemKey");
+  }
+  if (
+    appliedBadgeSize.editorialIcons.items?.["west-caldwell-community"]
+      ?.graphicSize !== siblingGraphicSize
+  ) {
+    fail("sibling graphicSize leaked from badge-center apply");
+  }
+  if (
+    JSON.stringify(appliedBadgeSize.scopedColors) !==
+    JSON.stringify(currentExp.scopedColors)
+  ) {
+    fail("badge graphicSize apply mutated scopedColors");
   }
 
   console.log("lab scoped merge selftest: pass");

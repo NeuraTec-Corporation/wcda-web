@@ -106,6 +106,7 @@ import {
   copyElementScopedColor,
   copyPageScopedColor,
   copySectionScopedColor,
+  elementScopedColorKey,
   sectionColorKey,
 } from "@/config/scoped-colors";
 import {
@@ -121,7 +122,8 @@ import {
   editorFamiliesForSelection,
   findElement,
   findElementForPreview,
-  isEditorialCardItem,
+  isLabIconItem,
+  isPracticeBadgeCenterItem,
   labLabel,
   LAB_MODE_STORAGE_KEY,
   parseLabMode,
@@ -1047,7 +1049,7 @@ export function ThemeLab() {
   const resolvedElement =
     findElement(resolvedSection, editorElementId) ??
     resolvedSection?.elements[0];
-  const editorialCardItem = isEditorialCardItem(resolvedElement);
+  const editorialCardItem = isLabIconItem(resolvedElement);
   const selectedCopyFields = contentFieldsForElement(resolvedElement);
   const copyUnsaved = contentLiveUnsaved(
     selectedCopyFields,
@@ -1263,6 +1265,7 @@ export function ThemeLab() {
     sectionLabel: resolvedSection?.label,
     elementId: editorColorElementId,
     elementLabel: resolvedElement?.label,
+    itemKey: resolvedElement?.itemKey,
   });
   const samplerWorkingHex = resolveColorApplyHex(
     colorApplyTarget,
@@ -2329,15 +2332,19 @@ export function ThemeLab() {
         window.innerHeight - 280,
       ),
       media: Boolean(payload.media),
-      icon: isEditorialCardItem(match?.element),
+      icon: isLabIconItem(match?.element),
       title,
       subtitle: payload.media
         ? language === "es"
           ? "Imagen"
           : "Image"
-        : language === "es"
-          ? "Elemento"
-          : "Element",
+        : isLabIconItem(match?.element)
+          ? language === "es"
+            ? "Icono"
+            : "Icon"
+          : language === "es"
+            ? "Elemento"
+            : "Element",
     });
   }
 
@@ -2448,7 +2455,17 @@ export function ThemeLab() {
     }
     if (source === "default") {
       if (itemKey) {
-        setExperience(updateItemAsset(experience, target, itemKey, "default"));
+        const next = updateItemAsset(experience, target, itemKey, "default");
+        setExperience(
+          pickExperienceValues({
+            ...next,
+            scopedColors: setElementScopedColor(
+              next.scopedColors,
+              elementScopedColorKey(target, itemKey),
+              "",
+            ),
+          }),
+        );
         return;
       }
       setExperience(
@@ -2968,7 +2985,7 @@ export function ThemeLab() {
           ...experience,
           scopedColors: setElementScopedColor(
             experience.scopedColors,
-            target.elementId,
+            elementScopedColorKey(target.elementId, target.itemKey),
             parsed,
           ),
         }),
@@ -3031,7 +3048,7 @@ export function ThemeLab() {
         pickExperienceValues({
           ...customExperience,
           scopedColors: copyElementScopedColor(
-            target.elementId,
+            elementScopedColorKey(target.elementId, target.itemKey),
             customExperience.scopedColors,
             experience.scopedColors,
           ),
@@ -3753,9 +3770,13 @@ export function ThemeLab() {
                                     section,
                                     element.id,
                                   );
+                                  const grandchildren = children.flatMap((child) =>
+                                    childElementsFor(section, child.id),
+                                  );
                                   const elementIds = new Set([
                                     element.id,
                                     ...children.map((child) => child.id),
+                                    ...grandchildren.map((item) => item.id),
                                   ]);
                                   const matchesElement = (item: PendingCustomScope) =>
                                     Boolean(
@@ -3795,11 +3816,18 @@ export function ThemeLab() {
                                       {children.length > 0 ? (
                                         <div className="ml-2 mt-1 space-y-1 border-l border-zinc-800 pl-2">
                                           {children.map((child) => {
+                                            const grandchildren = childElementsFor(
+                                              section,
+                                              child.id,
+                                            );
                                             const matchesChild = (item: PendingCustomScope) =>
-                                              item.nav.elementId === child.id;
+                                              item.nav.elementId === child.id ||
+                                              grandchildren.some(
+                                                (entry) => entry.id === item.nav.elementId,
+                                              );
                                             return (
+                                            <div key={child.id}>
                                             <button
-                                              key={child.id}
                                               type="button"
                                               onClick={() => {
                                                 adoptEditorElement(child.id);
@@ -3823,6 +3851,51 @@ export function ThemeLab() {
                                                 }}
                                               />
                                             </button>
+                                            {grandchildren.length > 0 ? (
+                                              <div className="ml-2 mt-1 space-y-1 border-l border-zinc-800 pl-2">
+                                                {grandchildren.map((grandchild) => {
+                                                  const matchesGrandchild = (
+                                                    item: PendingCustomScope,
+                                                  ) => item.nav.elementId === grandchild.id;
+                                                  return (
+                                                    <button
+                                                      key={grandchild.id}
+                                                      type="button"
+                                                      onClick={() => {
+                                                        adoptEditorElement(grandchild.id);
+                                                        closeLabDrawers();
+                                                      }}
+                                                      className={labNavClass(
+                                                        resolvedElement?.id === grandchild.id,
+                                                      )}
+                                                    >
+                                                      {labLabel(grandchild.label, language)}
+                                                      <LabStatusDots
+                                                        unsaved={unsavedScopes.some(
+                                                          matchesGrandchild,
+                                                        )}
+                                                        ready={readyScopes.some(
+                                                          matchesGrandchild,
+                                                        )}
+                                                        onUnsaved={() => {
+                                                          const item = unsavedScopes.find(
+                                                            matchesGrandchild,
+                                                          );
+                                                          if (item) reviewPendingChange(item);
+                                                        }}
+                                                        onReady={() => {
+                                                          const item = readyScopes.find(
+                                                            matchesGrandchild,
+                                                          );
+                                                          if (item) reviewPendingChange(item);
+                                                        }}
+                                                      />
+                                                    </button>
+                                                  );
+                                                })}
+                                              </div>
+                                            ) : null}
+                                            </div>
                                             );
                                           })}
                                         </div>
@@ -4174,6 +4247,7 @@ export function ThemeLab() {
                   colorApplyTarget.pageId ?? "",
                   colorApplyTarget.sectionId ?? "",
                   colorApplyTarget.elementId ?? "",
+                  colorApplyTarget.itemKey ?? "",
                 ].join(":")}
                 language={language}
                 target={colorApplyTarget}
@@ -4600,20 +4674,27 @@ export function ThemeLab() {
 
           {displayedSection === "copy" ? (
             <>
-              <ContentEditor
-                fieldIds={selectedCopyFields}
-                working={siteContent}
-                custom={customSiteContent}
-                current={approvedSiteContentBaseline}
-                onChange={updateCopyField}
-                onRestoreOriginal={restoreCopyOriginal}
-              />
+              {selectedCopyFields.length > 0 ? (
+                <ContentEditor
+                  fieldIds={selectedCopyFields}
+                  working={siteContent}
+                  custom={customSiteContent}
+                  current={approvedSiteContentBaseline}
+                  onChange={updateCopyField}
+                  onRestoreOriginal={restoreCopyOriginal}
+                />
+              ) : null}
               {editorialCardItem && resolvedElement?.itemKey ? (
-                <div className="mt-6">
+                <div className={selectedCopyFields.length > 0 ? "mt-6" : undefined}>
                   <ThemeLabEditorialIconPanel
                     experience={experience}
                     itemKey={resolvedElement.itemKey}
                     itemLabel={labLabel(resolvedElement.label, language)}
+                    variant={
+                      isPracticeBadgeCenterItem(resolvedElement)
+                        ? "badge-center"
+                        : "editorial"
+                    }
                     openSignal={changeIconSignal}
                     onChange={updateExperience}
                   />

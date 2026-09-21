@@ -146,6 +146,7 @@ export type LabControlId =
   | "editorial-icon-background"
   | "editorial-presentation"
   | "editorial-graphic-size"
+  | "badge-center-graphic-size"
   | "editorial-graphic-align"
   | "hero-content-offset-y"
   | "hero-content-offset-x"
@@ -452,8 +453,8 @@ add("color-hex", "colors", "lab", {
 add("color-apply", "colors", "lab", {
   label: { en: "Apply Color", es: "Aplicar color" },
   what: {
-    en: "Saves the Working color to Custom at the displayed editing scope only: System global token, page, section, or selected element/container.",
-    es: "Guarda el color Working en Custom solo en el alcance visible: token global de Sistema, página, sección o elemento/contenedor seleccionado.",
+    en: "Saves the Working color to Custom at the displayed editing scope only: System global token, page, section, visual family, or selected element instance.",
+    es: "Guarda el color Working en Custom solo en el alcance visible: token global de Sistema, página, sección, familia visual o instancia del elemento seleccionado.",
   },
   see: {
     en: "Status becomes Ready to publish. Current stays until you Publish. Factory is never written.",
@@ -468,8 +469,8 @@ add("color-apply", "colors", "lab", {
     es: "Respeta la jerarquía. Los colores de alcance más específico siguen ganando.",
   },
   incompatible: {
-    en: "Does not leak to sibling elements, Header/Footer when applying a page color, or Factory.",
-    es: "No se filtra a elementos hermanos, ni a encabezado/pie al aplicar color de página, ni a Factory.",
+    en: "Does not leak to sibling instances, Header/Footer when applying a page color, or Factory. Family apply does not overwrite instance fills.",
+    es: "No se filtra a instancias hermanas, ni a encabezado/pie al aplicar color de página, ni a Factory. Aplicar a la familia no sobrescribe fondos de instancia.",
   },
   persist: {
     en: "Writes Custom at the active scope. Current is unchanged until you promote. Factory is immutable.",
@@ -2420,6 +2421,31 @@ add("editorial-graphic-size", "effects", "experience", {
   incompatible: {
     en: "Does not change Compact Icon Size or other cards unless they have their own override.",
     es: "No cambia el tamaño del icono compacto ni otras tarjetas, salvo que tengan su propio ajuste.",
+  },
+  persist: persistExperience(),
+});
+
+add("badge-center-graphic-size", "effects", "experience", {
+  label: { en: "Center Graphic Size", es: "Tamaño del gráfico central" },
+  what: {
+    en: "Scales only the transparent X-ray overlay on the Free Exam & X-Ray badge. Size is relative to the badge, not the inner circle. Stored on home-practice-badge-center.",
+    es: "Escala solo el gráfico transparente de radiografía en la insignia. El tamaño es relativo a la insignia, no al círculo interior. Se guarda en home-practice-badge-center.",
+  },
+  see: {
+    en: "The X-ray graphic grows or shrinks over the fixed center circle and can extend beyond it. The ring, rotation, and portrait stay put.",
+    es: "El gráfico de radiografía crece o se reduce sobre el círculo fijo y puede extenderse más allá. El anillo, la rotación y el retrato no se mueven.",
+  },
+  where: {
+    en: "Home > Practice owner > Free Exam & X-Ray Badge > Center Graphic.",
+    es: "Inicio > Dueño de la práctica > Insignia de examen y radiografía gratis > Gráfico central.",
+  },
+  compatible: {
+    en: "Only this badge center itemKey.",
+    es: "Solo este itemKey del gráfico central de la insignia.",
+  },
+  incompatible: {
+    en: "Does not change Feature Graphic size, Why this practice icons, badge geometry, or Color Tools fills.",
+    es: "No cambia el tamaño del gráfico destacado, los iconos de Por qué este consultorio, la geometría de la insignia ni los fondos de Color Tools.",
   },
   persist: persistExperience(),
 });

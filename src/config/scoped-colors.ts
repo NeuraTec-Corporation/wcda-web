@@ -14,6 +14,35 @@ export function sectionColorKey(pageId: string, sectionId: string) {
   return `${pageId}/${sectionId}`;
 }
 
+export const ELEMENT_INSTANCE_KEY_SEP = "__";
+
+export function elementScopedColorKey(visualTarget: string, itemKey?: string) {
+  if (!itemKey) {
+    return visualTarget;
+  }
+  return `${visualTarget}${ELEMENT_INSTANCE_KEY_SEP}${itemKey}`;
+}
+
+export function parseElementScopedColorKey(key: string): {
+  visualTarget: string;
+  itemKey?: string;
+} {
+  const index = key.indexOf(ELEMENT_INSTANCE_KEY_SEP);
+  if (index <= 0) {
+    return { visualTarget: key };
+  }
+  const visualTarget = key.slice(0, index);
+  const itemKey = key.slice(index + ELEMENT_INSTANCE_KEY_SEP.length);
+  if (!visualTarget || !itemKey) {
+    return { visualTarget: key };
+  }
+  return { visualTarget, itemKey };
+}
+
+function isSafeScopedSelectorToken(value: string) {
+  return /^[a-zA-Z0-9_-]+$/.test(value);
+}
+
 function parseHexMap(
   input: unknown,
   allowKey: (key: string) => boolean,
@@ -191,12 +220,19 @@ export function scopedCanvasStyle(hex: string | undefined) {
 export function resolveScopedElementFill(
   map: ScopedColors | undefined,
   target: string | undefined,
+  itemKey?: string,
 ) {
   if (!target) {
     return undefined;
   }
-  const hex = map?.elements?.[target];
-  return hex && isHexColor(hex) ? hex : undefined;
+  if (itemKey) {
+    const instance = map?.elements?.[elementScopedColorKey(target, itemKey)];
+    if (instance && isHexColor(instance)) {
+      return instance;
+    }
+  }
+  const family = map?.elements?.[target];
+  return family && isHexColor(family) ? family : undefined;
 }
 
 export function scopedElementFillStyle(hex: string | undefined) {
@@ -211,29 +247,46 @@ export function scopedElementFillStyle(hex: string | undefined) {
 
 export function scopedElementFillCss(map: ScopedColors | undefined) {
   const fills = map?.elements ?? {};
-  return Object.entries(fills)
-    .flatMap(([target, hex]) => {
-      if (!hex || !/^[a-zA-Z0-9_-]+$/.test(target) || !isHexColor(hex)) {
-        return [];
+  const familyRules: string[] = [];
+  const instanceRules: string[] = [];
+  for (const [target, hex] of Object.entries(fills)) {
+    if (!hex || !isHexColor(hex)) {
+      continue;
+    }
+    const parsed = parseElementScopedColorKey(target);
+    if (parsed.itemKey) {
+      if (
+        !isSafeScopedSelectorToken(parsed.visualTarget) ||
+        !isSafeScopedSelectorToken(parsed.itemKey)
+      ) {
+        continue;
       }
-      return [
-        `html [data-visual-target="${target}"]{--exp-surface-fill:${hex};--exp-surface-keep:100%;}`,
-      ];
-    })
-    .join("");
+      instanceRules.push(
+        `html [data-visual-target="${parsed.visualTarget}"][data-lab-item-id="${parsed.itemKey}"]{--exp-surface-fill:${hex};--exp-surface-keep:100%;}`,
+      );
+      continue;
+    }
+    if (!isSafeScopedSelectorToken(target)) {
+      continue;
+    }
+    familyRules.push(
+      `html [data-visual-target="${target}"]{--exp-surface-fill:${hex};--exp-surface-keep:100%;}`,
+    );
+  }
+  return [...familyRules, ...instanceRules].join("");
 }
 
 export function applyScopedElementFills(map: ScopedColors | undefined) {
   if (typeof document === "undefined") {
     return;
   }
-  const fills = map?.elements ?? {};
   document.querySelectorAll("[data-visual-target]").forEach((node) => {
     if (!(node instanceof HTMLElement)) {
       return;
     }
     const target = node.dataset.visualTarget;
-    const hex = target ? fills[target] : undefined;
+    const itemKey = node.dataset.labItemId;
+    const hex = resolveScopedElementFill(map, target, itemKey);
     if (hex && isHexColor(hex)) {
       node.style.setProperty("--exp-surface-fill", hex);
       node.style.setProperty("--exp-surface-keep", "100%");

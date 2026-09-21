@@ -70,7 +70,8 @@ export function ThemePreviewBridge() {
       if (!(node instanceof Element)) {
         return null;
       }
-      const media = node.closest("[data-lab-media]");
+      const icon = node.closest("[data-lab-icon]");
+      const media = icon ? null : node.closest("[data-lab-media]");
       const item = node.closest("[data-lab-item-id]");
       const visual = node.closest("[data-visual-target]");
       const section = node.closest("[data-lab-page-id][data-lab-section-id]");
@@ -85,7 +86,7 @@ export function ThemePreviewBridge() {
         itemKey: itemEl?.dataset.labItemId,
         pageId: sectionEl?.dataset.labPageId,
         sectionId: sectionEl?.dataset.labSectionId,
-        media: Boolean(media || node.closest("img, .exp-media")),
+        media: Boolean(!icon && (media || node.closest("img, .exp-media"))),
       };
     }
 

@@ -16,7 +16,10 @@ import {
   type ThemeValues,
 } from "@/config/theme";
 import { labControlScope, type LabSectionId } from "@/config/lab-ui";
-import { copyElementScopedColor } from "@/config/scoped-colors";
+import {
+  copyElementScopedColor,
+  elementScopedColorKey,
+} from "@/config/scoped-colors";
 
 export const CUSTOM_STAGED_STORAGE_KEY = "wcda-lab-custom-staged-v1";
 
@@ -255,13 +258,11 @@ export function applyElementSlice(
     ...targetExperience,
     components,
     containerSurfaceIntensity: intensity,
-    scopedColors: itemKey
-      ? targetExperience.scopedColors
-      : copyElementScopedColor(
-          target,
-          targetExperience.scopedColors,
-          sourceExperience.scopedColors,
-        ),
+    scopedColors: copyElementScopedColor(
+      elementScopedColorKey(target, itemKey),
+      targetExperience.scopedColors,
+      sourceExperience.scopedColors,
+    ),
     ...elementEffectPatch(target, targetExperience, sourceExperience, itemKey),
   });
 }

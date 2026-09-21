@@ -49,6 +49,10 @@ import {
   clampCarouselTransitionDuration,
   clampEditorialGraphicSize,
   clampEditorialIconSize,
+  badgeCenterGraphicFillPercent,
+  graphicSizeFromBadgeCenterFillPercent,
+  BADGE_CENTER_GRAPHIC_FILL_MAX,
+  BADGE_CENTER_GRAPHIC_FILL_MIN,
   EDITORIAL_GRAPHIC_ALIGNS,
   EDITORIAL_GRAPHIC_SIZE_MAX,
   EDITORIAL_GRAPHIC_SIZE_MIN,
@@ -124,6 +128,7 @@ import { MediaAssetGallery } from "@/components/theme/MediaAssetGallery";
 import { IconAssetGallery } from "@/components/theme/IconAssetGallery";
 import { EditorialIconAsset } from "@/components/editorial/EditorialIconAsset";
 import { EditorialIconMark } from "@/components/editorial/EditorialGlyph";
+import { ToothGlyph } from "@/components/experience/ExperienceGlyphs";
 import { editorialIconColorEnabled, isApprovedIconSrc } from "@/config/lab-icon-library";
 
 type LabTab = "theme" | "media" | "containers" | "motion" | "effects";
@@ -154,12 +159,14 @@ export function ThemeLabEditorialIconPanel({
   itemLabel,
   onChange,
   openSignal = 0,
+  variant = "editorial",
 }: {
   experience: ExperienceValues;
   itemKey: string;
   itemLabel?: string;
   onChange: (experience: ExperienceValues) => void;
   openSignal?: number;
+  variant?: "editorial" | "badge-center";
 }) {
   const w = useWord();
   const language = useLabLanguage();
@@ -183,6 +190,10 @@ export function ThemeLabEditorialIconPanel({
   );
   const pngAsset = Boolean(assetSrc?.toLowerCase().endsWith(".png"));
   const featureMode = editorialIcon.presentationMode === "feature-graphic";
+  const badgeCenter = variant === "badge-center";
+  const badgeFillPercent = badgeCenterGraphicFillPercent(
+    experience.editorialIcons.items?.[itemKey]?.graphicSize,
+  );
 
   return (
     <fieldset className="min-w-0">
@@ -190,35 +201,64 @@ export function ThemeLabEditorialIconPanel({
         {language === "es" ? "Icono" : "Icon"}
       </legend>
       <div className="mt-3 flex flex-col gap-3">
-        <FieldLabel htmlFor="exp-editorial-presentation" helpId="editorial-presentation">
-          {controlLabel("editorial-presentation", language)}
-        </FieldLabel>
-        <select
-          id="exp-editorial-presentation"
-          className={selectClass}
-          value={editorialIcon.presentationMode}
-          onChange={(event) =>
-            onChange(
-              updateEditorialIconItem(experience, itemKey, {
-                presentationMode: event.target.value as EditorialPresentationMode,
-              }),
-            )
-          }
-        >
-          {EDITORIAL_PRESENTATION_MODES.map((id) => (
-            <option key={id} value={id}>
-              {id === "compact-icon" ? w("compactIcon") : w("featureGraphic")}
-            </option>
-          ))}
-        </select>
+        {!badgeCenter ? (
+          <>
+            <FieldLabel htmlFor="exp-editorial-presentation" helpId="editorial-presentation">
+              {controlLabel("editorial-presentation", language)}
+            </FieldLabel>
+            <select
+              id="exp-editorial-presentation"
+              className={selectClass}
+              value={editorialIcon.presentationMode}
+              onChange={(event) =>
+                onChange(
+                  updateEditorialIconItem(experience, itemKey, {
+                    presentationMode: event.target.value as EditorialPresentationMode,
+                  }),
+                )
+              }
+            >
+              {EDITORIAL_PRESENTATION_MODES.map((id) => (
+                <option key={id} value={id}>
+                  {id === "compact-icon" ? w("compactIcon") : w("featureGraphic")}
+                </option>
+              ))}
+            </select>
+          </>
+        ) : null}
         <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-zinc-400">
           {language === "es" ? "Icono actual" : "Current Icon"}
         </p>
         <div
           className={`flex items-center justify-center rounded-md border border-zinc-700 bg-zinc-900 ${
-            featureMode ? "min-h-28" : "min-h-16"
+            badgeCenter || featureMode ? "min-h-28" : "min-h-16"
           }`}
         >
+          {badgeCenter ? (
+            <span className="exp-badge-center-preview grid size-20 place-items-center rounded-full bg-zinc-800 text-zinc-200">
+              <span className="exp-badge-center-preview-well" />
+              {assetSrc ? (
+                <span
+                  className="exp-badge-center-overlay"
+                  style={
+                    {
+                      ["--exp-badge-center-graphic-size"]: `${badgeFillPercent}%`,
+                    } as CSSProperties
+                  }
+                >
+                  <EditorialIconAsset
+                    src={assetSrc}
+                    colorMode={editorialIcon.assetColorMode}
+                    className="exp-badge-center-asset"
+                  />
+                </span>
+              ) : glyphId ? (
+                <EditorialIconMark id={glyphId} className="size-8" />
+              ) : (
+                <ToothGlyph className="size-8 text-zinc-200" />
+              )}
+            </span>
+          ) : (
           <span
             className="editorial-icon"
             data-icon-background={editorialIcon.background}
@@ -245,6 +285,7 @@ export function ThemeLabEditorialIconPanel({
               </span>
             )}
           </span>
+          )}
         </div>
         <button
           type="button"
@@ -287,7 +328,41 @@ export function ThemeLabEditorialIconPanel({
             )
           }
         />
-        {featureMode ? (
+        {badgeCenter ? (
+          <>
+            <FieldLabel
+              htmlFor="exp-badge-center-graphic-size"
+              helpId="badge-center-graphic-size"
+            >
+              {controlLabel("badge-center-graphic-size", language)}
+            </FieldLabel>
+            <div className="mt-1.5 flex items-center gap-3">
+              <input
+                id="exp-badge-center-graphic-size"
+                type="range"
+                min={BADGE_CENTER_GRAPHIC_FILL_MIN}
+                max={BADGE_CENTER_GRAPHIC_FILL_MAX}
+                step={1}
+                value={badgeFillPercent}
+                onChange={(event) =>
+                  onChange(
+                    updateEditorialIconItem(experience, itemKey, {
+                      graphicSize: graphicSizeFromBadgeCenterFillPercent(
+                        Number(event.target.value),
+                      ),
+                    }),
+                  )
+                }
+                className="w-full"
+              />
+              <span className="w-16 shrink-0 text-right font-mono text-xs text-zinc-400">
+                {badgeFillPercent}%
+              </span>
+            </div>
+          </>
+        ) : null}
+        {!badgeCenter ? (
+          featureMode ? (
           <>
             <FieldLabel htmlFor="exp-editorial-graphic-size" helpId="editorial-graphic-size">
               {controlLabel("editorial-graphic-size", language)}
@@ -385,7 +460,10 @@ export function ThemeLabEditorialIconPanel({
               </span>
             </div>
           </>
-        )}
+        )
+        ) : null}
+        {!badgeCenter || (assetSrc && colorEnabled) ? (
+        <>
         <FieldLabel htmlFor="exp-editorial-icon-color" helpId="editorial-icon-color">
           {controlLabel("editorial-icon-color", language)}
         </FieldLabel>
@@ -408,6 +486,8 @@ export function ThemeLabEditorialIconPanel({
             </option>
           ))}
         </select>
+        </>
+        ) : null}
       </div>
     </fieldset>
   );

@@ -1,14 +1,18 @@
 import { useId } from "react";
 import { cn } from "@/lib/cn";
 import { BadgeCenterGlyph } from "@/components/experience/ExperienceGlyphs";
-import type {
-  BadgeDiameter,
-  BadgeIconId,
-  BadgeTextColor,
-  MarqueeDirection,
-  MarqueeSurface,
-  BadgeRotationSpeed,
+import { EditorialIconAsset } from "@/components/editorial/EditorialIconAsset";
+import {
+  badgeCenterGraphicFillPercent,
+  type BadgeDiameter,
+  type BadgeIconId,
+  type BadgeTextColor,
+  type MarqueeDirection,
+  type MarqueeSurface,
+  type BadgeRotationSpeed,
+  type VisualTargetId,
 } from "@/config/experience";
+import type { LabIconColorMode } from "@/config/lab-icon-library";
 
 type RotatingBadgeProps = {
   text: string;
@@ -20,6 +24,11 @@ type RotatingBadgeProps = {
   textColor?: BadgeTextColor;
   fillParent?: boolean;
   className?: string;
+  labItemKey?: string;
+  labVisualTarget?: VisualTargetId;
+  centerAssetSrc?: string;
+  centerAssetColorMode?: LabIconColorMode;
+  centerGraphicSize?: number;
 };
 
 const diameterClasses: Record<BadgeDiameter, string> = {
@@ -51,12 +60,18 @@ export function RotatingBadge({
   textColor = "inverse",
   fillParent = false,
   className,
+  labItemKey,
+  labVisualTarget,
+  centerAssetSrc,
+  centerAssetColorMode = "fixed",
+  centerGraphicSize,
 }: RotatingBadgeProps) {
   const pathId = useId().replace(/:/g, "");
   const phrase = text.trim();
+  const fillPercent = badgeCenterGraphicFillPercent(centerGraphicSize);
   const ringRadius = 36;
   const ringLength = 2 * Math.PI * ringRadius;
-  const ringGap = ringLength * 0.14;
+  const ringGap = ringLength * 0.04;
   const textLength = ringLength - ringGap;
 
   return (
@@ -71,7 +86,40 @@ export function RotatingBadge({
       data-badge-speed={speed}
       aria-hidden="true"
     >
-      <svg viewBox="0 0 100 100" className="exp-rotating-badge-ring absolute inset-0">
+      <span
+        className={cn(
+          "relative z-0 grid size-[42%] place-items-center rounded-full bg-background/15",
+          labItemKey && !centerAssetSrc ? "pointer-events-auto" : null,
+        )}
+        data-lab-item-id={labItemKey}
+        data-visual-target={labVisualTarget}
+        data-lab-icon={labItemKey ? "1" : undefined}
+      >
+        {centerAssetSrc ? null : (
+          <BadgeCenterGlyph name={icon} className="size-4 sm:size-5" />
+        )}
+      </span>
+      {centerAssetSrc ? (
+        <span
+          className="exp-badge-center-overlay"
+          style={{
+            ["--exp-badge-center-graphic-size" as string]: `${fillPercent}%`,
+          }}
+          data-lab-item-id={labItemKey}
+          data-visual-target={labVisualTarget}
+          data-lab-icon={labItemKey ? "1" : undefined}
+        >
+          <EditorialIconAsset
+            src={centerAssetSrc}
+            colorMode={centerAssetColorMode}
+            className="exp-badge-center-asset"
+          />
+        </span>
+      ) : null}
+      <svg
+        viewBox="0 0 100 100"
+        className="exp-rotating-badge-ring pointer-events-none absolute inset-0 z-20"
+      >
         <defs>
           <path
             id={pathId}
@@ -89,9 +137,6 @@ export function RotatingBadge({
           </textPath>
         </text>
       </svg>
-      <span className="relative z-10 grid size-[42%] place-items-center rounded-full bg-background/15">
-        <BadgeCenterGlyph name={icon} className="size-4 sm:size-5" />
-      </span>
     </span>
   );
 }

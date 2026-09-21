@@ -3,7 +3,7 @@ import { parseHexColorInput, type ThemeValues } from "@/config/theme";
 import type { ExperienceValues, VisualTargetId } from "@/config/experience";
 import type { LabMode, LabBi } from "@/config/lab-registry";
 import type { LabSectionId } from "@/config/lab-ui";
-import { sectionColorKey } from "@/config/scoped-colors";
+import { elementScopedColorKey, sectionColorKey } from "@/config/scoped-colors";
 
 export type {
   ScopedColors,
@@ -13,6 +13,7 @@ export {
   copyElementScopedColor,
   copyPageScopedColor,
   copySectionScopedColor,
+  elementScopedColorKey,
   parseScopedColors,
   sectionColorKey,
   setElementScopedColor,
@@ -65,6 +66,7 @@ export type ColorApplyTarget = {
   sectionLabel?: LabBi;
   elementId?: VisualTargetId;
   elementLabel?: LabBi;
+  itemKey?: string;
   themeKey?: SystemColorProperty;
 };
 
@@ -141,6 +143,7 @@ type ResolveArgs = {
   sectionLabel?: LabBi;
   elementId?: VisualTargetId | "section";
   elementLabel?: LabBi;
+  itemKey?: string;
 };
 
 export function resolveColorApplyTarget(args: ResolveArgs): ColorApplyTarget {
@@ -198,21 +201,30 @@ export function resolveColorApplyTarget(args: ResolveArgs): ColorApplyTarget {
     args.elementId !== "section" &&
     isContainerColorTarget(args.elementId)
   ) {
+    const instance = Boolean(args.itemKey);
     return {
       kind: "element",
       property: "containerBackground",
       propertyLabel: { en: "Container Background", es: "Fondo del contenedor" },
-      resultLabel: {
-        en: "Affects this selected element/container only.",
-        es: "Afecta solo este elemento/contenedor seleccionado.",
-      },
-      applyLabel: { en: "Apply to Element", es: "Aplicar al elemento" },
+      resultLabel: instance
+        ? {
+            en: "Affects only this selected item. Sibling items and other pages keep their own fills.",
+            es: "Afecta solo este elemento seleccionado. Los demás ítems y páginas conservan sus fondos.",
+          }
+        : {
+            en: "Affects all instances that use this visual family/target. Instance overrides stay in place.",
+            es: "Afecta todas las instancias de esta familia visual. Las excepciones de instancia se conservan.",
+          },
+      applyLabel: instance
+        ? { en: "Apply to Item", es: "Aplicar al ítem" }
+        : { en: "Apply to Family", es: "Aplicar a la familia" },
       pageId: args.pageId,
       pageLabel: args.pageLabel,
       sectionId: args.sectionId,
       sectionLabel: args.sectionLabel,
       elementId: args.elementId,
       elementLabel: args.elementLabel,
+      itemKey: instance ? args.itemKey : undefined,
     };
   }
 
@@ -277,7 +289,11 @@ export function resolveColorApplyHex(
     ];
   }
   if (target.kind === "element" && target.elementId) {
-    return experience.scopedColors?.elements?.[target.elementId];
+    const value =
+      experience.scopedColors?.elements?.[
+        elementScopedColorKey(target.elementId, target.itemKey)
+      ];
+    return value && parseHexColorInput(value) ? value : undefined;
   }
   return undefined;
 }
