@@ -67,8 +67,10 @@ const services = [
 function useOriginalSectionBehavior(
   rootRef: React.RefObject<HTMLElement | null>,
   carouselRef: React.RefObject<HTMLDivElement | null>,
+  enabled: boolean,
 ) {
   useEffect(() => {
+    if (!enabled) return;
     const root = rootRef.current;
     const carousel = carouselRef.current;
     if (!root || !carousel) return;
@@ -137,13 +139,17 @@ function useOriginalSectionBehavior(
         $(carousel).trigger("destroy.owl.carousel");
       }
     };
-  }, [carouselRef, rootRef]);
+  }, [carouselRef, enabled, rootRef]);
 }
 
-export default function AboutServicesHomologation() {
+export default function AboutServicesHomologation({
+  managedByLegacyRuntime = false,
+}: {
+  managedByLegacyRuntime?: boolean;
+}) {
   const rootRef = useRef<HTMLElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  useOriginalSectionBehavior(rootRef, carouselRef);
+  useOriginalSectionBehavior(rootRef, carouselRef, !managedByLegacyRuntime);
 
   return (
     <main ref={rootRef}>
