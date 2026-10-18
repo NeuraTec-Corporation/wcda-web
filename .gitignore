@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Next.js and static output
+.next/
+out/
+build/
+
+# TypeScript and test caches
+*.tsbuildinfo
+coverage/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Tooling and operating-system files
+.vercel/
+.DS_Store
+Thumbs.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

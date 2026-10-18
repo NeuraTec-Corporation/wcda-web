@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Denart - Cleaning &amp; Prevention</title>
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap">
+    <link rel="stylesheet" href="css/plugins.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="preloader-bg"></div>
+    <div id="preloader">
+        <div id="preloader-status">
+            <div class="preloader-position loader"> <span></span> </div>
+        </div>
+    </div>
+    <!-- Cursor -->
+    <div class="cursor js-cursor"></div>
+    <!-- Progress scroll totop -->
+    <div class="progress-wrap cursor-pointer">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+        </svg>
+    </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <!-- Logo -->
+            <div class="logo-wrapper">
+                <a class="logo" href="index.html"><img src="img/logo.png" class="logo-img" alt=""></a>
+                <!-- <div class="logo"><h2>Denart</h2></div> -->
+            </div>
+            <!-- Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+                aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"> <span
+                    class="navbar-toggler-icon"><i class="ti-menu"></i></span> </button>
+            <!-- Menu -->
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav mx-auto">
+                    <!--
+                    <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Home <i class="ti-angle-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="index.html" class="dropdown-item"><span>Home Image</span></a></li>
+                            <li><a href="index-2.html" class="dropdown-item"><span>Home Slider</span></a></li>
+                            <li><a href="index-3.html" class="dropdown-item"><span>Home Video</span></a></li>
+                            <li><a href="index-4.html" class="dropdown-item"><span>Home Slideshow</span></a></li>
+                        </ul>
+                    </li>
+                    -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <!--
+                    <li class="nav-item dropdown"> <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Services <i class="ti-angle-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="services.html" class="dropdown-item"><span>Services 01</span></a></li>
+                            <li><a href="services-2.html" class="dropdown-item"><span>Services 02</span></a></li>
+                            <li><a href="services-3.html" class="dropdown-item"><span>Services 03</span></a></li>
+                            <li><a href="services-details.html" class="dropdown-item active"><span>Services Details</span></a></li>
+                        </ul>
+                    </li>
+                    -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="services.html">Services</a>
+                    </li>
+                    <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" role="button"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Pages <i
+                                class="ti-angle-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="before-after.html" class="dropdown-item"><span>Before-After</span></a></li>
+                            <li><a href="team.html" class="dropdown-item"><span>Team</span></a></li>
+                            <li><a href="pricing.html" class="dropdown-item"><span>Pricing</span></a></li>
+                            <li><a href="testimonials.html" class="dropdown-item"><span>Testimonials</span></a></li>
+                            <li><a href="faq.html" class="dropdown-item"><span>FAQ</span></a></li>
+                            <li><a href="gallery-image.html" class="dropdown-item"><span>Image Gallery</span></a></li>
+                            <li><a href="gallery-video.html" class="dropdown-item"><span>Video Gallery</span></a></li>
+                            <li><a href="404.html" class="dropdown-item"><span>404 Page</span></a></li>
+                        </ul>
+                    </li>
+                    <!--
+                    <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Blog <i class="ti-angle-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="blog.html" class="dropdown-item"><span>Blog 01</span></a></li>
+                            <li><a href="blog-2.html" class="dropdown-item"><span>Blog 02</span></a></li>
+                            <li><a href="post.html" class="dropdown-item"><span>Blog Details</span></a></li>
+                        </ul>
+                    </li>
+                    -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html">Blog</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+                <div class="navbar-right"> <a href="tel:+4442525" class="phonex mr-30"><i
+                            class="fa-solid fa-phone-arrow-down-left mr-5"></i> 444 2525</a> <a href="contact.html"
+                        class="durubtn5"><i class="fa-light fa-calendar-check mr-5"></i> <span
+                            class="text-wrapper"><span class="text slide-up">Book Online</span><span
+                                class="text slide-down">Book Online</span></span></a> </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Banner Header -->
+    <section class="banner-header valign bg-img bg-imgfixed" data-overlay-dark="3" data-background="img/slider/1.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h5 class="wow fadeInUp" data-wow-delay=".1s"><i class="icon"></i>Our services</h5>
+                    <h3 class="wow fadeInUp" data-wow-delay=".3s">Cleaning &amp; Prevention</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Post -->
+    <div class="post section-padding">
+        <div class="container">
+            <div class="row mb-60">
+                <div class="col-lg-6 col-md-12">
+                    <p><span class="first-letter">T</span>Teeth whitening is one of the most effective and popular
+                        cosmetic dental treatments for achieving a brighter, more confident smile. Over time, teeth can
+                        become discolored due to coffee, tea, smoking, aging, or certain foods and drinks.</p>
+                </div>
+                <div class="col-lg-5 offset-lg-1 col-md-12 mb-30">
+                    <p>At our clinic, we offer advanced teeth whitening treatments designed to deliver visible results
+                        while protecting your enamel and gum health. Using clinically approved whitening systems, our
+                        procedures are fast, comfortable, and tailored to your individual needs.</p>
+                </div>
+            </div>
+            <div class="row mb-60">
+                <div class="col-md-12"> <img src="img/slider/banner.jpg" alt="" class="img-fluid"> </div>
+            </div>
+            <div class="row justify-content-center mb-45">
+                <div class="col-md-5">
+                    <p>Our professional teeth whitening treatment gently removes deep stains, brightens your smile and
+                        delivers long-lasting results.</p>
+                </div>
+                <div class="col-md-5 offset-md-1">
+                    <p>Experience a safe, effective, and confidence boosting transformation.</p>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-md-6"> <img src="img/slider/6.jpg" class="mb-30 rounded-3" alt=""> </div>
+                <div class="col-md-3">
+                    <ul class="page-list list-unstyled">
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Removes deep stains</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Fast, visible results</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Long-lasting brightness</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Safe for enamel</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Professional-grade formula</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <ul class="page-list list-unstyled">
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Even whitening effect</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Clinically tested</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Customizable intensity</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Quick treatment sessions</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page-list-icon"> <span class="ti-check"></span> </div>
+                            <div class="page-list-text">
+                                <p>Boosts smile confidence</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Before - After -->
+    <div class="before-after section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-7 col-md-12 text-center mb-60">
+                    <div class="section-subtitle wow fadeInUp" data-wow-delay=".1s">Radiant smiles</div>
+                    <div class="section-title wow zoomIn" data-wow-delay=".2s">Before & after whitening</div>
+                    <p class="wow fadeInUp" data-wow-delay=".3s">Experience the power of professional whitening. See how
+                        our treatment brightens teeth, removes deep stains, and transforms your smile with
+                        natural-looking results.</p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-12 mb-60">
+                    <div class="item"> <img src="img/ba/a3.jpg" alt="After" class="img ba-after">
+                        <div class="item-overlay"> <img src="img/ba/b3.jpg" alt="Before" class="img"> </div>
+                        <div class="handle"> <span class="handle-line"></span> <span class="handle-circle"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-60">
+                    <div class="item"> <img src="img/ba/a1.jpg" alt="After" class="img ba-after">
+                        <div class="item-overlay"> <img src="img/ba/b1.jpg" alt="Before" class="img"> </div>
+                        <div class="handle"> <span class="handle-line"></span> <span class="handle-circle"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-60">
+                    <div class="item"> <img src="img/ba/a2.jpg" alt="After" class="img ba-after">
+                        <div class="item-overlay"> <img src="img/ba/b2.jpg" alt="Before" class="img"> </div>
+                        <div class="handle"> <span class="handle-line"></span> <span class="handle-circle"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center mt-30 wow zoomIn" data-wow-delay=".2s">
+                    <div class="section-info">
+                        <div class="tag"><i class="fa-regular fa-sparkles"></i></div>
+                        <div class="desc">These are just a few of our before–after smile transformations. More to come!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Services 1 -->
+    <section class="services section-padding bg-lightblue">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-30 text-center">
+                    <div class="section-subtitle bg-white wow zoomIn" data-wow-delay=".1s"> <i class="icon"></i> Our
+                        services</div>
+                    <div class="section-title wow zoomIn" data-wow-delay=".2s">Dental Care <span>We Provide</span></div>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-md-12">
+                    <div class="owl-carousel owl-theme">
+                        <div class="item">
+                            <div class="img"><img src="img/services/02.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Family</div>
+                                <h3>Family Dentistry</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-FamilyDentistry.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/03.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Children</div>
+                                <h3>Children's Dentistry</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-ChildrensDentistry.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/04.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Aesthetic</div>
+                                <h3>Cosmetic Dentistry</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-CosmeticDentistry.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/05.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Replace</div>
+                                <h3>Tooth Replacement</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-ToothReplacement.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/06.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Care</div>
+                                <h3>Extractions &amp; Preservation</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-ExtractionsPreservation.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/01.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Align</div>
+                                <h3>Invisalign®</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-Invisalign.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/02.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Appliances</div>
+                                <h3>Oral Appliances</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-OralAppliances.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/03.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Holistic</div>
+                                <h3>Holistic Services</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-HolisticServices.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                        <div class="item">
+                            <div class="img"><img src="img/services/04.jpg" alt=""></div>
+                            <div class="text">
+                                <div class="cat">Implants</div>
+                                <h3>Dental Implants - Cranford</h3>
+                            </div>
+                            <div class="icon"><a href="services-details-DentalImplantsCranford.html" class="arrow"><span
+                                        class="ti-arrow-top-right"></span></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Appointment -->
+    <section class="appointment bg-img bg-imgfixed section-padding" data-background="img/slider/5.jpg"
+        data-overlay-dark="4">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-4 col-md-12">
+                    <h4 class="wow zoomIn" data-wow-delay=".1s">Schedule your dental appointment today.</h4>
+                </div>
+                <div class="col-lg-4 offset-lg-1 col-md-12">
+                    <div class="help wow zoomIn" data-wow-delay=".2s">
+                        <div class="icon"><i class="fa-solid fa-phone-arrow-down-left fa-beat-fade"></i></div>
+                        <div class="text">
+                            <p>Book appointment</p> <a href="tel:+11234567890">+(1) 123 456 7890</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Scrolling -->
+    <div class="scrolling scrolling-ticker">
+        <div class="wrapper feather-shadow2">
+            <div class="content"> <span><i class="dental-icon-asset-9 mr-30"></i>Teeth Cleaning</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Oral Checkup</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental X-Ray</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental Fillings</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Teeth Whitening</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental Crowns</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Root Canal</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Gum Care</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental Implants</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Braces</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Oral Surgery</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Fluoride Treatment</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Veneers</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Preventive Care</span> </div>
+            <div class="content"> <span><i class="dental-icon-asset-9 mr-30"></i>Teeth Cleaning</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Oral Checkup</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental X-Ray</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental Fillings</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Teeth Whitening</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental Crowns</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Root Canal</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Gum Care</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Dental Implants</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Braces</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Oral Surgery</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Fluoride Treatment</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Veneers</span> <span><i
+                        class="dental-icon-asset-9 mr-30"></i>Preventive Care</span> </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="item mb-30">
+                            <h3 class="title">Contact</h3>
+                            <p>0665 Broadway Super Gold St.
+                                <br>NY 10001 USA
+                            </p>
+                            <h5 class="phone">+(1) 123 456 7890</h5>
+                            <div class="mail">info@denartclinic.com</div>
+                            <div class="social-list"> <a href="#"><i class="fa-brands fa-instagram"></i></a> <a
+                                    href="#"><i class="fa-brands fa-x-twitter"></i></a> <a href="#"><i
+                                        class="fa-brands fa-linkedin-in"></i></a> <a href="#"><i
+                                        class="fa-brands fa-youtube"></i></a> </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 offset-md-1">
+                        <div class="item">
+                            <h3 class="title">Work Time</h3>
+                            <div class="opening">
+                                <ul>
+                                    <li>
+                                        <div class="tit">Mon - Fri</div>
+                                        <div class="dots"></div> <span>10:00 - 20:00</span>
+                                    </li>
+                                    <li>
+                                        <div class="tit">Saturday</div>
+                                        <div class="dots"></div> <span>10:00 - 12:00</span>
+                                    </li>
+                                    <li>
+                                        <div class="tit">Sunday</div>
+                                        <div class="dots"></div> <span>Closed</span>
+                                    </li>
+                                    <li>
+                                        <div class="tit">Emergency</div>
+                                        <div class="dots"></div> <span>24/7 Hours</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 offset-md-1">
+                        <div class="item">
+                            <h3 class="title">Subscribe</h3>
+                            <div class="subscribe">
+                                <p>Subscribe to stay informed about our dental care promotions and gift certificates.
+                                </p>
+                                <form>
+                                    <input type="text" name="search" placeholder="Your email" required>
+                                    <button><i class="fa-solid fa-paper-plane"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-12">
+                        <div class="links">
+                            <ul>
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="about.html">About</a></li>
+                                <li><a href="services.html">Services</a></li>
+                                <li><a href="blog.html">Blog</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 text-end">
+                        <p>&copy; All rights reserved. Designed by <a href="https://1.envato.market/DuruTheme"
+                                target="_blank">DuruThemes</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- jQuery -->
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/jquery-migrate-3.5.0.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/modernizr-2.6.2.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <script src="js/jquery.isotope.v3.0.2.js"></script>
+    <script src="js/scrollIt.min.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/jquery.magnific-popup.js"></script>
+    <script src="js/YouTubePopUp.js"></script>
+    <script src="js/smooth-scroll.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/custom.js"></script>
+</body>
+
+</html>

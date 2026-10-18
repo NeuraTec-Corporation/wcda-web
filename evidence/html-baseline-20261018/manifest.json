@@ -1,0 +1,770 @@
+{
+  "sourceArchiveSHA256": "ef41084578ec04422a4989da98b0feee2e83cca7b701775b458f2cbf25fea140",
+  "files": [
+    {
+      "path": "services-details-CosmeticDentistry.html",
+      "bytes": 30560,
+      "sha256": "5503058ca6470459c255f16cfaa9d45c5cd6eb2387e874680b644ed8616d8204"
+    },
+    {
+      "path": "404.html",
+      "bytes": 8371,
+      "sha256": "173e546ed80658b48e294522a7c700cc4b8b5c63924d8999a4916dc2dd80dd9c"
+    },
+    {
+      "path": "services-details-FamilyDentistry.html",
+      "bytes": 30563,
+      "sha256": "fac460fc0e93028518f7378788de8505cb2054f80a0d00563927ab4ee7d5cc23"
+    },
+    {
+      "path": "services-details-ChildrensDentistry.html",
+      "bytes": 30562,
+      "sha256": "f9b0625c2c9829aaba844d091bc3f7da63446962798c88c34bcd8bc9b4f8cade"
+    },
+    {
+      "path": "services-details-Invisalign.html",
+      "bytes": 30565,
+      "sha256": "1240fc53d42e816cdda90dfe7fb23ae2bf98bcc7fd5ec85d14524e7ea0ac6aa2"
+    },
+    {
+      "path": "before-after.html",
+      "bytes": 18780,
+      "sha256": "7ee87528ad72bd3d49f3e137b7a6606cb6002c9d0c6af8e4b762c83711b63657"
+    },
+    {
+      "path": "gallery-video.html",
+      "bytes": 17583,
+      "sha256": "19ffe6f2d06606049a1b21ea98c7883c90451c5b68b98977691be42eaadac557"
+    },
+    {
+      "path": "services.html",
+      "bytes": 40964,
+      "sha256": "ebdd9bb554f4c9862a13c879b9c8b11fa27f85b81fc90e200ce904b846a948e2"
+    },
+    {
+      "path": "blog.html",
+      "bytes": 28271,
+      "sha256": "76418701cf0601d19733c38478da280bd93a5830d80d2b502a02cfdc0826fa9f"
+    },
+    {
+      "path": "gallery-image.html",
+      "bytes": 20447,
+      "sha256": "2b6cff3969da0bf14d0ab5b3a43cd464f0202c0e5aaf931ece1cf1b83562ba82"
+    },
+    {
+      "path": "faq.html",
+      "bytes": 21431,
+      "sha256": "a90a30bf0feb3ba50f7a414a58db8f38ba4039456422e26984ca93504237c6bf"
+    },
+    {
+      "path": "services-details-HolisticServices.html",
+      "bytes": 30561,
+      "sha256": "c9b26c0435ba28f60da0c161ab2e9967ae01cb5f394ab0da72e517bc7b428db2"
+    },
+    {
+      "path": "post.html",
+      "bytes": 23401,
+      "sha256": "19541ec719e4d35cddd53d0031d80ab4d1d5cfff087385b26caa3cb2df64a51a"
+    },
+    {
+      "path": "services-details-CleaningPrevention.html",
+      "bytes": 30565,
+      "sha256": "9f07c57d23490200cb53338609faba8528c660fc9741c1d5eeed4b4c2dd6d048"
+    },
+    {
+      "path": "about.html",
+      "bytes": 41187,
+      "sha256": "c66603fa96d6dff396e6b30b5ba5fe2723523256a2f4c1eeaf97ae826e51a986"
+    },
+    {
+      "path": "contact.html",
+      "bytes": 26758,
+      "sha256": "b55eee68ccc666745caff9808bcda54c598efe72bd81855b7af32ba770687fe6"
+    },
+    {
+      "path": "team.html",
+      "bytes": 26325,
+      "sha256": "41b2d574cf965b0a8f652a2bfc574fc29cbc7fe6be1cfa02e348840e3529caa0"
+    },
+    {
+      "path": "services-details.html",
+      "bytes": 31157,
+      "sha256": "fc82c86fbc195dab8958c0918289d6140ae3e2067f6ec09b960348d89d34617f"
+    },
+    {
+      "path": "services-details-ExtractionsPreservation.html",
+      "bytes": 30571,
+      "sha256": "d69d8f596f28b0ea085f14298644b0b0dc6ebf38fae8f3c21d124bebf6cf6f88"
+    },
+    {
+      "path": "testimonials.html",
+      "bytes": 21137,
+      "sha256": "806871a94a25e83468f5537e59abd379287fbca9cccfaad02205868caf66562e"
+    },
+    {
+      "path": "services-details-OralAppliances.html",
+      "bytes": 30559,
+      "sha256": "7ac89f78b30873097e93015274dc4d57253a0cf03a40488bbef9aa5a417715f7"
+    },
+    {
+      "path": "services-details-DentalImplantsCranford.html",
+      "bytes": 30562,
+      "sha256": "3fe0ec0743d3368fd590b3711283ea0034b158320fe16a793c95cbe2fc63ed5e"
+    },
+    {
+      "path": "services-details-ToothReplacement.html",
+      "bytes": 30562,
+      "sha256": "feb2976747078d8a3419d7611932bca15f9f9f33964b956ee8fa92ae1a879228"
+    },
+    {
+      "path": "index.html",
+      "bytes": 65368,
+      "sha256": "bee8ef820f0e9a6f249cba531f01ff1f8e897f64c01e2621a1c5be15b303fdcc"
+    },
+    {
+      "path": "pricing.html",
+      "bytes": 26438,
+      "sha256": "9832b448e71b32b39ed1e1b3e2fca62eb5810342ee56da23120279250f066fe2"
+    },
+    {
+      "path": "fonts/fa-regular-400.ttf",
+      "bytes": 1038004,
+      "sha256": "6d814a4a1c1c50a1548c59f73c3c6b2bb58c6873deafc4630d1fba949f6df507"
+    },
+    {
+      "path": "fonts/dental-icons.woff",
+      "bytes": 16088,
+      "sha256": "3212ddea3101cd306e4b31b2bb1a388b7018cd626232696054995ee5bea9036e"
+    },
+    {
+      "path": "fonts/fa-regular-400.woff2",
+      "bytes": 395444,
+      "sha256": "b85c4d4bcb7be039d30281d940426203622394a85d4cd2b43048b57a924a7d51"
+    },
+    {
+      "path": "fonts/fa-duotone-900.woff2",
+      "bytes": 418168,
+      "sha256": "3ec4aa409f574696a5ef462b7a7d6d1172e28bda24e7dcb3a5218b829330305a"
+    },
+    {
+      "path": "fonts/fa-brands-400.woff2",
+      "bytes": 110932,
+      "sha256": "063b9237e402c98dfb77a66e5de0d02d953640fc8fe44911808c2fdcb80df26e"
+    },
+    {
+      "path": "fonts/dental-icons.svg",
+      "bytes": 29701,
+      "sha256": "3cafe5270ebcdd93d17e720d9faa6c0d0edbbf5ca6250783c9a70469e6bc0775"
+    },
+    {
+      "path": "fonts/themify.svg",
+      "bytes": 234269,
+      "sha256": "f7af2e096c85c2ed6f68bb086f792c67f2a6041cbb814fc2796912b2eef4fe76"
+    },
+    {
+      "path": "fonts/fa-brands-400.ttf",
+      "bytes": 192100,
+      "sha256": "9d58972f238ad107ff27f5a0d23a7f7b49cda8e5d1df1312ff70998bccf8733d"
+    },
+    {
+      "path": "fonts/fa-solid-900.woff2",
+      "bytes": 327824,
+      "sha256": "bdb9ca4674e16a180ad38ba1b55ea1224a38677e604f5c5e560b85194970b85a"
+    },
+    {
+      "path": "fonts/fa-thin-100.woff2",
+      "bytes": 465964,
+      "sha256": "5989b63e9aa5d85690d30fc60a5a8cd69515083f8ec23c298b26eb1546d56584"
+    },
+    {
+      "path": "fonts/fa-solid-900.ttf",
+      "bytes": 907696,
+      "sha256": "85a820821f87aeb5151e9f71cb72281fd651ac5ad92976c72adb5e951d47f74d"
+    },
+    {
+      "path": "fonts/themify.ttf",
+      "bytes": 78584,
+      "sha256": "350663a4665e00072c68a87ad3fa0be47b8a91424127f5f3e09f664197295f01"
+    },
+    {
+      "path": "fonts/themify.woff",
+      "bytes": 56108,
+      "sha256": "0db5c5a1475eb7a3e5028983ea1e642d1b2c00faff6a250a37502b0f3832a4a7"
+    },
+    {
+      "path": "fonts/themify.eot",
+      "bytes": 78748,
+      "sha256": "dff415daec911b65dca5be02071a1825b75508ff158de5b8d85976957db931cb"
+    },
+    {
+      "path": "fonts/dental-icons.eot",
+      "bytes": 27916,
+      "sha256": "062deffe40cf3b66e88d69b49da51ab2ee7c416f5629a65f41a0a8fa1874e21e"
+    },
+    {
+      "path": "fonts/fa-duotone-900.ttf",
+      "bytes": 1267308,
+      "sha256": "709d015ec16d7ce5ec9f449bb23bca984d880e1eab4e1e8e639745a20d0c2371"
+    },
+    {
+      "path": "fonts/fa-thin-100.ttf",
+      "bytes": 1269336,
+      "sha256": "ef0c125163e15b48439c471b5df893d6edec7cdae1c981b1b3673fb9459723ea"
+    },
+    {
+      "path": "fonts/fa-v4compatibility.ttf",
+      "bytes": 10172,
+      "sha256": "c0f4a9c40d924c5065e65f147049462d6d6ec4370e6deb5408253466d418aa15"
+    },
+    {
+      "path": "fonts/fa-v4compatibility.woff2",
+      "bytes": 4568,
+      "sha256": "5ae1ee92ae693b14ecc7afbfe88ad70bc07fa7863b68ac6186b915f99654833f"
+    },
+    {
+      "path": "fonts/dental-icons.woff2",
+      "bytes": 13988,
+      "sha256": "ef31c9608c62d34f285c3076b7ae139a4d08799ba1903ccc900f3c4e118395ed"
+    },
+    {
+      "path": "fonts/fa-light-300.woff2",
+      "bytes": 429424,
+      "sha256": "38b2e62bfbbeed100be9d1de0fcbd08fbe4dec34d2fb7f5986ce2ee233ad6546"
+    },
+    {
+      "path": "fonts/fa-light-300.ttf",
+      "bytes": 1158388,
+      "sha256": "d4eb15d2b72cec84e03f4df5caeef84e9c46fca7e852f5bd401cbc02e978c272"
+    },
+    {
+      "path": "fonts/dental-icons.ttf",
+      "bytes": 27716,
+      "sha256": "da1b1bdfba2db825f054c6042b923393995cc4c2db1a7e38a61f536dcd0b0116"
+    },
+    {
+      "path": "img/favicon.png",
+      "bytes": 7728,
+      "sha256": "925d48ae574ed2bc55142ed57fdd55071fcb08c82e6ce1e14f5a15857f3fdd8e"
+    },
+    {
+      "path": "img/z_about3.jpg",
+      "bytes": 89590,
+      "sha256": "c389d8216639eb1fab30d041621126646d047aa18b83af64f807449bd8681d3c"
+    },
+    {
+      "path": "img/logo.png",
+      "bytes": 2121123,
+      "sha256": "00c037a7cde22e16d67a1f3e5656ea9eeb5da5840ca72aed8930658cabee8620"
+    },
+    {
+      "path": "img/contact4.jpg",
+      "bytes": 38215,
+      "sha256": "6d6639251d624a73733816f46bad15534e6047c5c0e5a8e7297d621dbb920aac"
+    },
+    {
+      "path": "img/z_about.jpg",
+      "bytes": 86096,
+      "sha256": "a5fce144773313f55cfe3bfed53f2a7c3d29cb82a9b55f6ab3206bd6d0b5994e"
+    },
+    {
+      "path": "img/z_PTJ_logo.png",
+      "bytes": 9643,
+      "sha256": "a0e923ae544daa565564d7dfd3f79517e97d6f56f8a04ac049ba46503dccca06"
+    },
+    {
+      "path": "img/about6.jpg",
+      "bytes": 60192,
+      "sha256": "d8f2988ca5a2b1bc400777a95f4b0d8b8af06647fac44f719b939d9971e3db61"
+    },
+    {
+      "path": "img/logo-light.png",
+      "bytes": 9582,
+      "sha256": "cc0a74e626195f1a77745865b8fd4574ba220980b9f80c678786c99f4f9f316b"
+    },
+    {
+      "path": "img/about4.jpg",
+      "bytes": 117961,
+      "sha256": "aa1093a6dfb77e07241791f8427c6e8d9a8f33944bf29c0018757c3ea5db02c1"
+    },
+    {
+      "path": "img/TAN.jpeg",
+      "bytes": 62380,
+      "sha256": "3219f225b1f1a5ee36b37bb02337be119be70985ff463fed1579af069b08efbb"
+    },
+    {
+      "path": "img/about106.jpg",
+      "bytes": 57848,
+      "sha256": "ca5488a6d9281c359a821a903ab93c068685b6c9b9220c6b5e49f9596b821bc6"
+    },
+    {
+      "path": "img/about7.jpg",
+      "bytes": 41082,
+      "sha256": "9bc1d68b5b9268b532497ed192ef19d604b614bbeb552ed8d99aa50718427920"
+    },
+    {
+      "path": "img/about103.jpg",
+      "bytes": 64343,
+      "sha256": "e2eb599301e536510c057155a7c2b5535dbb69c4335b0387c088e5a825c28219"
+    },
+    {
+      "path": "img/about.jpg",
+      "bytes": 236019,
+      "sha256": "cc688323af23fe05d75a2474713d628fc02ea1012dc7c597ea080340c71242a2"
+    },
+    {
+      "path": "img/contact2.jpg",
+      "bytes": 47335,
+      "sha256": "07f7508684353166157dc77a8bf27e70f3aba706426615d259e0d554f3accd62"
+    },
+    {
+      "path": "img/contact.jpg",
+      "bytes": 80727,
+      "sha256": "cbdb256c6e19769be81426ebc18ccbda0ca358133f031798cf11ccb9006735f7"
+    },
+    {
+      "path": "img/z_about2.jpg",
+      "bytes": 77334,
+      "sha256": "19aca06cac53a88803cad0cd63c435ff0b68414d8aa4b5e46c0d1ddc72bf7961"
+    },
+    {
+      "path": "img/contact3.jpg",
+      "bytes": 31411,
+      "sha256": "e2be33753ff1f416cbab8e2ca1662f963df3a0055537e97b4a88a4f4dd140c30"
+    },
+    {
+      "path": "js/vegas.slider.min.js",
+      "bytes": 9895,
+      "sha256": "4215405f4851c85411c1aa87a9d5139f40c9ce99459a2b84875e61413a35b56f"
+    },
+    {
+      "path": "js/jquery.stellar.min.js",
+      "bytes": 12597,
+      "sha256": "1dd583c8ff8eaeeb2f5622845527acbf0e4a875e335b4b706b305590d5a7b456"
+    },
+    {
+      "path": "js/jquery.magnific-popup.js",
+      "bytes": 41730,
+      "sha256": "c24ed0313cd813b049be4a3d06ccb03f34662b3842b4840a4ee37afc1f6c466c"
+    },
+    {
+      "path": "js/imagesloaded.pkgd.min.js",
+      "bytes": 5441,
+      "sha256": "cc0761f78d43a0b157b46506641105ff8ea4601efa6aa56adda0938dac1c4b0b"
+    },
+    {
+      "path": "js/smooth-scroll.min.js",
+      "bytes": 5598,
+      "sha256": "78fb1bd09ce33d607f1c7928f1c9fe45af9ba8c2723bfea45c8be5916bbcc50c"
+    },
+    {
+      "path": "js/YouTubePopUp.js",
+      "bytes": 1232,
+      "sha256": "71f6fa21825434a5d983115356db6b7bb58c47cd3fd44ed6f5169c362622e6fd"
+    },
+    {
+      "path": "js/jquery-migrate-3.5.0.min.js",
+      "bytes": 13949,
+      "sha256": "27ce265507cac2ef19509752a5471fc3ebef6c83ef1e06e26cf7b189d22a021a"
+    },
+    {
+      "path": "js/jquery.waypoints.min.js",
+      "bytes": 8835,
+      "sha256": "114484b6bcaa6c2e7ac8301929d6bcda18a7f71924a835c2e6c01fdbd6421f5b"
+    },
+    {
+      "path": "js/jquery-3.7.1.min.js",
+      "bytes": 87533,
+      "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a"
+    },
+    {
+      "path": "js/custom.js",
+      "bytes": 27343,
+      "sha256": "9cddeac859ffbd874304678d0a3b6d726ccc1f7598e652f6cc67c59385909d70"
+    },
+    {
+      "path": "js/owl.carousel.min.js",
+      "bytes": 44342,
+      "sha256": "a53c43f834b32309b084ea9314df8307e9c78cee2202c6e07f216ae4ae5b704d"
+    },
+    {
+      "path": "js/wow.min.js",
+      "bytes": 17113,
+      "sha256": "d06d8b51db95311fb3b5efedd3fdf939dbc3123c5261ce95e005c8cd13572008"
+    },
+    {
+      "path": "js/scrollIt.min.js",
+      "bytes": 1418,
+      "sha256": "17bce6dedd29059fce26b193a91924e9901e41370999e6147505dd25b319c1ce"
+    },
+    {
+      "path": "js/bootstrap.min.js",
+      "bytes": 60539,
+      "sha256": "7b0f14895d69247fd88e93840489cfd47c55bd3fd27eb0a6c12a14cc5f492207"
+    },
+    {
+      "path": "js/jquery.isotope.v3.0.2.js",
+      "bytes": 34694,
+      "sha256": "625503ddbed92974eb98acad3b007e335e791694c54a40057062689cd64b4bdd"
+    },
+    {
+      "path": "js/popper.min.js",
+      "bytes": 18555,
+      "sha256": "7688bd055ffffedd083a935cf6e0ccb9c53c1cb738a5a70d66902c2d7d8aec0e"
+    },
+    {
+      "path": "js/modernizr-2.6.2.min.js",
+      "bytes": 15413,
+      "sha256": "08b863f1d96a63a08d1db286e9f26c766715be3c470f9c3b93a208169b22a5be"
+    },
+    {
+      "path": "video/PTJ_video5.mp4",
+      "bytes": 433283,
+      "sha256": "e3de93cbe0ee5206ef2ee7711cd9712f8f2e6e58f5d95c3308ca0f5d317352df"
+    },
+    {
+      "path": "video/PTJ.mp4",
+      "bytes": 490334,
+      "sha256": "27b4f2a69d4ab179184b95af11a3aa0b9669e9037ceb4c46678da8fbf00cbd2d"
+    },
+    {
+      "path": "video/PTJ video 2.mp4",
+      "bytes": 603833,
+      "sha256": "2aa4dfed16517f89ff62504dcafdaadef7ceefc2779a01ab26b78d1eb6475ac7"
+    },
+    {
+      "path": "css/style.css",
+      "bytes": 141119,
+      "sha256": "ad081e26e69467f20adc0bf6cffad03158b573bcce97ba84e06872474df667cc"
+    },
+    {
+      "path": "css/plugins.css",
+      "bytes": 817,
+      "sha256": "fe2322f61dfefaf6abcec4606723be228e756b896ea8e8ba5b42d68f71a986f2"
+    },
+    {
+      "path": "img/team/e.jpg",
+      "bytes": 32301,
+      "sha256": "37d8f555ff3c8742ddf39d9e291886cf2e37efacf6ff9ad360b09478e477496c"
+    },
+    {
+      "path": "img/team/a.jpg",
+      "bytes": 37244,
+      "sha256": "9f53e788725dd2022a5794f6f31c906fd7c9020054396ff34c5ed00affdfd3b9"
+    },
+    {
+      "path": "img/team/5.png",
+      "bytes": 11135,
+      "sha256": "fcfda54d432519fab0184bc9bb2692bb2ac187a7c82033f5758b56399ad6e5c2"
+    },
+    {
+      "path": "img/team/f.jpg",
+      "bytes": 30838,
+      "sha256": "a885afbfd35d806fa16df0d2ad3be3a7b1ead64fd0be554b0d8948904def3ba8"
+    },
+    {
+      "path": "img/team/6.png",
+      "bytes": 20431,
+      "sha256": "f092e872197b3ee8ff439b71b2ab5e6ed0d74f5bdf703d3d74879310ab36e51b"
+    },
+    {
+      "path": "img/team/3.png",
+      "bytes": 6806,
+      "sha256": "f150143b83c2e43b3053b6c34898bf40b02c2e822d16548c710d5029a995ee43"
+    },
+    {
+      "path": "img/team/b.jpg",
+      "bytes": 26541,
+      "sha256": "1abfbbd1f428020abe9e841cc50e007ac64d2c027c8b58ad3d1f8153b672ae22"
+    },
+    {
+      "path": "img/team/1.png",
+      "bytes": 11588,
+      "sha256": "a822d008c26b3129c6fd1d4392d26d6115b83431dfcdf0321f86822c60e488d3"
+    },
+    {
+      "path": "img/team/4.png",
+      "bytes": 26511,
+      "sha256": "6965b9bde2cbd81b9137ebf9111f13860035912bde0dc1b4ffc692afcdc1bd64"
+    },
+    {
+      "path": "img/team/d.jpg",
+      "bytes": 35068,
+      "sha256": "38bc3becd1860b72f27c471f0f71d48777e104b9b2cce8af26e1587168f4ef2d"
+    },
+    {
+      "path": "img/team/c.jpg",
+      "bytes": 27678,
+      "sha256": "790632e0438a278193463392f0163e4b7ce5150099442173fb1b6d9548645877"
+    },
+    {
+      "path": "img/team/2.png",
+      "bytes": 25256,
+      "sha256": "d7c165576bf2f5685ce498bda7bb5dc197241db6dba405ef8e1e3c3ac460bcbe"
+    },
+    {
+      "path": "img/services/08.jpg",
+      "bytes": 45339,
+      "sha256": "3ffe1e17ac2b09933f5a05848f1813ac7dcd1df3688d8ac5a9c2a7dc12264263"
+    },
+    {
+      "path": "img/services/02.jpg",
+      "bytes": 48734,
+      "sha256": "7e43d44fe4b6db8ecfc6c17f172bd497e6194646773dc8a5c6bb342c6100a870"
+    },
+    {
+      "path": "img/services/04.jpg",
+      "bytes": 35367,
+      "sha256": "7c57d05f7ea92451a8b25880ba46c7475f45f8ff1e621b7b4f5aef073f005df0"
+    },
+    {
+      "path": "img/services/01.jpg",
+      "bytes": 39254,
+      "sha256": "64988e073160c39a5462f489d133141929661f0cfb6e671accbbab06ef4664af"
+    },
+    {
+      "path": "img/services/06.jpg",
+      "bytes": 54033,
+      "sha256": "c316a84535f5b6b14e6ce26e31b9da215f3c264835f060528ce81f3ab664fcf7"
+    },
+    {
+      "path": "img/services/07.jpg",
+      "bytes": 46285,
+      "sha256": "ad6210b73f18590165c697053687409c5bf318492383fda21a3dd1e26a3e43a1"
+    },
+    {
+      "path": "img/services/03.jpg",
+      "bytes": 69364,
+      "sha256": "b139c6361fd4cea7abc63544c83669f350f682ee47417c96bb6aa775a547a625"
+    },
+    {
+      "path": "img/services/05.jpg",
+      "bytes": 61560,
+      "sha256": "a55f569ee2e845087f31df7cb40cfe07b641d1a2e1bb1866354c43bfac7c5df0"
+    },
+    {
+      "path": "img/slider/9.jpg",
+      "bytes": 84957,
+      "sha256": "2e8a94f6aa502a4b18131b0cf092ba68b52b9811ac1b4ccd18a8fcde32dce2dd"
+    },
+    {
+      "path": "img/slider/banner.jpg",
+      "bytes": 88719,
+      "sha256": "bb5644d1be2e9da94983f6376d3a56e168b365a3e9447c09683258d36a351b4d"
+    },
+    {
+      "path": "img/slider/2.jpg",
+      "bytes": 117352,
+      "sha256": "98e298cf2ba86a01ad4a3c5f56b81339d00f7c2ca0723bc8401940aedd64b63e"
+    },
+    {
+      "path": "img/slider/8.jpg",
+      "bytes": 112195,
+      "sha256": "b837d7698489ec211ab2fa59cdd28f4bd1c38faab26c9cf45602e12066a5b394"
+    },
+    {
+      "path": "img/slider/5.jpg",
+      "bytes": 122118,
+      "sha256": "c1c363a426bce12e1854f298a5446ce0ddada3309fa597e13e44a0b164f22cca"
+    },
+    {
+      "path": "img/slider/1.jpg",
+      "bytes": 116065,
+      "sha256": "d18b5ab180b2f2b7ab53b54eecf6fdb0832a0a7f8c2e96883cd25ad1e024e041"
+    },
+    {
+      "path": "img/slider/4.jpg",
+      "bytes": 154742,
+      "sha256": "ab03b9538239be39af1176eef98821367b09404538a0021cb65b9c39d41351f7"
+    },
+    {
+      "path": "img/slider/3.jpg",
+      "bytes": 78707,
+      "sha256": "3fa7dbe868b5666843ef518fe2a9e8f911d82702d6fd591d6a7f7ca0337a119d"
+    },
+    {
+      "path": "img/slider/7.jpg",
+      "bytes": 78463,
+      "sha256": "7c937c61ce5eb96097ed562d2ae21c59ae473380178b638a3aba2571e8d65089"
+    },
+    {
+      "path": "img/slider/6.jpg",
+      "bytes": 55200,
+      "sha256": "94c1719529e405249c3ba0cc2d93653b2d710ae77383add3178f468192628dee"
+    },
+    {
+      "path": "img/ba/b1.jpg",
+      "bytes": 27675,
+      "sha256": "0ad1dcb67a1c1a9e6f16bc9cefa4975274fc4addfa8ea24cbd7aae57e5b23f79"
+    },
+    {
+      "path": "img/ba/b2.jpg",
+      "bytes": 55539,
+      "sha256": "a43218cde8750ac2aca7bed6a868c71fbe4814a55a074ec5443f82b697da4798"
+    },
+    {
+      "path": "img/ba/a1.jpg",
+      "bytes": 29677,
+      "sha256": "b2f4db0dd3170435e20582bf8aeeac00c79eef324004f6fdb6d9ae8ae958d8aa"
+    },
+    {
+      "path": "img/ba/a2.jpg",
+      "bytes": 36746,
+      "sha256": "e4e18c4f4cc49fcde7a709a5005f74905364e1c61ef5a6be55ee371d89a0adf0"
+    },
+    {
+      "path": "img/ba/a3.jpg",
+      "bytes": 25397,
+      "sha256": "30ff8741ab3f6051eb46bcf8638254b995075033f883a918e4a2d0ed48ce9510"
+    },
+    {
+      "path": "img/ba/b3.jpg",
+      "bytes": 26656,
+      "sha256": "8c7c195d542016b78eda1e90c544360c3c5b4a4edd9ee4edc7401de5994fe2bc"
+    },
+    {
+      "path": "img/blog/02.jpg",
+      "bytes": 102958,
+      "sha256": "b5bc2e20401f0f431554a022fa8c1917dc7d8d9cbe249195ce2df58816005405"
+    },
+    {
+      "path": "img/blog/04.jpg",
+      "bytes": 102462,
+      "sha256": "bcf5d5d611cc5711c2e8fa3af33beac8e5e53bdb988adb225050d9059beebefe"
+    },
+    {
+      "path": "img/blog/01.jpg",
+      "bytes": 107846,
+      "sha256": "cfe1104cf5e68fda21ffc6b03bb2c8045f0319f47809065a26c5601e39bace09"
+    },
+    {
+      "path": "img/blog/06.jpg",
+      "bytes": 113734,
+      "sha256": "6352cce3d704f845cd11e790a7c77c35a716756882757ad1c2cdabcbbdf63d00"
+    },
+    {
+      "path": "img/blog/03.jpg",
+      "bytes": 99102,
+      "sha256": "add8bba22553465bc49774d1814972b5bd23bd3ba128da2b6c891da1aa29b562"
+    },
+    {
+      "path": "img/blog/05.jpg",
+      "bytes": 98332,
+      "sha256": "0a92eb1d32bf5a5633be93201c6ca46f02fc08d8c9e87630795cd347e9f83d8f"
+    },
+    {
+      "path": "img/services/icons/instruments1.svg",
+      "bytes": 738,
+      "sha256": "d45bbb20fd71e9146cca0495c5d359592c09358187dc2b2d95aadca82209ecde"
+    },
+    {
+      "path": "img/services/icons/implant03.png",
+      "bytes": 45759,
+      "sha256": "8163884c44d1f8e684ad30d9b16006569fa0d8f33e9d17f78a57a531705c27fd"
+    },
+    {
+      "path": "img/services/icons/implant2.png",
+      "bytes": 2391207,
+      "sha256": "824692c0e0588596540869007c05eac26675523ac6f7eeba0516da7b41617f87"
+    },
+    {
+      "path": "img/services/icons/tooth3.png",
+      "bytes": 2324907,
+      "sha256": "5820ce7f7d89a7387d662ca278bda0001f6b52e9c20502eff4850dcf09fa72ff"
+    },
+    {
+      "path": "img/services/icons/cran.png",
+      "bytes": 30838,
+      "sha256": "11dc94e8413131bdaa4e44a16a3b898b3656eeafec5b5160cfd881cb5889dc4f"
+    },
+    {
+      "path": "img/services/icons/intru.png",
+      "bytes": 2175052,
+      "sha256": "182dde5c3e0473069d12d134573d0187a157357d30bf3d4d8886aa6e1f3c2def"
+    },
+    {
+      "path": "img/services/icons/implant.png",
+      "bytes": 2130091,
+      "sha256": "32d680456bc8f63df04e7e819321fcaf5ec1fb4c7010204c674f689c544897f4"
+    },
+    {
+      "path": "img/services/icons/tooth1.png",
+      "bytes": 2411154,
+      "sha256": "000ae7eef2eb29e1d6b734458f93f64af39809f1ec26b6a257a1ba75185583da"
+    },
+    {
+      "path": "img/services/icons/intru2.png",
+      "bytes": 26993,
+      "sha256": "b002a4d66d5eed46e88f788f5a5a4fd9f3fa50b43c4e182f2f0b2baf151035ab"
+    },
+    {
+      "path": "img/services/icons/implant1.png",
+      "bytes": 142086,
+      "sha256": "ab23fab1312f3793515d6bc1ac533dd17ab0ee846b91a9fa318fa86ed4b68c3d"
+    },
+    {
+      "path": "img/services/icons/tooth.png",
+      "bytes": 2292155,
+      "sha256": "b2f9f9de43aadc0618e8ca4e7fdd49070f29f892cf953f836b884b2937150cf4"
+    },
+    {
+      "path": "img/services/icons/instruments.png",
+      "bytes": 2193162,
+      "sha256": "3b5bbaadab183831c6458638330ed5317302ee3fea51500bcafaf8d70262b67c"
+    },
+    {
+      "path": "css/plugins/owl.carousel.min.css",
+      "bytes": 3351,
+      "sha256": "521410e1fc44780061e09adc980275fb5ea277fd5d9e538454214ec4379ff4bc"
+    },
+    {
+      "path": "css/plugins/close.png",
+      "bytes": 1779,
+      "sha256": "d3011e1187ad7b451f07165e869685d173327c9c05b8693b46e91f9d16e9de69"
+    },
+    {
+      "path": "css/plugins/themify-icons.css",
+      "bytes": 16417,
+      "sha256": "cb9d4f4d62a9873cd47ea163de4ccdeb953b809bee25ce53cc3823d7501177e4"
+    },
+    {
+      "path": "css/plugins/magnific-popup.css",
+      "bytes": 6887,
+      "sha256": "c5f097fe9b28b99efc0e81990bcc4106fe8daa7676492fe58e61d234c48949e9"
+    },
+    {
+      "path": "css/plugins/bootstrap.min.css",
+      "bytes": 232111,
+      "sha256": "d85327d99c7a3ee1f9b5d0500d1370acea3ad2db39c163c2f51f232baedbdede"
+    },
+    {
+      "path": "css/plugins/YouTubePopUp.css",
+      "bytes": 3010,
+      "sha256": "310c5623f2d72de83265d2c5693c25f47e77df31ae79d4dd8e18363da4c2f8e1"
+    },
+    {
+      "path": "css/plugins/font-awesome-pro.css",
+      "bytes": 512113,
+      "sha256": "6685b392cfec0f1ecfd5cd4223356d0fbaf0c1a6a101c05f006bbfd2a3da0514"
+    },
+    {
+      "path": "css/plugins/owl.theme.default.min.css",
+      "bytes": 1013,
+      "sha256": "924b0dc630d1c5dff9fa31aead9509775b1d476bfe0a5ac2977b2f11205a26ac"
+    },
+    {
+      "path": "css/plugins/animate.min.css",
+      "bytes": 71552,
+      "sha256": "bb6bcb68b4b10d5c21dbbe7297bb47db61c4b06823dd66c82528cc74efe5102b"
+    },
+    {
+      "path": "css/plugins/vegas.slider.min.css",
+      "bytes": 9411,
+      "sha256": "b232b8bc2289a3afd41356356b7c6cd3a6e88b2a3e2a539c77e6968b7b130365"
+    },
+    {
+      "path": "css/plugins/dental-icons.css",
+      "bytes": 2182,
+      "sha256": "a0d86e41a90a6621edd92d30ddb950cb37e2641780ddc822b7c3f1125b230460"
+    }
+  ]
+}
