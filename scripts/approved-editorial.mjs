@@ -63,6 +63,17 @@ export function applyEditorial(b,file){
   const p=one(insurance,n=>n.tagName==='p'&&text(n).includes('Principles guiding'));html(p,'<strong>We participate with major insurances</strong><br>• We participate with most major PPO insurances.<br>• If you don\'t have insurance, we offer in-house financing.');
   const icall=one(insurance,n=>cls(n,'call-button'));disable(icall.parentNode.parentNode,'insuranceAppointment');
   insertBefore(core,insurance);
+  // R02: move entire source nodes; preserve all markup and disabled sections.
+  const about=one(b,n=>n.parentNode===b&&cls(n,'about')&&text(n).includes('Your Trusted Partner'));
+  about.approvedHomeAbout=true;
+  const services=one(b,n=>n.parentNode===b&&cls(n,'services3'));
+  const doctors=one(b,n=>n.parentNode===b&&cls(n,'team'));
+  const faq=one(b,n=>n.parentNode===b&&cls(n,'faqs'));
+  const articles=one(b,n=>n.parentNode===b&&cls(n,'blog'));
+  let previous=hero;
+  for(const block of [core,about,services,pricing,insurance,doctors,faq,articles]){
+    remove(block);insertAfter(previous,block);previous=block;
+  }
  }
  if(file==='about.html'){
   const matute=section(b,'Dr. Jonnathan Matute is');const vega=clone(matute);set(vega,'id','dr-vega');html(title(vega),'Dr. Katherine <span>Vega</span>');

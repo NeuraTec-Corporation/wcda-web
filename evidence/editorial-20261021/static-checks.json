@@ -1,6 +1,16 @@
 {
   "baseline": "8ce1f2ae6f5105cfa34b9178c0f82288be0268e5",
   "pages": 25,
+  "homeSectionOrder": [
+    "The core values",
+    "Your Trusted Partner",
+    "Dental Care",
+    "In House Plans",
+    "Insurances",
+    "Our Expert",
+    "Popular Questions",
+    "Recent Articles"
+  ],
   "assertions": "PASS",
   "original": {
     "exact": 141,

@@ -255,7 +255,7 @@ function jsxNode(node, context, depth = 0) {
     context.isHome &&
     !context.approvedSectionsInserted &&
     node.tagName === "div" &&
-    hasClasses(node, "about", "section-padding")
+    node.approvedHomeAbout === true
   ) {
     context.approvedSectionsInserted = true;
     return "<AboutServicesHomologation managedByLegacyRuntime />";

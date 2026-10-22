@@ -22,10 +22,10 @@ Disabled JSX remains behind src/content/editorial-visibility.ts flags. No DOM/CS
 | H05 | Oral Surgery label, same URL | Visual review |
 | H06 | Dental Implants label, same URL | Visual review |
 | H07 | Three stock cards, approved names/roles; extras disabled | Visual review |
-| H08 | Pricing moved to Trusted position; Trusted disabled | Visual review |
+| H08 | Superseded by R02 order below; Trusted remains disabled | Visual review |
 | H09 | In House Plans | Visual review |
 | H10 | Core Values appointment row disabled, capture confirmed | Visual review |
-| H11 | Insurance clone immediately before Core Values | Other team/FAQ sections retain original relative order |
+| H11 | Insurance layout retained; position superseded by R02 | Visual review |
 | H12 | Insurance copy/list in original two-column composition | Visual review |
 | A01 | Vega duplicate with unique SVG path ID | Biography pending approval; no Matute credentials attributed to Vega |
 | A02 | Trusted/What We Do disabled | Visual review |
@@ -51,3 +51,12 @@ Save local changes before fetching and switching to ajustes-aprobados-20261021 i
 ## Remote browser pass
 
 Chrome at 1363px: Home, About and Contact navigation checked. Three active team cards in each approved team; no About FAQ or Blog menu; Core Values has no call-button. Contact fields/schedule inspected. Four Home carousels initialized. HTTP 200 and noindex verified. Evidence: browser-review.json. This does not close tablet/mobile or full pixel comparison.
+
+## R01/R02 — Home follow-up authorized 2026-10-22
+
+Pablo explicitly authorized implementation with “adelante hazlo”.
+
+- R02: after navigation/hero/video: Core Values, About Us, Dental Care services, In House Plans, Insurances, Our Expert Doctors, Popular Questions, Recent Articles, then remaining blocks in their previous relative order. Whole original nodes moved; no design or title changes.
+- Generator identifies the approved Home About node explicitly before serialization so moving Core Values ahead of it cannot replace the wrong section.
+- R01/H03 remains pending: the exact chair screenshot is available, but automatic background extraction changed its geometry/line weights. The generated alternative was not incorporated. Request the standalone original PNG/SVG (not a WhatsApp screenshot) for faithful integration. Text and original circle animation remain unchanged.
+- Reference HTML, old EVOLUCION, production, and Windows localhost instances remain untouched.
