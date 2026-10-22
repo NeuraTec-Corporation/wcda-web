@@ -22,5 +22,10 @@ const sections=walk(h,n=>cls(n,'section-title')).map(n=>txt(n).replace(/\s+/g,' 
 const expectedOrder=['The core values','Your Trusted Partner','Dental Care','In House Plans','Insurances','Our Expert','Popular Questions','Recent Articles'];
 const positions=expectedOrder.map(t=>{const matches=sections.flatMap((s,i)=>s.toLowerCase().includes(t.toLowerCase())?[i]:[]);assert.equal(matches.length,1,`Unique Home heading: ${t}`);return matches[0];});
 assert(positions.every((p,i)=>i===0||p>positions[i-1]),`Home section order: ${sections.join(' > ')}`);
-const report={baseline:'8ce1f2ae6f5105cfa34b9178c0f82288be0268e5',pages:files.length,homeSectionOrder:expectedOrder,assertions:'PASS',original:{exact:integrity.filter(x=>x.status==='exact').length,gitLineEndingsOnly:integrity.filter(x=>x.status==='git-lf-normalization').length,mismatch:0},pending:['H03 central supplied chair asset; text changed, original icon retained pending faithful asset','A01 Vega biography approval','Browser visual and interaction verification'],integrity};
+const chair=walk(h,n=>n.tagName==='img'&&attr(n,'alt')==='Dental chair');
+assert.equal(chair.length,1,'One approved chair in Home');
+const chairOutput='out'+attr(chair[0],'src');
+assert(fs.readFileSync(chairOutput).equals(fs.readFileSync('src/assets/wcda-01-01.png')),'Chair exported byte-for-byte');
+assert(!walk(h,n=>cls(n,'in-circle')&&walk(n,c=>cls(c,'dental-icon-asset-8')).length).length,'Old center icon replaced');
+const report={baseline:'8ce1f2ae6f5105cfa34b9178c0f82288be0268e5',pages:files.length,homeSectionOrder:expectedOrder,assertions:'PASS',original:{exact:integrity.filter(x=>x.status==='exact').length,gitLineEndingsOnly:integrity.filter(x=>x.status==='git-lf-normalization').length,mismatch:0},pending:['A01 Vega biography approval','Browser visual and interaction verification'],integrity};
 fs.mkdirSync('evidence/editorial-20261021',{recursive:true});fs.writeFileSync('evidence/editorial-20261021/static-checks.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({...report,integrity:undefined},null,2));

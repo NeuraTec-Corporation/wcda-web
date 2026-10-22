@@ -3,6 +3,7 @@
 import $ from "jquery";
 import { useEffect, useRef } from "react";
 
+import dentalChair from "@/assets/wcda-01-01.png";
 import aboutImage from "../../reference-html/img/about.jpg";
 import service01 from "../../reference-html/img/services/01.jpg";
 import service02 from "../../reference-html/img/services/02.jpg";
@@ -238,7 +239,13 @@ export default function AboutServicesHomologation({
                         </svg>
                       </div>
                       <div className="in-circle text-center">
-                        <i className="dental-icon-asset-8" />
+                        <img
+                          src={dentalChair.src}
+                          alt="Dental chair"
+                          width={60}
+                          height={54}
+                          style={{ width: 60, height: "auto", display: "block" }}
+                        />
                       </div>
                     </div>
                   </a>

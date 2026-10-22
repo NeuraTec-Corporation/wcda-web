@@ -17,7 +17,7 @@ Disabled JSX remains behind src/content/editorial-visibility.ts flags. No DOM/CS
 |---|---|---|
 | H01 | Dental Clinic badge disabled | Visual review |
 | H02 | Exact approved hero text | Visual review |
-| H03 | Rotating text updated; original tooth retained | Faithful chair asset: supplied screenshot includes WhatsApp frame; AI extraction altered details and was rejected, not used |
+| H03 | Supplied wcda-01-01.png replaces center icon; rotating text preserved | User visual review |
 | H04 | Dental Care title and paragraph | Visual review |
 | H05 | Oral Surgery label, same URL | Visual review |
 | H06 | Dental Implants label, same URL | Visual review |
@@ -62,3 +62,7 @@ Pablo explicitly authorized implementation with “adelante hazlo”.
 - Reference HTML, old EVOLUCION, production, and Windows localhost instances remain untouched.
 
 Preview navigation check found /index.html returned 404 while / worked. Added Vercel-only redirect /index.html -> / (temporary 307) to preserve original Home links; Hostinger export is unchanged.
+
+## R01/H03 — supplied PNG integration
+
+Pablo supplied wcda-01-01.png. Copied unchanged to src/assets/wcda-01-01.png and imported by AboutServicesHomologation. Transparent RGBA, 1317×1194. Centered at 60px wide with proportional height, within the existing circle; no recoloring, cropping, generation, SVG text or animation changes. Prior extraction-blocker notes above are historical and superseded by this supplied asset. Export verifier requires byte-for-byte identity.
