@@ -6503,3 +6503,6 @@ body.mfp-zoom-out-cur {
   .navbar .logo-wrapper, .nav-scroll .logo-wrapper { padding-top:3px; padding-bottom:3px; }
 }
 /* Preserve icon-font families. Montserrat applies only to written content. */
+
+/* Keep light text readable on dark photographic sections, including emphasis. */
+.text-white, .section-title.text-white span { color:var(--wcda-beige) !important; }
