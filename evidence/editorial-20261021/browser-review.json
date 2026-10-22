@@ -1,0 +1,20 @@
+{
+  "reviewedCommit": "8452cc095bf9d957920906136d2b5d5c85b40bb5",
+  "viewportWidth": 1363,
+  "browser": "Cloud Chrome",
+  "observed": {
+    "homeTeamActiveCards": ["Dr. Jonnathan Matute", "Dr. Katherine Vega", "Jennifer Oliveira, RDH"],
+    "aboutTeamActiveCards": ["Jessica Matute", "Caren Pino", "Katie Calandriello"],
+    "aboutFaqSections": 0,
+    "blogNavigationPresent": false,
+    "coreValuesPhoneBlocks": 0,
+    "homeAboutContactNavigation": "PASS",
+    "contactAddressEmailPhoneSchedule": "PASS",
+    "homeCarouselsInitialized": 4,
+    "vegaBiography": "Biography pending approval.",
+    "httpStatus": 200,
+    "robotsHeader": "noindex, nofollow, noarchive"
+  },
+  "limits": ["Not a full pixel comparison", "Individual tablet/mobile verification pending", "Form submissions not tested", "Chair graphic pending exact source"],
+  "followup": "Appointment callout label changed to Emergency contact after this browser pass; no geometry or runtime change in followup."
+}

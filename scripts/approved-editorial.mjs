@@ -39,6 +39,7 @@ export function applyEditorial(b,file){
   if(item){html(walk(item,n=>n.tagName==='p')[0],address);const p=one(item,n=>cls(n,'phone'));html(p,`<small>Emergency</small><br>${phone}`);for(const old of walk(item,n=>n.tagName==='p'&&text(n)==='Emergency phone'))disable(old,'duplicateEmergencyLabel');html(one(item,n=>cls(n,'mail')),email);}
  }
  for(const n of walk(b,n=>cls(n,'opening')||cls(n,'worktime')))html(n,hours);
+ for(const n of walk(b,n=>n.tagName==='p'&&text(n).trim()==='Book appointment'))html(n,'Emergency contact');
  for(const n of walk(b,n=>n.tagName==='a'&&/^tel:/.test(attr(n,'href')??''))){set(n,'href','tel:+19035751507');if(!walk(n,x=>x.tagName==='i').length)html(n,'(903) 575-1507');else {set(n,'aria-label','Emergency: (903) 575-1507');for(const c of n.childNodes??[])if(c.nodeName==='#text'&&/444|903/.test(c.value))c.value=' Emergency: (903) 575-1507';}}
  for(const n of walk(b,n=>cls(n,'call-button'))){for(const s of walk(n,x=>x.tagName==='span'&&cls(x,'text')))html(s,'Emergency');for(const a of walk(n,x=>x.tagName==='a'&&cls(x,'phone'))){html(a,'(903) 575-1507');set(a,'href','tel:+19035751507');}}
  for(const n of walk(b,n=>n.tagName==='a'&&/^mailto:/.test(attr(n,'href')??''))){set(n,'href','mailto:frontdesk@wcaldwelldentalarts.com');html(n,'frontdesk@wcaldwelldentalarts.com');}

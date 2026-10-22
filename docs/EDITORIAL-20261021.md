@@ -47,3 +47,7 @@ Original missing images and nonfunctional form backends remain unchanged. Old st
 
 Edit scripts/approved-editorial.mjs and AboutServicesHomologation.tsx, not generated pages; regenerate using node scripts/generate-original-pages.mjs.
 Save local changes before fetching and switching to ajustes-aprobados-20261021 in the existing Windows repository. Remote work does not automatically update its running servers.
+
+## Remote browser pass
+
+Chrome at 1363px: Home, About and Contact navigation checked. Three active team cards in each approved team; no About FAQ or Blog menu; Core Values has no call-button. Contact fields/schedule inspected. Four Home carousels initialized. HTTP 200 and noindex verified. Evidence: browser-review.json. This does not close tablet/mobile or full pixel comparison.
