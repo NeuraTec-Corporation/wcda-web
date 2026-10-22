@@ -1,0 +1,629 @@
+{
+  "baseline": "8ce1f2ae6f5105cfa34b9178c0f82288be0268e5",
+  "pages": 25,
+  "assertions": "PASS",
+  "original": {
+    "exact": 141,
+    "gitLineEndingsOnly": 12,
+    "mismatch": 0
+  },
+  "pending": [
+    "H03 central supplied chair asset; text changed, original icon retained pending faithful asset",
+    "A01 Vega biography approval",
+    "Browser visual and interaction verification"
+  ],
+  "integrity": [
+    {
+      "path": "services-details-CosmeticDentistry.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "404.html",
+      "status": "exact"
+    },
+    {
+      "path": "services-details-FamilyDentistry.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "services-details-ChildrensDentistry.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "services-details-Invisalign.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "before-after.html",
+      "status": "exact"
+    },
+    {
+      "path": "gallery-video.html",
+      "status": "exact"
+    },
+    {
+      "path": "services.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "blog.html",
+      "status": "exact"
+    },
+    {
+      "path": "gallery-image.html",
+      "status": "exact"
+    },
+    {
+      "path": "faq.html",
+      "status": "exact"
+    },
+    {
+      "path": "services-details-HolisticServices.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "post.html",
+      "status": "exact"
+    },
+    {
+      "path": "services-details-CleaningPrevention.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "about.html",
+      "status": "exact"
+    },
+    {
+      "path": "contact.html",
+      "status": "exact"
+    },
+    {
+      "path": "team.html",
+      "status": "exact"
+    },
+    {
+      "path": "services-details.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "services-details-ExtractionsPreservation.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "testimonials.html",
+      "status": "exact"
+    },
+    {
+      "path": "services-details-OralAppliances.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "services-details-DentalImplantsCranford.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "services-details-ToothReplacement.html",
+      "status": "git-lf-normalization"
+    },
+    {
+      "path": "index.html",
+      "status": "exact"
+    },
+    {
+      "path": "pricing.html",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-regular-400.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/dental-icons.woff",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-regular-400.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-duotone-900.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-brands-400.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/dental-icons.svg",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/themify.svg",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-brands-400.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-solid-900.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-thin-100.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-solid-900.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/themify.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/themify.woff",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/themify.eot",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/dental-icons.eot",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-duotone-900.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-thin-100.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-v4compatibility.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-v4compatibility.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/dental-icons.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-light-300.woff2",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/fa-light-300.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "fonts/dental-icons.ttf",
+      "status": "exact"
+    },
+    {
+      "path": "img/favicon.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/z_about3.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/logo.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/contact4.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/z_about.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/z_PTJ_logo.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/about6.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/logo-light.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/about4.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/TAN.jpeg",
+      "status": "exact"
+    },
+    {
+      "path": "img/about106.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/about7.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/about103.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/about.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/contact2.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/contact.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/z_about2.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/contact3.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "js/vegas.slider.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/jquery.stellar.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/jquery.magnific-popup.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/imagesloaded.pkgd.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/smooth-scroll.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/YouTubePopUp.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/jquery-migrate-3.5.0.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/jquery.waypoints.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/jquery-3.7.1.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/custom.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/owl.carousel.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/wow.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/scrollIt.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/bootstrap.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/jquery.isotope.v3.0.2.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/popper.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "js/modernizr-2.6.2.min.js",
+      "status": "exact"
+    },
+    {
+      "path": "video/PTJ_video5.mp4",
+      "status": "exact"
+    },
+    {
+      "path": "video/PTJ.mp4",
+      "status": "exact"
+    },
+    {
+      "path": "video/PTJ video 2.mp4",
+      "status": "exact"
+    },
+    {
+      "path": "css/style.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins.css",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/e.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/a.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/5.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/f.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/6.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/3.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/b.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/1.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/4.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/d.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/c.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/team/2.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/08.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/02.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/04.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/01.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/06.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/07.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/03.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/05.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/9.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/banner.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/2.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/8.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/5.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/1.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/4.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/3.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/7.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/slider/6.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/ba/b1.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/ba/b2.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/ba/a1.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/ba/a2.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/ba/a3.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/ba/b3.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/blog/02.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/blog/04.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/blog/01.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/blog/06.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/blog/03.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/blog/05.jpg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/instruments1.svg",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/implant03.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/implant2.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/tooth3.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/cran.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/intru.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/implant.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/tooth1.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/intru2.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/implant1.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/tooth.png",
+      "status": "exact"
+    },
+    {
+      "path": "img/services/icons/instruments.png",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/owl.carousel.min.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/close.png",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/themify-icons.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/magnific-popup.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/bootstrap.min.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/YouTubePopUp.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/font-awesome-pro.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/owl.theme.default.min.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/animate.min.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/vegas.slider.min.css",
+      "status": "exact"
+    },
+    {
+      "path": "css/plugins/dental-icons.css",
+      "status": "exact"
+    }
+  ]
+}

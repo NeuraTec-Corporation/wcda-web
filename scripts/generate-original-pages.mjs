@@ -2,6 +2,7 @@ import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "parse5";
+import { applyEditorial } from "./approved-editorial.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const referenceRoot = path.join(projectRoot, "reference-html");
@@ -237,6 +238,13 @@ function textExpression(value) {
 }
 
 function jsxNode(node, context, depth = 0) {
+  if (node.editorialFlag) {
+    const key = node.editorialFlag;
+    delete node.editorialFlag;
+    const markup = jsxNode(node, context, depth);
+    node.editorialFlag = key;
+    return `{editorialVisibility.${key} && (${markup})}`;
+  }
   if (node.nodeName === "#text") return textExpression(node.value);
   if (node.nodeName === "#comment" || node.tagName === "script") return "";
   if (!node.tagName) {
@@ -285,6 +293,7 @@ async function generatePage(fileName) {
   const body = findElement(document, (node) => node.tagName === "body");
   if (!body) throw new Error(`No body found in ${fileName}`);
 
+  applyEditorial(body, fileName);
   const name = componentName(fileName);
   const context = {
     isHome: fileName === "index.html",
@@ -299,7 +308,7 @@ async function generatePage(fileName) {
   const imports = context.isHome
     ? 'import AboutServicesHomologation from "@/components/AboutServicesHomologation";\n\n'
     : "";
-  const source = `${imports}export const originalFile = ${JSON.stringify(fileName)};\nexport const originalTitle = ${JSON.stringify(pageTitle(document))};\n\nexport default function ${name}() {\n  return (\n    <>\n      ${bodyJsx}\n    </>\n  );\n}\n`;
+  const source = `import { editorialVisibility } from "@/content/editorial-visibility";\n${imports}export const originalFile = ${JSON.stringify(fileName)};\nexport const originalTitle = ${JSON.stringify(pageTitle(document))};\n\nexport default function ${name}() {\n  return (\n    <>\n      ${bodyJsx}\n    </>\n  );\n}\n`;
 
   await writeFile(path.join(outputRoot, `${name}.tsx`), source);
   return { fileName, name, title: pageTitle(document) };

@@ -16,7 +16,18 @@
 - Initialize legacy JavaScript dependencies once and clean them up when a React component unmounts.
 - Preserve static-export compatibility for Hostinger.
 
-## Current scope
+## Authorized editorial batch — 2026-10-21
+
+- The approved Notion batch H01–H12, A01–A05, G01–G02 supersedes the migration freeze only for its explicit changes.
+- Preserve all original assets and behavior outside the approved changes.
+- Disabled sections remain in generated JSX behind `editorialVisibility`; do not delete them or use CSS hiding.
+- Regenerate with `node scripts/generate-original-pages.mjs`; approved transformations live in `scripts/approved-editorial.mjs`. Do not edit generated pages by hand.
+- GitHub versioning and Vercel Preview are authorized. Hostinger, DNS, production promotion and paid plan changes are not authorized.
+- EVOLUCION preserves the earlier redesign at 382569da98ed64d23bfb921f32cf608eff0c4f9c. Do not merge it into this baseline.
+- Verify with typecheck, lint, build and `node scripts/verify-editorial.mjs`. The old equivalence test intentionally fails on approved editorial changes and is historical.
+- Record actual evidence and unresolved items in the existing canonical Notion page; verify every Notion edit by reading it back.
+
+## Historical migration scope
 
 - About and Services were visually approved by the user on 2026-10-18 and are
   the immutable migration pattern. Do not redesign or alter them.
@@ -36,7 +47,7 @@
 
 - Bind local servers only to `127.0.0.1`.
 - Inspect ports before starting servers and never stop unrelated processes.
-- Do not publish, push, deploy, or modify Hostinger.
+- Do not modify Hostinger. GitHub and Vercel Preview only as authorized above.
 - Never commit credentials or local environment files.
 
 <!-- BEGIN:nextjs-agent-rules -->

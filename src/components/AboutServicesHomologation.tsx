@@ -38,7 +38,7 @@ const services = [
     href: "services-details-ToothReplacement.html",
   },
   {
-    title: "Extractions & Preservation",
+    title: "Oral Surgery",
     image: service06.src,
     href: "services-details-ExtractionsPreservation.html",
   },
@@ -58,7 +58,7 @@ const services = [
     href: "services-details-HolisticServices.html",
   },
   {
-    title: "Dental Implants - Cranford",
+    title: "Dental Implants",
     image: service04.src,
     href: "services-details-DentalImplantsCranford.html",
   },
@@ -232,7 +232,7 @@ export default function AboutServicesHomologation({
                           <text>
                             <textPath href="#textcircle" startOffset="0">
                               {" "}
-                              Free dental exam and x-ray{" "}
+                              Compassionate dental care{" "}
                             </textPath>
                           </text>
                         </svg>
@@ -275,11 +275,11 @@ export default function AboutServicesHomologation({
                 <i className="icon" /> Our services
               </div>
               <div className="section-title wow zoomIn" data-wow-delay=".2s">
-                Dental Care <span>We Provide</span>
+                Dental Care
               </div>
               <p>
                 We provide complete dental care, from check-ups and cleanings to restorative and
-                cosmetic treatments.
+                cosmetic treatments with a personalized and holistic approach.
               </p>
               <a href="about.html" className="durubtn2 wow fadeInUp" data-wow-delay=".5s">
                 <span className="text-wrapper">
