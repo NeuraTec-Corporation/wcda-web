@@ -46,6 +46,21 @@ export default function LegacyRuntime({ children }: { children: ReactNode }) {
         loadedScripts.push(script);
         if (disposed) break;
       }
+      // H07/A04: the approved teams have three cards, not four visible slots.
+      // Run after the original ready handler; preserve its mobile behavior.
+      $(() => {
+        if (disposed) return;
+        $('.team[data-approved-team="three"] .owl-carousel').each(function () {
+          const carousel = $(this);
+          const instance = carousel.data("owl.carousel") as {
+            options: { responsive: Record<number, { items: number }> };
+          } | undefined;
+          if (instance?.options.responsive[1000]) {
+            instance.options.responsive[1000].items = 3;
+            carousel.trigger("refresh.owl.carousel");
+          }
+        });
+      });
     })().catch((error: unknown) => {
       console.error(error);
     });

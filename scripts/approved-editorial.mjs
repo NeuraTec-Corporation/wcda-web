@@ -21,6 +21,7 @@ const phone='<a href="tel:+19035751507">(903) 575-1507</a>';
 const address='555 Passaic Ave. Suite 203<br>West Caldwell NJ 07068';
 function team(b,names,home){
  const s=one(b,n=>cls(n,'team'));
+ set(s,'data-approved-team','three');
  if(home)disable(one(s,n=>cls(n,'section-subtitle')),'homeSpecialistLabel');
  else html(title(s),'Our <span>Team</span>');
  const cards=walk(one(s,n=>cls(n,'owl-carousel')),n=>cls(n,'item'));
