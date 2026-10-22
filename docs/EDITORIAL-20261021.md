@@ -60,3 +60,5 @@ Pablo explicitly authorized implementation with “adelante hazlo”.
 - Generator identifies the approved Home About node explicitly before serialization so moving Core Values ahead of it cannot replace the wrong section.
 - R01/H03 remains pending: the exact chair screenshot is available, but automatic background extraction changed its geometry/line weights. The generated alternative was not incorporated. Request the standalone original PNG/SVG (not a WhatsApp screenshot) for faithful integration. Text and original circle animation remain unchanged.
 - Reference HTML, old EVOLUCION, production, and Windows localhost instances remain untouched.
+
+Preview navigation check found /index.html returned 404 while / worked. Added Vercel-only redirect /index.html -> / (temporary 307) to preserve original Home links; Hostinger export is unchanged.
