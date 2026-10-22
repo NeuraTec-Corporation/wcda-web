@@ -29,6 +29,11 @@ function team(b,names,home){
  cards.forEach((c,i)=>{if(i>=3)disable(c,home?'homeAdditionalTeam':'aboutAdditionalTeam');else{html(one(c,n=>cls(n,'name')),names[i][0]);html(one(c,n=>cls(n,'position')),names[i][1]);}});
 }
 export function applyEditorial(b,file){
+ // B01: preserve the navigation slot; display the supplied official artwork.
+ for(const a of walk(b,n=>n.tagName==='a'&&cls(n,'logo'))){
+  html(a,'<span class="brand-logo-frame"><img src="/brand/logo-official.jpeg" class="logo-img" alt="West Caldwell Dental Arts"></span>');
+ }
+
  // Navigation only; retain the Blog page, posts and Home articles.
  for(const root of walk(b,n=>n.tagName==='nav'||n.tagName==='footer')){
   for(const a of walk(root,n=>n.tagName==='a'&&attr(n,'href')==='blog.html'))disable(a.parentNode,'blogNavigation');

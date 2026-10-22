@@ -1,0 +1,26 @@
+/* Designer palette: navy #002774, beige #EBE1D8, decorative accent #B28E6E. */
+:root { --wcda-navy:#002774; --wcda-beige:#ebe1d8; --wcda-accent:#b28e6e; }
+.bg-lightblue, .bg-gradient, .footer {
+  background-color:var(--wcda-beige);
+  background-image:url('/brand/background.jpeg');
+  background-size:cover;
+  background-position:center;
+}
+/* Accent is decorative; text retains navy/beige contrast. */
+.section-subtitle { box-shadow:inset 0 0 0 1px var(--wcda-accent); }
+.section-subtitle .icon, .section-info .text-decoration-line-bottom { border-color:var(--wcda-accent); }
+.navbar .navbar-nav .nav-link:hover, .navbar .navbar-nav .nav-link.active { text-decoration:underline; text-decoration-color:var(--wcda-accent); text-underline-offset:6px; }
+.about .circle-button.in-bord:before { background-color:var(--wcda-beige); box-shadow:inset 0 0 0 1px var(--wcda-accent); }
+.about .circle-button .rotate-circle svg { fill:var(--wcda-navy); }
+.about .circle-button.in-bord:after { border-color:var(--wcda-accent); }
+/* Original 242px logo slot retained; CSS frames the supplied square artwork.
+   JPEG is unmodified: no AI tracing, recoloring or background extraction. */
+.brand-logo-frame { display:block; position:relative; width:242px; height:84px; overflow:hidden; }
+.navbar .logo-wrapper .logo .brand-logo-frame img.logo-img {
+  position:absolute; width:182px; max-width:none; height:182px;
+  left:30px; top:-48px; margin:0; object-fit:contain;
+}
+@media (max-width:991px) {
+  .navbar .logo-wrapper, .nav-scroll .logo-wrapper { padding-top:3px; padding-bottom:3px; }
+}
+/* Preserve icon-font families. Montserrat applies only to written content. */

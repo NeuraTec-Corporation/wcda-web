@@ -1,0 +1,27 @@
+{
+  "batch": "B01",
+  "pages": 25,
+  "assertions": "PASS",
+  "assets": [
+    {
+      "file": "background.jpeg",
+      "sha256": "56071d96643880625dcfb1541696db09249b59203503f5dc08a077a0850ce37c",
+      "bytes": 51609
+    },
+    {
+      "file": "logo-official.jpeg",
+      "sha256": "e3d3cefed84ceae2b6cdba371365f175e35c99ce2c1c697b030d4c11bdda562d",
+      "bytes": 71070
+    },
+    {
+      "file": "designer-palette.jpeg",
+      "sha256": "fc1565a3e768d37d09df455499f25b35f359d5a0fc7631961483dbd06651cb5f",
+      "bytes": 39450
+    }
+  ],
+  "preserved": "Original reference files, section order, content, imagery and runtime; font metrics may change line breaks",
+  "pending": [
+    "User visual approval",
+    "Full tablet/mobile review"
+  ]
+}

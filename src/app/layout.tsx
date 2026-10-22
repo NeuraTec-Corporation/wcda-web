@@ -17,12 +17,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {/* eslint-disable-next-line @next/next/no-page-custom-font -- Preserved from the original document head. */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         />
         {/* eslint-disable-next-line @next/next/no-css-tags -- Raw original CSS must bypass Next CSS transforms. */}
         <link rel="stylesheet" href="/wcda-assets/css/plugins.css" />
         {/* eslint-disable-next-line @next/next/no-css-tags -- Original stylesheet order is part of the reference. */}
         <link rel="stylesheet" href="/wcda-assets/css/style.css" />
+        {/* eslint-disable-next-line @next/next/no-css-tags -- Approved identity layer after immutable original. */}
+        <link rel="stylesheet" href="/brand/theme.css" />
       </head>
       <body>{children}</body>
     </html>
