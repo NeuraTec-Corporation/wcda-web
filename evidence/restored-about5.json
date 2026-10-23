@@ -1,0 +1,13 @@
+{
+  "asset": "public/wcda-assets/img/about5.jpg",
+  "source": "https://duruthemes.com/demo/html/denart/clinic/img/about5.jpg",
+  "template": "https://duruthemes.com/demo/html/denart/clinic/index-3.html",
+  "sha256": "e2eb599301e536510c057155a7c2b5535dbb69c4335b0387c088e5a825c28219",
+  "bytes": 64343,
+  "dimensions": [
+    800,
+    800
+  ],
+  "scope": "Restore missing original about5.jpg at existing migrated URL; markup and CSS unchanged; original reference preserved",
+  "rights": "Retrieved from template demo for current review preview; production image licensing not verified"
+}
