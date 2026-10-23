@@ -31,7 +31,7 @@ function team(b,names,home){
 export function applyEditorial(b,file){
  // B01: preserve the navigation slot; display the supplied official artwork.
  for(const a of walk(b,n=>n.tagName==='a'&&cls(n,'logo'))){
-  html(a,'<span class="brand-logo-frame"><img src="/brand/logo-official.jpeg" class="logo-img" alt="West Caldwell Dental Arts"></span>');
+  html(a,'<span class="brand-logo-frame"><img src="/brand/logo-official.png" class="logo-img" alt="West Caldwell Dental Arts"></span>');
  }
 
  // Navigation only; retain the Blog page, posts and Home articles.

@@ -1,5 +1,5 @@
 {
-  "batch": "B01",
+  "batch": "B02",
   "pages": 25,
   "assertions": "PASS",
   "assets": [
@@ -12,6 +12,11 @@
       "file": "logo-official.jpeg",
       "sha256": "e3d3cefed84ceae2b6cdba371365f175e35c99ce2c1c697b030d4c11bdda562d",
       "bytes": 71070
+    },
+    {
+      "file": "logo-official.png",
+      "sha256": "ed5c0639476842065146d25cc0e5c04b2fd0aec07d7ae48c9ddd631b1beeb643",
+      "bytes": 320837
     },
     {
       "file": "designer-palette.jpeg",
