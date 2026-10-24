@@ -27,3 +27,30 @@
 
 /* Keep light text readable on dark photographic sections, including emphasis. */
 .text-white, .section-title.text-white span { color:var(--wcda-beige) !important; }
+
+/* Services: manual arrows flank the retained position indicators. */
+.services3 .owl-carousel .owl-nav {
+  display:flex; justify-content:space-between; align-items:center;
+  width:220px; height:48px; margin:16px auto 0;
+}
+.services3 .owl-carousel .owl-nav button.owl-prev,
+.services3 .owl-carousel .owl-nav button.owl-next {
+  display:flex; align-items:center; justify-content:center;
+  position:static; width:44px; height:44px; padding:0 !important;
+  border:1px solid var(--wcda-accent); border-radius:50%;
+  background:var(--wcda-beige); color:var(--wcda-navy); font-size:18px;
+  transition:background-color .25s ease, color .25s ease;
+}
+.services3 .owl-carousel .owl-nav button:hover,
+.services3 .owl-carousel .owl-nav button:focus-visible {
+  background:var(--wcda-navy); color:var(--wcda-beige);
+}
+.services3 .owl-carousel .owl-nav button:focus-visible {
+  outline:2px solid var(--wcda-navy); outline-offset:3px;
+}
+.services3 .owl-carousel .owl-dots {
+  position:absolute; bottom:10px; left:50%; transform:translateX(-50%); margin:0;
+}
+@media (prefers-reduced-motion:reduce) {
+  .services3 .owl-carousel .owl-stage { transition-duration:0s !important; }
+}

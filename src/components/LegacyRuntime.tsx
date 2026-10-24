@@ -36,6 +36,7 @@ export default function LegacyRuntime({ children }: { children: ReactNode }) {
   useEffect(() => {
     let disposed = false;
     const loadedScripts: HTMLScriptElement[] = [];
+    const cleanupServices: Array<() => void> = [];
 
     window.$ = $;
     window.jQuery = $;
@@ -50,6 +51,47 @@ export default function LegacyRuntime({ children }: { children: ReactNode }) {
       // Run after the original ready handler; preserve its mobile behavior.
       $(() => {
         if (disposed) return;
+        // Smooth services carousel; keep the original cards and responsive counts.
+        $('.services3 .owl-carousel').each(function (_index, element) {
+          const carousel = $(element);
+          const instance = carousel.data("owl.carousel") as {
+            options: Record<string, unknown>;
+          } | undefined;
+          if (!instance) return;
+          const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+          const configure = () => {
+            Object.assign(instance.options, {
+              autoplay: !motion.matches, autoplayTimeout: 6000,
+              autoplaySpeed: motion.matches ? 0 : 1400,
+              smartSpeed: motion.matches ? 0 : 1400,
+              navSpeed: motion.matches ? 0 : 1400,
+              dotsSpeed: motion.matches ? 0 : 1400,
+              slideTransition: "ease-in-out", slideBy: 1,
+              nav: true, autoplayHoverPause: true, rtl: false,
+            });
+            carousel.trigger("refresh.owl.carousel");
+            carousel.find('.owl-prev').attr({ 'aria-label': 'Previous services', title: 'Previous services' });
+            carousel.find('.owl-next').attr({ 'aria-label': 'Next services', title: 'Next services' });
+            carousel.find('.owl-prev span, .owl-next span').attr('aria-hidden', 'true');
+            if (motion.matches || element.contains(document.activeElement)) {
+              carousel.trigger('stop.owl.autoplay');
+            } else {
+              carousel.trigger('play.owl.autoplay', [6000, 1400]);
+            }
+          };
+          configure();
+          carousel.on('focusin.wcdaServices', () => carousel.trigger('stop.owl.autoplay'));
+          carousel.on('focusout.wcdaServices', (event) => {
+            if (!motion.matches && !element.contains(event.relatedTarget as Node | null)) {
+              carousel.trigger('play.owl.autoplay', [6000, 1400]);
+            }
+          });
+          motion.addEventListener('change', configure);
+          cleanupServices.push(() => {
+            motion.removeEventListener('change', configure);
+            carousel.off('.wcdaServices');
+          });
+        });
         $('.team[data-approved-team="three"] .owl-carousel').each(function () {
           const carousel = $(this);
           const instance = carousel.data("owl.carousel") as {
@@ -67,6 +109,7 @@ export default function LegacyRuntime({ children }: { children: ReactNode }) {
 
     return () => {
       disposed = true;
+      cleanupServices.forEach((cleanup) => cleanup());
       $(".owl-carousel.owl-loaded").each(function destroyCarousel() {
         $(this).trigger("destroy.owl.carousel");
       });
