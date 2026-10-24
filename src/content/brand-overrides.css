@@ -30,13 +30,16 @@
 
 /* Services: manual arrows flank the retained position indicators. */
 .services3 .owl-carousel .owl-nav {
+  position:relative !important; top:auto !important; bottom:auto !important;
+  left:auto; right:auto; transform:none;
   display:flex; justify-content:space-between; align-items:center;
   width:220px; height:48px; margin:16px auto 0;
 }
 .services3 .owl-carousel .owl-nav button.owl-prev,
 .services3 .owl-carousel .owl-nav button.owl-next {
   display:flex; align-items:center; justify-content:center;
-  position:static; width:44px; height:44px; padding:0 !important;
+  position:static !important; transform:none !important; margin:0;
+  width:44px; height:44px; padding:0 !important;
   border:1px solid var(--wcda-accent); border-radius:50%;
   background:var(--wcda-beige); color:var(--wcda-navy); font-size:18px;
   transition:background-color .25s ease, color .25s ease;
