@@ -219,6 +219,7 @@ function styleExpression(style) {
 }
 
 function jsxAttribute(attribute) {
+  if (attribute.name === "src" && attribute.value === "__WCDA_DENTAL_CHAIR__") return "src={dentalChair.src}";
   const qualifiedName = attribute.prefix
     ? `${attribute.prefix}:${attribute.name}`
     : attribute.name;
@@ -307,7 +308,7 @@ async function generatePage(fileName) {
 
   const imports = context.isHome
     ? 'import AboutServicesHomologation from "@/components/AboutServicesHomologation";\n\n'
-    : "";
+    : fileName === 'about.html' ? 'import dentalChair from "@/assets/wcda-01-01.png";\n\n' : "";
   const source = `import { editorialVisibility } from "@/content/editorial-visibility";\n${imports}export const originalFile = ${JSON.stringify(fileName)};\nexport const originalTitle = ${JSON.stringify(pageTitle(document))};\n\nexport default function ${name}() {\n  return (\n    <>\n      ${bodyJsx}\n    </>\n  );\n}\n`;
 
   await writeFile(path.join(outputRoot, `${name}.tsx`), source);
