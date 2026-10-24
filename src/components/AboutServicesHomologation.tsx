@@ -231,9 +231,8 @@ export default function AboutServicesHomologation({
                             />
                           </defs>
                           <text>
-                            <textPath href="#textcircle" startOffset="0">
-                              {" "}
-                              Compassionate dental care{" "}
+                            <textPath href="#textcircle" startOffset="21" textLength="900" lengthAdjust="spacingAndGlyphs">
+                              COMPASSIONATE DENTAL CARE •
                             </textPath>
                           </text>
                         </svg>

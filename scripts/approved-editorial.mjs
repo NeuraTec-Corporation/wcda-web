@@ -83,7 +83,10 @@ export function applyEditorial(b,file){
  if(file==='about.html'){
   // Match the approved Home badge before duplicating the physician section.
   for(const circle of walk(b,n=>cls(n,'circle-button'))){
-   for(const label of walk(circle,n=>n.tagName?.toLowerCase()==='textpath'))html(label,' Compassionate dental care ');
+   for(const label of walk(circle,n=>n.tagName?.toLowerCase()==='textpath')){
+    html(label,'COMPASSIONATE DENTAL CARE •');
+    set(label,'startOffset','21');set(label,'textLength','900');set(label,'lengthAdjust','spacingAndGlyphs');
+   }
    for(const center of walk(circle,n=>cls(n,'in-circle')))html(center,'<img src="__WCDA_DENTAL_CHAIR__" alt="Dental chair" width="60" height="54" style="width:60px;height:auto;display:block">');
   }
   const matute=section(b,'Dr. Jonnathan Matute is');const vega=clone(matute);set(vega,'id','dr-vega');html(title(vega),'Dr. Katherine <span>Vega</span>');
